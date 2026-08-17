@@ -1,0 +1,22 @@
+{
+  "$schema": "./schemas/app-config.schema.json",
+  "name": "Signal Screen",
+  "nameJa": "Signal Screen",
+  "slug": "signal-screen",
+  "version": "1.0.0",
+  "description": "Turn a phone screen into a large visual signal with messages, arrows, colors, QR codes, and SOS patterns.",
+  "descriptionJa": "スマホ画面を、巨大メッセージ・矢印・色・QRコード・SOS点滅に使える視認性の高いシグナル画面へ変える単一HTMLアプリです。",
+  "defaultLanguage": "auto",
+  "repository": {
+    "owner": "ttomohisa",
+    "name": "htmlapps-signal-screen"
+  },
+  "build": {
+    "output": "dist/index.html",
+    "blockRuntimeNetwork": true,
+    "selfExtract": {
+      "enabled": true,
+      "output": "dist/index.self-extract.html"
+    }
+  }
+}

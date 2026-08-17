@@ -1,0 +1,1748 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f5f5f2">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Signal Screen</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23166552'/%3E%3Cpath d='M17 25h22l8-8v30l-8-8H17z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M23 32h10' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f5f5f2;--surface:#fff;--surface-muted:#eeeeea;--text:#20211f;--muted:#686b65;
+      --line:#d8dad4;--line-strong:#bfc2ba;--accent:#166552;--accent-hover:#0f5141;--accent-soft:#e3f1ec;
+      --danger:#ad2e28;--warning:#8a5a00;--shadow:0 8px 28px rgba(24,28,24,.08);--radius:16px;
+      --safe-bottom:max(14px,env(safe-area-inset-bottom));--safe-top:max(10px,env(safe-area-inset-top));
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif}
+    body{font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+    button,input,textarea,select{font:inherit;color:inherit}
+    button{cursor:pointer}
+    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(57,126,187,.38);outline-offset:2px}
+    .app-header{position:sticky;top:0;z-index:30;border-bottom:1px solid rgba(216,218,212,.88);background:rgba(245,245,242,.94);backdrop-filter:blur(16px)}
+    .header-inner{width:min(1120px,100%);min-height:64px;margin:auto;padding:9px clamp(14px,2.7vw,28px);display:flex;align-items:center;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-mark{width:38px;height:38px;border-radius:11px;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 2px 8px rgba(22,101,82,.18)}
+    .brand-mark svg{width:21px;height:21px}.brand-copy{min-width:0}.brand-name{margin:0;font-size:17px;line-height:1.15;white-space:nowrap}
+    .version{display:inline-flex;margin-left:6px;padding:1px 6px;border:1px solid var(--line);border-radius:999px;background:var(--surface-muted);color:var(--muted);font-size:10px;vertical-align:2px}
+    .brand-meta{margin:3px 0 0;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .header-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .plain-button{border:0;background:transparent;padding:5px 2px;color:var(--muted);font-size:12px;font-weight:750}
+    .plain-button:hover{color:var(--text)}.icon-button{width:36px;height:36px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;border-radius:9px}
+    .icon-button:hover{background:var(--surface-muted);color:var(--text)}.icon-button svg{width:20px;height:20px}
+    main{width:min(1120px,100%);margin:auto;padding:24px clamp(14px,2.7vw,28px) 72px}
+    .intro{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .intro h1{margin:0;font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;line-height:1.22}.intro p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .local-badge{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:7px 10px;border:1px solid #bad7cd;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:750}
+    .local-badge svg{width:15px;height:15px}
+    .layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:0 2px 9px rgba(25,28,24,.04);overflow:hidden}
+    .panel-body{padding:18px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-title h2{margin:0;font-size:17px}.small-note{color:var(--muted);font-size:11px}
+    .preview-shell{margin:0 14px;padding:12px;border:1px solid #e1e2dd;border-radius:14px;background:#e9e9e4}
+    .preview{position:relative;display:grid;place-items:center;min-height:345px;overflow:hidden;border-radius:14px;background:#111;color:#fff;isolation:isolate}
+    .preview-message{width:92%;padding:22px;text-align:center;font-weight:900;line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere;font-size:clamp(40px,8vw,88px);white-space:pre-wrap}
+    .preview.flash-off{opacity:0}
+    .preview-label{position:absolute;top:10px;left:10px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.13);color:inherit;font-size:10px;font-weight:700;backdrop-filter:blur(4px)}
+    .field{margin-top:15px}.field:first-child{margin-top:0}.label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.field label,.field legend{font-size:12px;font-weight:760}.hint{font-size:11px;color:var(--muted)}
+    textarea{width:100%;min-height:112px;padding:12px 13px;resize:vertical;border:1px solid var(--line);border-radius:11px;background:#fbfbf9;line-height:1.55}
+    textarea:hover{border-color:var(--line-strong)}
+    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+    .preset{min-height:42px;padding:8px 7px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:720;font-size:12px}
+    .preset:hover{background:var(--surface-muted);border-color:var(--line-strong)}.preset.arrow{font-size:21px;line-height:1}
+    .color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+    .color-button{position:relative;min-height:42px;border:2px solid transparent;border-radius:10px;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+    .color-button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px #fff,inset 0 0 0 1px rgba(0,0,0,.12)}
+    .segmented{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:4px;border-radius:11px;background:var(--surface-muted)}
+    .segment{min-height:38px;border:0;border-radius:8px;background:transparent;font-size:12px;font-weight:720}.segment[aria-pressed="true"]{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);color:var(--accent)}
+    .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;margin:14px 14px 12px;border:1px solid #e1e2dd;border-radius:12px;background:var(--surface-muted)}
+    .mode-button{min-height:42px;border:0;border-radius:9px;background:transparent;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
+    .mode-button[aria-pressed="true"]{background:#fff;color:var(--accent);box-shadow:0 1px 5px rgba(0,0,0,.08)}
+    .mode-button svg{width:17px;height:17px}
+    .qr-preview-wrap{width:min(78%,286px);aspect-ratio:1;padding:12px;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;place-items:center}
+    .qr-preview-wrap[hidden]{display:none}.qr-preview-wrap svg{display:block;width:100%;height:100%}
+    .qr-empty{width:min(78%,286px);aspect-ratio:1;border:2px dashed rgba(255,255,255,.34);border-radius:12px;display:grid;place-items:center;padding:20px;color:rgba(255,255,255,.72);font-size:12px;text-align:center}
+    .qr-empty[hidden]{display:none}.qr-note{margin-top:7px;color:var(--muted);font-size:11px}.qr-note.error{color:var(--danger)}
+    .warning{display:flex;gap:9px;margin-top:12px;padding:10px 11px;border:1px solid #ead7b2;border-radius:11px;background:#fff8e8;color:#654500;font-size:11px;line-height:1.55}
+    .warning svg{width:17px;height:17px;flex:0 0 auto;margin-top:1px}
+    .action-row{display:flex;gap:8px;margin-top:16px}.button{min-height:44px;padding:9px 14px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:760}.button:hover{background:var(--surface-muted);border-color:var(--line-strong)}
+    .button.primary{flex:1;border-color:var(--accent);background:var(--accent);color:#fff}.button.primary:hover{background:var(--accent-hover)}.button:disabled{opacity:.46;cursor:not-allowed}
+    .tip-list{display:grid;gap:10px}.tip{display:flex;gap:11px;padding:11px;border-radius:12px;background:var(--surface-muted)}.tip-icon{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--accent);flex:0 0 auto}.tip-icon svg{width:17px;height:17px}.tip strong{display:block;font-size:12px}.tip p{margin:2px 0 0;color:var(--muted);font-size:11px}
+    .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}
+    .status-line[data-tone="warn"]{color:var(--warning)}
+    dialog{width:min(620px,calc(100% - 26px));max-height:calc(100dvh - 28px);padding:0;border:1px solid var(--line);border-radius:17px;background:#fff;color:var(--text);box-shadow:var(--shadow);overflow:hidden}
+    dialog::backdrop{background:rgba(13,17,14,.52);backdrop-filter:blur(3px)}
+    .dialog-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:16px}.dialog-body{padding:18px;overflow:auto;max-height:calc(100dvh - 94px)}.dialog-body h3{font-size:13px;margin:20px 0 6px}.dialog-body h3:first-child{margin-top:0}.dialog-body p,.dialog-body li{color:var(--muted);font-size:12px;line-height:1.7}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 17px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+    /* APP:BEGIN */
+    .stage{position:fixed;inset:0;z-index:100;display:none;overflow:hidden;background:#111;color:#fff;touch-action:manipulation;user-select:none}
+    .stage.active{display:block}.stage-surface{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(18px,4vw,50px);background:var(--stage-bg,#111);color:var(--stage-fg,#fff);transition:opacity .08s linear}
+    .stage-surface.flash-off{opacity:0}.stage-text{max-width:96vw;max-height:88dvh;text-align:center;font-size:70px;font-weight:950;line-height:.93;letter-spacing:-.045em;white-space:pre-wrap;overflow-wrap:anywhere}
+    .stage-qr{display:none;width:min(82vw,82dvh);height:min(82vw,82dvh);padding:clamp(10px,2.4vmin,24px);background:#fff;border-radius:clamp(8px,1.8vmin,18px);box-shadow:0 12px 40px rgba(0,0,0,.24)}
+    .stage-qr svg{display:block;width:100%;height:100%}.stage.qr-mode .stage-text{display:none}.stage.qr-mode .stage-qr{display:block}.stage.qr-mode .stage-surface{--stage-bg:#fff!important;--stage-fg:#111!important}.stage.qr-mode #stageFlashButton{display:none}
+    .stage-ui{position:absolute;inset:0;pointer-events:none;transition:opacity .22s ease}.stage-ui.hidden{opacity:0}.stage-ui button{pointer-events:auto}
+    .stage-top{position:absolute;top:var(--safe-top);left:10px;right:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .stage-chip{padding:7px 10px;border:1px solid rgba(255,255,255,.26);border-radius:999px;background:rgba(12,12,12,.42);color:#fff;font-size:11px;font-weight:700;backdrop-filter:blur(7px)}
+    .stage-close{width:42px;height:42px;border:1px solid rgba(255,255,255,.26);border-radius:13px;background:rgba(12,12,12,.42);color:#fff;display:grid;place-items:center;backdrop-filter:blur(7px)}
+    .stage-close svg{width:21px;height:21px}
+    .stage-bottom{position:absolute;left:10px;right:10px;bottom:var(--safe-bottom);display:flex;justify-content:center;gap:7px}
+    .stage-control{min-width:82px;min-height:42px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
+    .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
+    @media (max-width:760px){
+      .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
+      main{padding-top:17px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:13px}.intro h1{font-size:25px}.intro p{max-width:310px}.local-badge{display:none}
+      .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
+      .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:0;margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
+      .action-row .button:not(.primary){display:none}.button.primary{min-height:50px;border-radius:13px}.desktop-tips{display:none}
+      dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:18px 18px 0 0;border-left:0;border-right:0;border-bottom:0}
+      .stage-text{max-width:94vw}.stage-bottom{gap:5px}.stage-control{min-width:0;flex:1;max-width:120px}
+    }
+    @media (max-width:360px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:5px}.preset{font-size:11px;padding:7px 4px}.segmented{gap:3px}.segment{font-size:11px}.color-grid{gap:5px}.panel-body{padding:13px}.intro p{font-size:12px}}
+    @media (orientation:landscape) and (max-height:520px){.stage-text{max-height:76dvh}.stage-bottom{bottom:8px}.stage-top{top:8px}.stage-hint{display:none}}
+    @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}.preview,.stage-surface{transition:none}}
+    /* APP:END */
+  </style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8h10l5-4v16l-5-4H4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.0</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
+    </div>
+    <div class="header-actions">
+      <button class="plain-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
+      <button class="icon-button" id="helpButton" type="button" aria-label="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.7 9a2.45 2.45 0 1 1 3.66 2.13c-.88.52-1.36.94-1.36 1.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div><h1 data-i18n="headline">画面いっぱいに伝える</h1><p data-i18n="intro">待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。</p></div>
+    <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.8-2.9 8.2-7 10-4.1-1.8-7-5.2-7-10V6z" stroke="currentColor" stroke-width="1.8"/><path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="localOnly">端末内だけで動作</span></div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="mode-switch" role="group" aria-label="Display mode">
+        <button class="mode-button" id="messageModeButton" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h12M4 18h9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span data-i18n="modeMessage">文字・矢印</span></button>
+        <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 14h2v2h-2zM18 14h2v5h-2zM14 18h3v2h-3z" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="modeQr">QR</span></button>
+      </div>
+      <div class="preview-shell">
+        <div class="preview" id="preview">
+          <span class="preview-label" data-i18n="previewLabel">プレビュー</span>
+          <div class="preview-message" id="previewMessage">ここです</div>
+          <div class="qr-preview-wrap" id="qrPreviewWrap" hidden><div id="qrPreview"></div></div>
+          <div class="qr-empty" id="qrEmpty" hidden data-i18n="qrEmpty">URLやテキストを入力するとQRを表示します</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="field" id="messageField">
+          <div class="label-row"><label for="messageInput" data-i18n="messageLabel">表示する文字</label><span class="hint" id="charCount">4 / 60</span></div>
+          <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
+        </div>
+        <div class="field" id="qrField" hidden>
+          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><span class="hint" id="qrByteCount">0 / 300 bytes</span></div>
+          <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
+          <div class="qr-note" id="qrNote" data-i18n="qrNote">QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。</div>
+        </div>
+        <div class="field" id="quickField">
+          <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label><span class="hint" data-i18n="quickHint">タップで切替</span></div>
+          <div class="quick-grid" id="presetGrid">
+            <button class="preset" type="button" data-value="ここです" data-value-en="HERE" data-i18n="presetHere">ここです</button>
+            <button class="preset" type="button" data-value="助けて" data-value-en="HELP" data-i18n="presetHelp">助けて</button>
+            <button class="preset" type="button" data-value="SOS">SOS</button>
+            <button class="preset" type="button" data-value="止まって" data-value-en="STOP" data-i18n="presetStop">止まって</button>
+            <button class="preset arrow" type="button" data-value="←">←</button>
+            <button class="preset arrow" type="button" data-value="↑">↑</button>
+            <button class="preset arrow" type="button" data-value="↓">↓</button>
+            <button class="preset arrow" type="button" data-value="→">→</button>
+          </div>
+        </div>
+        <div class="field" id="colorField">
+          <div class="label-row"><label data-i18n="colorLabel">背景色</label><span class="hint" data-i18n="contrastAuto">文字色は自動</span></div>
+          <div class="color-grid" id="colorGrid">
+            <button class="color-button" type="button" style="--swatch:#101110" data-color="#101110" aria-label="Black" aria-pressed="true"></button>
+            <button class="color-button" type="button" style="--swatch:#ffffff" data-color="#ffffff" aria-label="White" aria-pressed="false"></button>
+            <button class="color-button" type="button" style="--swatch:#d7261e" data-color="#d7261e" aria-label="Red" aria-pressed="false"></button>
+            <button class="color-button" type="button" style="--swatch:#ffd400" data-color="#ffd400" aria-label="Yellow" aria-pressed="false"></button>
+            <button class="color-button" type="button" style="--swatch:#0a7a45" data-color="#0a7a45" aria-label="Green" aria-pressed="false"></button>
+            <button class="color-button" type="button" style="--swatch:#1769d1" data-color="#1769d1" aria-label="Blue" aria-pressed="false"></button>
+          </div>
+        </div>
+        <div class="field" id="flashField">
+          <div class="label-row"><label data-i18n="flashLabel">点滅</label><span class="hint" id="flashHint" data-i18n="flashHint">必要なときだけ</span></div>
+          <div class="segmented" id="flashSegments">
+            <button class="segment" type="button" data-flash="steady" aria-pressed="true" data-i18n="flashOff">なし</button>
+            <button class="segment" type="button" data-flash="slow" aria-pressed="false" data-i18n="flashSlow">ゆっくり</button>
+            <button class="segment" type="button" data-flash="beacon" aria-pressed="false" data-i18n="flashBeacon">ビーコン</button>
+            <button class="segment" type="button" data-flash="sos" aria-pressed="false">SOS</button>
+          </div>
+          <div class="warning" id="flashWarning" hidden>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 2.8 20h18.4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v5M12 17.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span data-i18n="flashWarning">点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。</span>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="button" id="resetButton" type="button" data-i18n="reset">リセット</button>
+          <button class="button primary" id="showButton" type="button"><span data-i18n="showFullscreen">全画面で表示</span></button>
+        </div>
+        <div class="status-line" id="statusLine" aria-live="polite" data-i18n="savedLocally">設定はこの端末に自動保存されます</div>
+      </div>
+    </section>
+
+    <aside class="panel desktop-tips">
+      <div class="panel-body">
+        <div class="panel-title"><h2 data-i18n="tipsTitle">見やすく使うコツ</h2><span class="small-note">Signal Screen</span></div>
+        <div class="tip-list">
+          <div class="tip"><div class="tip-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M9 17h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><strong data-i18n="tipLandscapeTitle">横向きもおすすめ</strong><p data-i18n="tipLandscape">短い文字や矢印は横向きにするとさらに大きく表示できます。</p></div></div>
+          <div class="tip"><div class="tip-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><strong data-i18n="tipBrightnessTitle">明るさは端末側で調整</strong><p data-i18n="tipBrightness">ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。</p></div></div>
+          <div class="tip"><div class="tip-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg></div><div><strong data-i18n="tipContrastTitle">読みやすさを優先</strong><p data-i18n="tipContrast">文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。</p></div></div>
+          <div class="tip"><div class="tip-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.8"/><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></div><div><strong data-i18n="tipWakeTitle">表示中はスリープを防止</strong><p data-i18n="tipWake">対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。</p></div></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="stage-surface" id="stageSurface">
+    <div class="stage-text" id="stageText">ここです</div>
+    <div class="stage-qr" id="stageQr"></div>
+  </div>
+  <div class="stage-ui" id="stageUi">
+    <div class="stage-top">
+      <span class="stage-chip" id="stageModeChip">固定表示</span>
+      <button class="stage-close" id="stageCloseButton" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="stage-hint" id="stageHint" data-i18n="stageHint">画面をタップすると操作ボタンを表示 / 非表示</div>
+    <div class="stage-bottom">
+      <button class="stage-control" id="stageFlashButton" type="button" data-i18n="stageFlash">点滅切替</button>
+      <button class="stage-control" id="stageFullscreenButton" type="button" data-i18n="fullscreen">全画面</button>
+      <button class="stage-control" id="stageWakeButton" type="button" data-i18n="keepAwake">画面維持</button>
+    </div>
+  </div>
+</div>
+
+<dialog id="helpDialog">
+  <div class="dialog-head"><h2 data-i18n="helpTitle">使い方と注意事項</h2><button class="icon-button" type="button" data-close-dialog="helpDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-body">
+    <!-- APP:HELP:BEGIN -->
+    <h3 data-i18n="helpUseTitle">基本操作</h3>
+    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。</p>
+    <h3 data-i18n="helpQrTitle">QR表示</h3>
+    <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
+    <h3 data-i18n="helpFlashTitle">点滅について</h3>
+    <p data-i18n="helpFlash">点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。</p>
+    <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
+    <p data-i18n="helpPrivacy">入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。</p>
+    <h3 data-i18n="helpLimitsTitle">制限事項</h3>
+    <p data-i18n="helpLimits">ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。</p>
+    <!-- APP:HELP:END -->
+  </div>
+</dialog>
+
+<dialog id="flashConfirmDialog">
+  <div class="dialog-head"><h2 data-i18n="flashDialogTitle">点滅を使用しますか？</h2><button class="icon-button" type="button" data-close-dialog="flashConfirmDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="flashDialogBody">点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。</p></div>
+  <div class="dialog-actions"><button class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
+</dialog>
+
+<dialog id="resetDialog">
+  <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button class="icon-button" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="resetBody">入力した文字、背景色、点滅設定を初期状態に戻します。</p></div>
+  <div class="dialog-actions"><button class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button class="button" id="resetConfirmButton" type="button" style="color:var(--danger)" data-i18n="reset">リセット</button></div>
+</dialog>
+
+<script>
+/*
+ * QRCode for JavaScript - Copyright (c) 2009 Kazuhiko Arase
+ * MIT License. Adapted from the copy vendored by qrcode-terminal 0.12.0.
+ * The byte encoder is modified here to use UTF-8 via TextEncoder.
+ */
+(function(global){
+  "use strict";
+  var modules = Object.create(null);
+  modules['./QRMode'] = function(module, exports, require) {
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+  };
+  modules['./QRMath'] = function(module, exports, require) {
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+  };
+  modules['./QRPolynomial'] = function(module, exports, require) {
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+  };
+  modules['./QRMaskPattern'] = function(module, exports, require) {
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+  };
+  modules['./QRUtil'] = function(module, exports, require) {
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+  };
+  modules['./QRErrorCorrectLevel'] = function(module, exports, require) {
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+  };
+  modules['./QRRSBlock'] = function(module, exports, require) {
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+  };
+  modules['./QRBitBuffer'] = function(module, exports, require) {
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+  };
+  modules['./QR8bitByte'] = function(module, exports, require) {
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+  this.mode = QRMode.MODE_8BIT_BYTE;
+  this.data = data;
+  this.bytes = Array.from(new TextEncoder().encode(data));
+}
+
+QR8bitByte.prototype = {
+  getLength : function() { return this.bytes.length; },
+  write : function(buffer) {
+    for (var i = 0; i < this.bytes.length; i++) buffer.put(this.bytes[i], 8);
+  }
+};
+
+module.exports = QR8bitByte;
+
+  };
+  modules['./index'] = function(module, exports, require) {
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+  };
+  var cache = Object.create(null);
+  function require(id){
+    if (cache[id]) return cache[id].exports;
+    if (!modules[id]) throw new Error("QR module not found: " + id);
+    var module = { exports: {} }; cache[id] = module; modules[id](module, module.exports, require); return module.exports;
+  }
+  global.SignalQRCode = require('./index');
+  global.SignalQRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+})(window);
+
+</script>
+<script id="app-config" type="application/json">{"$schema":"./schemas/app-config.schema.json","name":"Signal Screen","nameJa":"Signal Screen","slug":"signal-screen","version":"1.0.0","description":"Turn a phone screen into a large visual signal with messages, arrows, colors, QR codes, and SOS patterns.","descriptionJa":"スマホ画面を、巨大メッセージ・矢印・色・QRコード・SOS点滅に使える視認性の高いシグナル画面へ変える単一HTMLアプリです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-signal-screen"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}}</script>
+<script id="build-manifest" type="application/json">{"schemaVersion":1,"builder":"single-html-app-template/1.0","generatedAtUtc":"2026-08-17T03:36:30.9004784Z","app":{"name":"Signal Screen","slug":"signal-screen","version":"1.0.0"},"dependencies":[]}</script>
+<script id="embedded-assets" type="application/octet-stream">eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==</script>
+<script>
+(() => {
+  "use strict";
+  const config = JSON.parse(document.getElementById("app-config").textContent);
+  const STORAGE_KEY = "signal-screen:v1";
+  const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
+  const translations = {
+    ja:{
+      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"端末内だけで動作",
+      previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
+      colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
+      flashWarning:"点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。",reset:"リセット",showFullscreen:"全画面で表示",
+      savedLocally:"設定はこの端末に自動保存されます",tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
+      tipBrightnessTitle:"明るさは端末側で調整",tipBrightness:"ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。",
+      tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
+      stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
+      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。",
+      helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
+      helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
+      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
+      helpLimitsTitle:"制限事項",helpLimits:"ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。",
+      flashDialogTitle:"点滅を使用しますか？",flashDialogBody:"点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。",cancel:"キャンセル",enableFlash:"点滅を使う",
+      resetTitle:"設定をリセットしますか？",resetBody:"入力した文字、背景色、点滅設定を初期状態に戻します。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
+      statusWakeOn:"画面維持を有効にしました",statusWakeOff:"画面維持を解除しました",statusWakeUnavailable:"このブラウザーでは画面維持を利用できません",statusFullscreenUnavailable:"このブラウザーでは全画面表示を利用できません",
+      emptyFallback:"ここです"
+    },
+    en:{
+      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Stored only on this device",
+      previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
+      colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
+      flashWarning:"Do not use flashing light near people who are sensitive to it. Flash rates are intentionally kept low.",reset:"Reset",showFullscreen:"Show full screen",
+      savedLocally:"Settings are saved automatically on this device",tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
+      tipBrightnessTitle:"Adjust brightness on the device",tipBrightness:"A browser cannot change screen brightness. Increase device brightness for outdoor use.",
+      tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
+      stageHint:"Tap the screen to show or hide controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
+      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls.",
+      helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
+      helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
+      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
+      helpLimitsTitle:"Limitations",helpLimits:"Browsers cannot change device screen brightness. Fullscreen and Wake Lock availability depends on the browser and how the file is opened.",
+      flashDialogTitle:"Enable flashing?",flashDialogBody:"Flashing screens can cause discomfort or health effects for some people. Use this feature with consideration for people nearby.",cancel:"Cancel",enableFlash:"Enable flashing",
+      resetTitle:"Reset settings?",resetBody:"This restores the message, background color, and flash pattern to their defaults.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
+      statusWakeOn:"Keep-awake enabled",statusWakeOff:"Keep-awake released",statusWakeUnavailable:"Keep-awake is not supported in this browser",statusFullscreenUnavailable:"Full screen is not supported in this browser",
+      emptyFallback:"HERE"
+    }
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    languageButton:$("languageButton"),helpButton:$("helpButton"),helpDialog:$("helpDialog"),messageInput:$("messageInput"),charCount:$("charCount"),
+    messageModeButton:$("messageModeButton"),qrModeButton:$("qrModeButton"),messageField:$("messageField"),quickField:$("quickField"),colorField:$("colorField"),flashField:$("flashField"),qrField:$("qrField"),qrInput:$("qrInput"),qrByteCount:$("qrByteCount"),qrNote:$("qrNote"),
+    preview:$("preview"),previewMessage:$("previewMessage"),qrPreviewWrap:$("qrPreviewWrap"),qrPreview:$("qrPreview"),qrEmpty:$("qrEmpty"),colorGrid:$("colorGrid"),flashSegments:$("flashSegments"),flashWarning:$("flashWarning"),
+    showButton:$("showButton"),resetButton:$("resetButton"),resetDialog:$("resetDialog"),resetConfirmButton:$("resetConfirmButton"),statusLine:$("statusLine"),
+    stage:$("stage"),stageSurface:$("stageSurface"),stageText:$("stageText"),stageQr:$("stageQr"),stageUi:$("stageUi"),stageCloseButton:$("stageCloseButton"),stageModeChip:$("stageModeChip"),
+    stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stageHint:$("stageHint"),
+    flashConfirmDialog:$("flashConfirmDialog"),flashCancelButton:$("flashCancelButton"),flashAllowButton:$("flashAllowButton")
+  };
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let state = loadState();
+  let lang = resolveLanguage(state.language);
+  let flashTimer = 0, flashTimeout = 0, wakeLock = null, stageUiTimer = 0, pendingFlash = null;
+
+  function loadState(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+      return {...DEFAULTS,...saved};
+    }catch{return {...DEFAULTS};}
+  }
+  function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
+  function resolveLanguage(value){if(value==="ja"||value==="en")return value;return navigator.language.toLowerCase().startsWith("ja")?"ja":"en";}
+  function t(key){return translations[lang][key]||key;}
+  function applyLanguage(){
+    document.documentElement.lang=lang;
+    document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(translations[lang][key])el.textContent=translations[lang][key];});
+    els.languageButton.textContent=lang==="ja"?"EN":"JA";
+    els.helpButton.setAttribute("aria-label",t("helpTitle"));
+    document.querySelectorAll("[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
+    updateModeChip();
+  }
+  function luminance(hex){
+    const c=hex.replace("#","");const r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
+    return (0.299*r+0.587*g+0.114*b)/255;
+  }
+  function foregroundFor(bg){return luminance(bg)>.58?"#111111":"#ffffff";}
+  function displayMessage(){const v=els.messageInput.value.trim();return v||t("emptyFallback");}
+  function qrBytes(){return new TextEncoder().encode(els.qrInput.value.trim()).length;}
+  function makeQrSvg(value){
+    if(!value)return "";
+    const qr=new SignalQRCode(0,SignalQRErrorCorrectLevel.M);
+    qr.addData(value);qr.make();
+    const count=qr.getModuleCount(),quiet=4,total=count+quiet*2;
+    let path="";
+    for(let row=0;row<count;row++){for(let col=0;col<count;col++){if(qr.isDark(row,col))path+=`M${col+quiet} ${row+quiet}h1v1h-1z`;}}
+    return `<svg viewBox="0 0 ${total} ${total}" role="img" aria-label="QR code" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"><rect width="${total}" height="${total}" fill="#fff"/><path d="${path}" fill="#000"/></svg>`;
+  }
+  function renderMode(){
+    const isQr=state.mode==="qr";
+    els.messageModeButton.setAttribute("aria-pressed",String(!isQr));els.qrModeButton.setAttribute("aria-pressed",String(isQr));
+    els.messageField.hidden=isQr;els.quickField.hidden=isQr;els.colorField.hidden=isQr;els.flashField.hidden=isQr;els.qrField.hidden=!isQr;
+    els.previewMessage.hidden=isQr;els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=true;els.stage.classList.toggle("qr-mode",isQr);els.stageFlashButton.hidden=isQr;
+    if(isQr){stopFlash();els.preview.style.background="#171817";els.preview.style.color="#fff";}
+    updatePreview();updateModeChip();
+  }
+  function updateQrPreview(){
+    const value=els.qrInput.value.trim(),bytes=qrBytes(),tooLong=bytes>300;
+    els.qrByteCount.textContent=`${bytes} / 300 bytes`;els.qrNote.textContent=tooLong?t("qrTooLong"):t("qrNote");els.qrNote.classList.toggle("error",tooLong);
+    if(!value||tooLong){els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=tooLong?t("qrTooLong"):t("qrEmpty");els.stageQr.innerHTML="";els.showButton.disabled=true;return;}
+    try{const svg=makeQrSvg(value);els.qrPreview.innerHTML=svg;els.stageQr.innerHTML=svg;els.qrPreviewWrap.hidden=false;els.qrEmpty.hidden=true;els.showButton.disabled=false;}catch{els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=t("qrGenerateError");els.qrNote.textContent=t("qrGenerateError");els.qrNote.classList.add("error");els.stageQr.innerHTML="";els.showButton.disabled=true;}
+  }
+  function updatePreview(){
+    if(state.mode==="qr"){updateQrPreview();return;}
+    els.showButton.disabled=false;
+    const msg=displayMessage(),fg=foregroundFor(state.color);
+    els.previewMessage.hidden=false;els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=true;els.previewMessage.textContent=msg;els.preview.style.background=state.color;els.preview.style.color=fg;
+    els.stageText.textContent=msg;els.stageSurface.style.setProperty("--stage-bg",state.color);els.stageSurface.style.setProperty("--stage-fg",fg);
+    els.charCount.textContent=`${els.messageInput.value.length} / 60`;
+    fitText(els.previewMessage,els.preview,34,94);
+    if(els.stage.classList.contains("active"))requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,42,Math.min(innerWidth,innerHeight)*.33));
+  }
+  function fitText(textEl,container,min,max){
+    textEl.style.fontSize=max+"px";
+    const maxW=container.clientWidth*.91,maxH=container.clientHeight*.78;
+    let size=max;
+    while(size>min&&(textEl.scrollWidth>maxW||textEl.scrollHeight>maxH)){size-=2;textEl.style.fontSize=size+"px";}
+  }
+  function setColor(color){
+    state.color=color;saveState();
+    document.querySelectorAll(".color-button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===color)));
+    updatePreview();
+  }
+  function setFlash(mode,{skipConfirm=false}={}){
+    if(mode!=="steady"&&reduceMotion.matches){
+      state.flash="steady";saveState();renderFlashButtons();showStatus(t("statusReduced"),"warn");stopFlash();return;
+    }
+    if(mode!=="steady"&&!state.flashAcknowledged&&!skipConfirm){
+      pendingFlash=mode;els.flashConfirmDialog.showModal();return;
+    }
+    state.flash=mode;saveState();renderFlashButtons();stopFlash();if(els.stage.classList.contains("active"))startFlash();updateModeChip();
+  }
+  function renderFlashButtons(){
+    document.querySelectorAll(".segment").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.flash===state.flash)));
+    els.flashWarning.hidden=state.flash==="steady";
+  }
+  function clearFlashTimers(){clearInterval(flashTimer);clearTimeout(flashTimeout);flashTimer=0;flashTimeout=0;els.preview.classList.remove("flash-off");els.stageSurface.classList.remove("flash-off");}
+  function stopFlash(){clearFlashTimers();}
+  function setFlashVisible(visible){els.preview.classList.toggle("flash-off",!visible);els.stageSurface.classList.toggle("flash-off",!visible);}
+  function startFlash(){
+    clearFlashTimers();if(state.flash==="steady")return;
+    if(state.flash==="slow"){let on=true;flashTimer=setInterval(()=>{on=!on;setFlashVisible(on)},900);return;}
+    if(state.flash==="beacon"){let on=true;flashTimer=setInterval(()=>{on=!on;setFlashVisible(on)},650);return;}
+    const unit=300;const pattern=[1,0,1,0,1,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0];
+    let i=0;
+    const tick=()=>{setFlashVisible(Boolean(pattern[i]));i=(i+1)%pattern.length;flashTimeout=setTimeout(tick,unit);};
+    tick();
+  }
+  function updateModeChip(){
+    if(state.mode==="qr"){els.stageModeChip.textContent=t("modeQrStage");return;}
+    const key={steady:"modeSteady",slow:"modeSlow",beacon:"modeBeacon",sos:"modeSos"}[state.flash];
+    els.stageModeChip.textContent=t(key);
+  }
+  function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
+  async function requestWake(){
+    if(!("wakeLock" in navigator)){showStatus(t("statusWakeUnavailable"),"warn");return false;}
+    try{
+      wakeLock=await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release",()=>{wakeLock=null;});
+      showStatus(t("statusWakeOn"));return true;
+    }catch{showStatus(t("statusWakeUnavailable"),"warn");return false;}
+  }
+  async function releaseWake(){if(wakeLock){try{await wakeLock.release();}catch{}wakeLock=null;}showStatus(t("statusWakeOff"));}
+  async function requestFullscreen(){if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}try{await document.documentElement.requestFullscreen({navigationUI:"hide"});return true;}catch{showStatus(t("statusFullscreenUnavailable"),"warn");return false;}}
+  async function leaveFullscreen(){if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen();}catch{}}}
+  async function openStage(){
+    updatePreview();if(els.showButton.disabled)return;els.stage.classList.add("active");els.stage.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+    els.stage.classList.toggle("qr-mode",state.mode==="qr");
+    if(state.mode!=="qr"){requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,42,Math.min(innerWidth,innerHeight)*.34));startFlash();}else{stopFlash();}
+    updateModeChip();const fullscreenRequest=requestFullscreen();const wakeRequest=requestWake();await Promise.allSettled([fullscreenRequest,wakeRequest]);scheduleStageUiHide();
+  }
+  async function closeStage(){
+    stopFlash();els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow="";clearTimeout(stageUiTimer);await releaseWake();await leaveFullscreen();
+  }
+  function scheduleStageUiHide(){clearTimeout(stageUiTimer);els.stageUi.classList.remove("hidden");stageUiTimer=setTimeout(()=>els.stageUi.classList.add("hidden"),2600);}
+  function cycleFlash(){if(state.mode==="qr")return;const modes=["steady","slow","beacon","sos"];setFlash(modes[(modes.indexOf(state.flash)+1)%modes.length]);scheduleStageUiHide();}
+  function resetAll(){
+    state={...DEFAULTS,language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();els.resetDialog.close();
+  }
+
+  if(reduceMotion.matches&&state.flash!=="steady"){state.flash="steady";saveState();}
+  els.messageInput.value=state.message;els.qrInput.value=state.qrText||"";
+  applyLanguage();setColor(state.color);renderFlashButtons();renderMode();
+  $("versionBadge").textContent="v"+config.version;
+
+  els.messageInput.addEventListener("input",()=>{state.message=els.messageInput.value;saveState();updatePreview();});
+  els.qrInput.addEventListener("input",()=>{state.qrText=els.qrInput.value;saveState();updatePreview();});
+  els.messageModeButton.addEventListener("click",()=>{state.mode="message";saveState();renderMode();});
+  els.qrModeButton.addEventListener("click",()=>{state.mode="qr";saveState();renderMode();});
+  document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{const value=lang==="en"&&b.dataset.valueEn?b.dataset.valueEn:b.dataset.value;els.messageInput.value=value;state.message=value;saveState();updatePreview();}));
+  document.querySelectorAll(".color-button").forEach(b=>b.addEventListener("click",()=>setColor(b.dataset.color)));
+  document.querySelectorAll(".segment").forEach(b=>b.addEventListener("click",()=>setFlash(b.dataset.flash)));
+  els.flashCancelButton.addEventListener("click",()=>{pendingFlash=null;els.flashConfirmDialog.close();});
+  els.flashAllowButton.addEventListener("click",()=>{state.flashAcknowledged=true;saveState();const mode=pendingFlash||"slow";pendingFlash=null;els.flashConfirmDialog.close();setFlash(mode,{skipConfirm:true});});
+  els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>els.resetDialog.showModal());els.resetConfirmButton.addEventListener("click",resetAll);
+  els.helpButton.addEventListener("click",()=>els.helpDialog.showModal());
+  els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
+  document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
+  document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}));
+  els.stage.addEventListener("click",e=>{if(e.target.closest("button"))return;els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
+  els.stageFlashButton.addEventListener("click",cycleFlash);
+  els.stageFullscreenButton.addEventListener("click",async()=>{if(document.fullscreenElement)await leaveFullscreen();else await requestFullscreen();scheduleStageUiHide();});
+  els.stageWakeButton.addEventListener("click",async()=>{if(wakeLock)await releaseWake();else await requestWake();scheduleStageUiHide();});
+  addEventListener("resize",()=>updatePreview());
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&els.stage.classList.contains("active")&&!wakeLock)requestWake();});
+  reduceMotion.addEventListener?.("change",()=>{if(reduceMotion.matches&&state.flash!=="steady")setFlash("steady",{skipConfirm:true});});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&els.stage.classList.contains("active"))closeStage();});
+})();
+</script>
+</body>
+</html>
