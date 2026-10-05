@@ -30,7 +30,7 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Flashing must be disabled when `prefers-reduced-motion` is active.
 - First non-steady selection requires an in-app safety confirmation.
 - Fullscreen API is progressive enhancement.
-- Screen Wake Lock is progressive enhancement.
+- Screen Wake Lock is progressive enhancement. Manual Off persists for the current display session, including tab visibility changes; obsolete acquisitions are released.
 - Settings persist in LocalStorage.
 - Japanese/English switch without reload.
 - Core functionality works from `file://`.
@@ -61,7 +61,8 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Escape dismisses only the topmost confirmation before closing the display.
 - Reset discloses QR deletion, keeps the language, and restores a localized default message.
 - No dark-mode switch.
-- Full-stage controls auto-hide after a short delay.
+- Full-stage controls auto-hide after a short delay, unless focused or protected by an open dialog.
+- Session-only Pin controls defaults off, exposes aria-pressed, and prevents both auto-hide and background-tap hiding until unpinned or closed.
 
 ## 9. Browser target
 Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display works with `file://`. Fullscreen and Wake Lock depend on browser/security context support.

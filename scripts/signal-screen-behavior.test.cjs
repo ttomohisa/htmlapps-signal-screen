@@ -93,13 +93,6 @@ test('closing an older session cannot exit fullscreen in a reopened session', as
   await open(app); app.el('stageCloseButton').click(); await open(app); release(); await app.settle();
   assert.equal(exits,0); assert.equal(active(app),true);
 });
-test('overlapping wake acquisitions release redundant locks and close releases the retained lock', async () => {
-  const resolves=[], released=[false,false];
-  const app=setup('en',{navigator:{wakeLock:{request:()=>new Promise(done=>resolves.push(done))}}});
-  app.el('showButton').click(); app.el('stageWakeButton').click();
-  for(let i=0;i<2;i++){resolves[i]({addEventListener(){},async release(){released[i]=true;}});await app.settle();}
-  app.el('stageCloseButton').click(); await app.settle(); assert.deepEqual(released,[true,true]);
-});
 test('late fullscreen completion from the stage button exits after the display closes', async () => {
   const app=setup(); await open(app); let finish,exits=0;
   app.document.documentElement.requestFullscreen=()=>new Promise(done=>{finish=()=>{app.document.fullscreenElement=app.document.documentElement;done();};});
@@ -107,4 +100,100 @@ test('late fullscreen completion from the stage button exits after the display c
   app.el('stageFullscreenButton').click(); app.el('stageCloseButton').click(); await app.settle(); finish(); await app.settle();
   assert.equal(active(app),false); assert.equal(app.document.fullscreenElement,null); assert.equal(exits,1);
 });
+
+// These assertions execute the shipped script with deterministic Wake Lock sentinels.
+// A missing pin guard or intent/generation check must make the corresponding test fail.
+function wakeFixture(language = 'en') {
+  const requests = [];
+  const app = setup(language, {navigator: {wakeLock: {request(type) {
+    assert.equal(type, 'screen');
+    return new Promise((resolve, reject) => requests.push({resolve, reject}));
+  }}}});
+  function lock() {
+    const listeners = [];
+    return {released:false, releases:0, addEventListener(type, fn) {if (type === 'release') listeners.push(fn);},
+      async release() {this.released=true;this.releases++;listeners.forEach(fn=>fn());}};
+  }
+  async function resolve(index) {const sentinel=lock();requests[index].resolve(sentinel);await app.settle();return sentinel;}
+  async function visible() {app.document.visibilityState='hidden';app.document.dispatch('visibilitychange');app.document.visibilityState='visible';app.document.dispatch('visibilitychange');await app.settle();}
+  return {app, requests, resolve, visible};
+}
+test('keep-awake does not claim an acquired state when the API is unavailable', async () => {
+  const app=setup();await open(app);
+  assert.equal(active(app),true);assert.equal(app.run('wakeLock'),null);
+  assert.equal(app.el('stageWakeButton').getAttribute('aria-pressed'),null);
+});
+for (const language of ['ja', 'en']) {
+  test(`${language}: pin controls is localized, off by default, and cancels auto-hide and background hiding`, async () => {
+    const app=setup(language);await open(app);
+    const pin=app.el('stagePinButton');assert.ok(pin, 'Pin controls button exists');
+    assert.equal(pin.getAttribute('aria-pressed'),'false');
+    assert.equal(pin.textContent, language==='ja'?'操作を固定':'Pin controls');
+    app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),true);
+    app.el('stageSurface').click();assert.equal(app.el('stageUi').classList.contains('hidden'),false);
+    pin.click();assert.equal(pin.getAttribute('aria-pressed'),'true');
+    app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),false);
+    app.el('stageSurface').click();app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),false);
+    pin.click();assert.equal(pin.getAttribute('aria-pressed'),'false');
+    app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),true);
+  });
+  test(`${language}: unpin preserves focused controls and open-dialog protections`, async () => {
+    const app=setup(language);await open(app);const pin=app.el('stagePinButton');assert.ok(pin);
+    pin.focus();pin.click();pin.click();app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),false);
+    pin.click();app.el('stageFlashButton').click();pin.click();app.flushTimers();
+    assert.equal(app.el('flashConfirmDialog').open,true);assert.equal(app.el('stageUi').classList.contains('hidden'),false);
+    app.el('flashCancelButton').click();assert.equal(app.run('state.flash'),'steady');
+    app.el('stageSurface').click();assert.equal(app.el('stageUi').classList.contains('hidden'),true);
+  });
+  test(`${language}: pin resets on close and reopen without changing stored content`, async () => {
+    const app=setup(language);app.input(app.el('messageInput'),'Gate A');app.input(app.el('qrInput'),'synthetic QR');
+    const saved=[...app.storage];await open(app);assert.ok(app.el('stagePinButton'));app.el('stagePinButton').click();
+    app.document.dispatch('keydown',{key:'Escape'});await app.settle();assert.equal(active(app),false);
+    assert.deepEqual([...app.storage],saved);await open(app);assert.equal(app.el('stagePinButton').getAttribute('aria-pressed'),'false');
+    app.flushTimers();assert.equal(app.el('stageUi').classList.contains('hidden'),true);
+    assert.equal(app.run('state.message'),'Gate A');assert.equal(app.run('state.qrText'),'synthetic QR');
+  });
+  test(`${language}: pin works in steady QR mode with the flash control hidden`, async () => {
+    const app=setup(language);app.input(app.el('qrInput'),'https://example.test/synthetic');app.el('qrModeButton').click();await open(app);assert.equal(active(app),true);
+    assert.ok(app.el('stagePinButton'));app.el('stagePinButton').click();app.el('stageSurface').click();app.flushTimers();
+    assert.equal(app.el('stageUi').classList.contains('hidden'),false);assert.equal(app.el('stageFlashButton').hidden,true);
+    assert.equal(app.run('state.flash'),'steady');assert.ok(app.el('stageQr').innerHTML.includes('<svg'));
+  });
+  test(`${language}: manually disabled keep-awake stays off across visibility until explicitly enabled`, async () => {
+    const f=wakeFixture(language);await open(f.app);const lock=await f.resolve(0);
+    f.app.el('stageWakeButton').click();await f.app.settle();assert.equal(lock.released,true);
+    await f.visible();assert.equal(f.requests.length,1,'Manual off must not reacquire on visibility');
+    assert.equal(f.app.run('wakeLock'),null);
+    f.app.el('stageWakeButton').click();await f.app.settle();assert.equal(f.requests.length,2);
+    const enabled=await f.resolve(1);assert.equal(f.app.run('wakeLock'),enabled);
+    assert.equal(enabled.released,false);
+  });
+  test(`${language}: Off while acquisition is pending releases the late sentinel`, async () => {
+    const f=wakeFixture(language);await open(f.app);f.app.el('stageWakeButton').click();await f.app.settle();
+    assert.equal(f.requests.length,1,'Off must cancel intent instead of issuing another request');
+    const late=await f.resolve(0);assert.equal(late.released,true);assert.equal(f.app.run('wakeLock'),null);
+    await f.visible();assert.equal(f.requests.length,1);
+  });
+  test(`${language}: off-on races release obsolete acquisition and retain only the latest lock`, async () => {
+    const f=wakeFixture(language);await open(f.app);f.app.el('stageWakeButton').click();f.app.el('stageWakeButton').click();await f.app.settle();
+    assert.equal(f.requests.length,2);const current=await f.resolve(1);const obsolete=await f.resolve(0);
+    assert.equal(obsolete.released,true);assert.equal(current.released,false);assert.equal(f.app.run('wakeLock'),current);
+    f.app.el('stageCloseButton').click();await f.app.settle();assert.equal(current.released,true);
+  });
+  test(`${language}: OS release reacquires on visibility only while requested and retained locks never duplicate`, async () => {
+    const f=wakeFixture(language);await open(f.app);await f.visible();await f.visible();assert.equal(f.requests.length,1,'Do not duplicate pending requests');
+    const first=await f.resolve(0);await f.visible();assert.equal(f.requests.length,1);
+    await first.release();await f.visible();assert.equal(f.requests.length,2);await f.resolve(1);
+    f.app.el('stageCloseButton').click();await f.app.settle();await f.visible();assert.equal(f.requests.length,2);
+  });
+  test(`${language}: closing and reopening ignores older locks and failures`, async () => {
+    const f=wakeFixture(language);await open(f.app);f.app.el('stageCloseButton').click();await f.app.settle();await open(f.app);
+    const current=await f.resolve(1);const old=await f.resolve(0);assert.equal(old.released,true);assert.equal(f.app.run('wakeLock'),current);
+    f.app.el('stageWakeButton').click();f.app.el('stageWakeButton').click();await f.app.settle();
+    f.app.el('stageWakeButton').click();f.app.el('stageWakeButton').click();await f.app.settle();
+    const latest=await f.resolve(3);const status=f.app.el('statusLine').textContent;f.requests[2].reject(new Error('Obsolete request'));await f.app.settle();
+    assert.equal(f.app.el('statusLine').textContent,status);assert.equal(f.app.run('wakeLock'),latest);
+  });
+}
+
 (async () => { let failed = 0; for (const {name,body} of tests) { try { await body(); console.log('ok - '+name); } catch (error) { failed++; console.error('not ok - '+name+'\n'+error.stack); } } console.log(`${tests.length-failed}/${tests.length} passed`); process.exitCode = failed ? 1 : 0; })();

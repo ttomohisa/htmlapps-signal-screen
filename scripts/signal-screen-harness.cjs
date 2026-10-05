@@ -118,7 +118,9 @@ function createApp(filename, options = {}) {
   source = source.replace('__APP_CONFIG_JSON__', JSON.stringify(config)).replace('__BUILD_MANIFEST_JSON__', '{}').replace('__EMBEDDED_ASSET_BUNDLE_JSON__', '{}');
   // Test-only lexical access; the shipped app exposes no test API or mutable application state.
   source = source.replace(/\}\)\(\);\s*$/, 'globalThis.testRun = code => eval(code);\n})();');
-  context = vm.createContext(globals); vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src/vendor/qrcode.js'), 'utf8'), context); vm.runInContext(source, context, { filename });
+  context = vm.createContext(globals); vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src/vendor/qrcode.js'), 'utf8'), context); // Browser window properties are also global bindings; mirror the real QR exports.
+  Object.assign(globals, {SignalQRCode: window.SignalQRCode, SignalQRErrorCorrectLevel: window.SignalQRErrorCorrectLevel});
+  vm.runInContext(source, context, { filename });
   const app = { html, document, window, storage, frames, timers, globals, run: code => context.testRun(code), el: id => document.getElementById(id),
     frame(time) { now = time; const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach(fn => fn(time)); },
     flushTimers() { const callbacks = [...timers.values()]; timers.clear(); callbacks.forEach(fn => fn()); },

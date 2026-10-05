@@ -87,6 +87,7 @@
     .stage-close{width:42px;height:42px;border:1px solid rgba(255,255,255,.26);border-radius:13px;background:rgba(12,12,12,.42);color:#fff;display:grid;place-items:center;backdrop-filter:blur(7px)}
     .stage-close svg{width:21px;height:21px}
     .stage-bottom{position:absolute;left:10px;right:10px;bottom:var(--safe-bottom);display:flex;justify-content:center;gap:7px}
+    .stage-control[aria-pressed="true"]{border-color:#fff;background:rgba(12,12,12,.85);box-shadow:inset 0 0 0 1px #fff}
     .stage-control{min-width:82px;min-height:42px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
     .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
     @media (max-width:760px){
@@ -221,6 +222,7 @@
     <div class="stage-bottom">
       <button class="stage-control" id="stageFlashButton" type="button" data-i18n="stageFlash">点滅切替</button>
       <button class="stage-control" id="stageFullscreenButton" type="button" data-i18n="fullscreen">全画面</button>
+      <button class="stage-control" id="stagePinButton" type="button" aria-pressed="false" data-i18n="pinControls">操作を固定</button>
       <button class="stage-control" id="stageWakeButton" type="button" data-i18n="keepAwake">画面維持</button>
     </div>
   </div>
@@ -231,7 +233,7 @@
   <div class="dialog-body">
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
-    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
+    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
     <h3 data-i18n="helpQrTitle">QR表示</h3>
     <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
@@ -277,8 +279,8 @@ __QR_CODE_JS__
       savedLocally:"設定はこの端末に自動保存されます",tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
       tipBrightnessTitle:"明るさは端末側で調整",tipBrightness:"ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。",
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
-      stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
-      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
+      stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stagePinnedHint:"操作ボタンを固定中。解除すると自動で隠れます",pinControls:"操作を固定",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
+      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
       helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
@@ -296,8 +298,8 @@ __QR_CODE_JS__
       savedLocally:"Settings are saved automatically on this device",tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
       tipBrightnessTitle:"Adjust brightness on the device",tipBrightness:"A browser cannot change screen brightness. Increase device brightness for outdoor use.",
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
-      stageHint:"Tap the screen to show or hide controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
-      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
+      stageHint:"Tap the screen to show or hide controls",stagePinnedHint:"Controls are pinned. Unpin to resume auto-hide",pinControls:"Pin controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
+      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
       helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
@@ -316,13 +318,14 @@ __QR_CODE_JS__
     preview:$("preview"),previewMessage:$("previewMessage"),qrPreviewWrap:$("qrPreviewWrap"),qrPreview:$("qrPreview"),qrEmpty:$("qrEmpty"),colorGrid:$("colorGrid"),flashSegments:$("flashSegments"),flashWarning:$("flashWarning"),
     showButton:$("showButton"),resetButton:$("resetButton"),resetDialog:$("resetDialog"),resetConfirmButton:$("resetConfirmButton"),statusLine:$("statusLine"),
     stage:$("stage"),stageSurface:$("stageSurface"),stageText:$("stageText"),stageQr:$("stageQr"),stageUi:$("stageUi"),stageCloseButton:$("stageCloseButton"),stageModeChip:$("stageModeChip"),
-    stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stageHint:$("stageHint"),
+    stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stagePinButton:$("stagePinButton"),stageHint:$("stageHint"),
     flashConfirmDialog:$("flashConfirmDialog"),flashCancelButton:$("flashCancelButton"),flashAllowButton:$("flashAllowButton")
   };
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
   let state = loadState();
   let lang = resolveLanguage(state.language);
   let flashTimer = 0, flashTimeout = 0, wakeLock = null, stageUiTimer = 0, pendingFlash = null;
+  let controlsPinned = false, wakeWanted = false, wakeGeneration = 0, wakePending = null;
   let stageReturnFocus = null, stageBackground = [], stageOverflow = "", stageSession = 0;
 
   function loadState(){
@@ -342,7 +345,7 @@ __QR_CODE_JS__
     document.querySelectorAll(".icon-button[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
     els.stageCloseButton.setAttribute("aria-label",lang==="ja"?"閉じる":"Close");
     els.stage.setAttribute("aria-label",t("showFullscreen"));
-    updateModeChip();
+    updateModeChip();updateStageControls();
   }
   function luminance(hex){
     const c=hex.replace("#","");const r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
@@ -436,25 +439,42 @@ __QR_CODE_JS__
     els.stageModeChip.textContent=t(key);
   }
   function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
+  function updateStageControls(){
+    els.stagePinButton.setAttribute("aria-pressed",String(controlsPinned));
+    els.stageHint.textContent=t(controlsPinned?"stagePinnedHint":"stageHint");
+  }
   async function requestWake(){
+    if(!wakeWanted||!els.stage.classList.contains("active")||document.visibilityState!=="visible")return false;
+    if(wakeLock||wakePending!==null)return Boolean(wakeLock);
     if(!("wakeLock" in navigator)){showStatus(t("statusWakeUnavailable"),"warn");return false;}
-    const session=stageSession;
+    const session=stageSession,generation=wakeGeneration;
+    wakePending=generation;
     try{
       const lock=await navigator.wakeLock.request("screen");
-      if(session!==stageSession||!els.stage.classList.contains("active")){await lock.release();return false;}
-      if(wakeLock&&wakeLock!==lock){await lock.release();return true;}
+      if(session!==stageSession||generation!==wakeGeneration||!wakeWanted||!els.stage.classList.contains("active")){
+        await lock.release();return false;
+      }
       wakeLock=lock;
       lock.addEventListener("release",()=>{if(wakeLock===lock)wakeLock=null;});
       showStatus(t("statusWakeOn"));return true;
-    }catch{showStatus(t("statusWakeUnavailable"),"warn");return false;}
+    }catch{
+      if(session===stageSession&&generation===wakeGeneration&&wakeWanted)showStatus(t("statusWakeUnavailable"),"warn");
+      return false;
+    }finally{if(wakePending===generation)wakePending=null;}
   }
-  async function releaseWake(){const lock=wakeLock;wakeLock=null;if(lock){try{await lock.release();}catch{}}showStatus(t("statusWakeOff"));}
+  async function releaseWake(){
+    // Intent changes synchronously, before any pending acquisition or release settles.
+    wakeWanted=false;wakeGeneration++;wakePending=null;
+    const lock=wakeLock;wakeLock=null;updateStageControls();showStatus(t("statusWakeOff"));
+    if(lock){try{await lock.release();}catch{}}
+  }
   async function requestFullscreen(){if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}try{await document.documentElement.requestFullscreen({navigationUI:"hide"});if(!els.stage.classList.contains("active")){await leaveFullscreen();return false;}return true;}catch{showStatus(t("statusFullscreenUnavailable"),"warn");return false;}}
   async function leaveFullscreen(){if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen();}catch{}}}
   async function openStage(){
     if(els.stage.classList.contains("active"))return;
     updatePreview();if(els.showButton.disabled)return;
     const session=++stageSession;
+    controlsPinned=false;wakeWanted=true;wakeGeneration++;updateStageControls();
     stageReturnFocus=els.showButton;stageOverflow=document.body.style.overflow;
     stageBackground=[...document.querySelectorAll("header,main")].map(el=>({el,inert:el.inert}));
     stageBackground.forEach(({el})=>{el.inert=true;});
@@ -468,6 +488,7 @@ __QR_CODE_JS__
   async function closeStage(){
     if(!els.stage.classList.contains("active"))return;
     const session=++stageSession;stopFlash();els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
+    controlsPinned=false;updateStageControls();
     stageBackground.forEach(({el,inert})=>{el.inert=inert;});stageBackground=[];
     const target=stageReturnFocus?.isConnected&&!stageReturnFocus.disabled?stageReturnFocus:els.showButton;
     stageReturnFocus=null;target.focus({preventScroll:true});
@@ -475,7 +496,8 @@ __QR_CODE_JS__
   }
   function scheduleStageUiHide(){
     clearTimeout(stageUiTimer);if(!els.stage.classList.contains("active"))return;els.stageUi.classList.remove("hidden");
-    stageUiTimer=setTimeout(()=>{if(!els.stageUi.contains(document.activeElement)&&!document.querySelector("dialog[open]"))els.stageUi.classList.add("hidden");},2600);
+    if(controlsPinned)return;
+    stageUiTimer=setTimeout(()=>{if(!controlsPinned&&!els.stageUi.contains(document.activeElement)&&!document.querySelector("dialog[open]"))els.stageUi.classList.add("hidden");},2600);
   }
   function cycleFlash(){if(state.mode==="qr")return;const modes=["steady","slow","beacon","sos"];setFlash(modes[(modes.indexOf(state.flash)+1)%modes.length],{invoker:els.stageFlashButton});scheduleStageUiHide();}
   function resetAll(){
@@ -502,13 +524,17 @@ __QR_CODE_JS__
   els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
   document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
   document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}));
-  els.stage.addEventListener("click",e=>{if(e.target.closest("button"))return;els.stage.focus({preventScroll:true});els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
+  els.stage.addEventListener("click",e=>{if(e.target.closest("button")||controlsPinned)return;els.stage.focus({preventScroll:true});els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
   els.stageUi.addEventListener("focusin",scheduleStageUiHide);
   els.stageFlashButton.addEventListener("click",cycleFlash);
   els.stageFullscreenButton.addEventListener("click",async()=>{if(document.fullscreenElement)await leaveFullscreen();else await requestFullscreen();scheduleStageUiHide();});
-  els.stageWakeButton.addEventListener("click",async()=>{if(wakeLock)await releaseWake();else await requestWake();scheduleStageUiHide();});
+  els.stagePinButton.addEventListener("click",()=>{controlsPinned=!controlsPinned;updateStageControls();scheduleStageUiHide();});
+  els.stageWakeButton.addEventListener("click",async()=>{
+    if(wakeWanted)await releaseWake();else{wakeWanted=true;updateStageControls();await requestWake();}
+    scheduleStageUiHide();
+  });
   addEventListener("resize",()=>updatePreview());
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&els.stage.classList.contains("active")&&!wakeLock)requestWake();});
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&wakeWanted&&els.stage.classList.contains("active")&&!wakeLock)requestWake();});
   reduceMotion.addEventListener?.("change",()=>{if(reduceMotion.matches&&state.flash!=="steady")setFlash("steady",{skipConfirm:true});});
   document.addEventListener("keydown",e=>{
     if(!els.stage.classList.contains("active")||document.querySelector("dialog[open]"))return;
