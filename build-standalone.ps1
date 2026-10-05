@@ -74,6 +74,12 @@ New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 
 & $VerifyPath -Path $OutputPath -RequireNetworkBlock ([bool]$appConfig.build.blockRuntimeNetwork)
 
+# Keep the direct root download current on canonical builds only.
+$canonicalOutput = [System.IO.Path]::GetFullPath((Join-Path $Root ([string]$appConfig.build.output)))
+if ([System.IO.Path]::GetFullPath($OutputPath) -eq $canonicalOutput) {
+  [System.IO.File]::WriteAllText((Join-Path $Root "signal-screen.html"), $template, (New-Object System.Text.UTF8Encoding($false)))
+}
+
 if (-not $SkipSelfExtract -and [bool]$appConfig.build.selfExtract.enabled) {
   $selfPath = Join-Path $Root ([string]$appConfig.build.selfExtract.output)
   & $SelfExtractBuilderPath -InputPath $OutputPath -OutputPath $selfPath -AppName ([string]$appConfig.name) -AppNameJa ([string]$appConfig.nameJa)

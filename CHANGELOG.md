@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+- Fixed preview and stage text fitting for short, long, and multiline messages.
+- Isolated display focus, restored invokers, and kept Escape scoped to the topmost dialog.
+- Prevented late display-session completions from retaining wake locks or exiting a newer fullscreen session.
+- Localized reset defaults and disclosed QR deletion and flashing acknowledgement reset.
+- Added automated regression and artifact-parity checks; canonical builds refresh the root HTML download.
+
 ## 1.0.0 - 2026-08-17
 - Separated the display-mode switch and preview into distinct visual surfaces on desktop and mobile.
 - Initial Signal Screen release.

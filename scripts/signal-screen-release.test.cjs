@@ -1,0 +1,14 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { loadHtml } = require('./signal-screen-harness.cjs');
+const root = path.join(__dirname, '..');
+const readable = fs.readFileSync(path.join(root, 'dist/index.html'));
+assert.deepEqual(fs.readFileSync(path.join(root, 'signal-screen.html')), readable, 'root download must match the built readable app');
+assert.equal(loadHtml(path.join(root, 'dist/index.self-extract.html')), readable.toString('utf8'), 'self-extract payload must restore exact readable bytes');
+const source = fs.readFileSync(path.join(root, 'src/index.template.html'), 'utf8');
+const appScript = html => [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes('const translations ='));
+assert.equal(appScript(readable.toString('utf8')), appScript(source), 'distribution application logic must match source');
+assert.match(readable.toString('utf8'), /connect-src 'none'/);
+console.log('ok - readable, self-extract, root, and source application parity');

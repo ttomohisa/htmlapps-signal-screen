@@ -39,6 +39,12 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 - Responsive desktop and smartphone layouts
 - Readable and gzip self-extracting single-HTML release variants
 
+## Display controls and reset
+
+- Tab and Shift+Tab stay within display controls; focused controls remain visible. Closing the display returns focus to Show full screen.
+- Escape dismisses an open confirmation first; a subsequent Escape closes the display.
+- Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
+
 ## Quick start
 
 No account or server-side storage is required. Messages and settings stay inside the browser.

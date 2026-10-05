@@ -23,7 +23,7 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Live preview.
 - Local QR generation for URLs and short UTF-8 text with a 4-module quiet zone.
 - QR mode uses fixed black modules on white and disables flashing for scan reliability.
-- Auto-fit message size in preview and stage.
+- Auto-fit message size in preview and stage using a stable content box, including wrapped and multiline input.
 - Presets for short messages and four directions.
 - Automatic white/black foreground contrast.
 - Steady, slow, beacon, and SOS flash patterns.
@@ -57,7 +57,9 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Mobile-first from 320px.
 - Mobile primary action is safe-area-aware and fixed at the bottom.
 - Desktop shows preview/settings and usage tips side by side.
-- Visible focus and keyboard access.
+- Visible focus and keyboard access; display controls isolate keyboard focus from the editor and return focus to Show on exit.
+- Escape dismisses only the topmost confirmation before closing the display.
+- Reset discloses QR deletion, keeps the language, and restores a localized default message.
 - No dark-mode switch.
 - Full-stage controls auto-hide after a short delay.
 

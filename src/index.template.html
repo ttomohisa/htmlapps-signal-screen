@@ -43,7 +43,7 @@
     .panel-body{padding:18px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-title h2{margin:0;font-size:17px}.small-note{color:var(--muted);font-size:11px}
     .preview-shell{margin:0 14px;padding:12px;border:1px solid #e1e2dd;border-radius:14px;background:#e9e9e4}
     .preview{position:relative;display:grid;place-items:center;min-height:345px;overflow:hidden;border-radius:14px;background:#111;color:#fff;isolation:isolate}
-    .preview-message{width:92%;padding:22px;text-align:center;font-weight:900;line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere;font-size:clamp(40px,8vw,88px);white-space:pre-wrap}
+    .preview-message{position:absolute;min-width:0;padding:0;text-align:center;font-weight:900;line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere;font-size:clamp(40px,8vw,88px);white-space:pre-wrap}
     .preview.flash-off{opacity:0}
     .preview-label{position:absolute;top:10px;left:10px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.13);color:inherit;font-size:10px;font-weight:700;backdrop-filter:blur(4px)}
     .field{margin-top:15px}.field:first-child{margin-top:0}.label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.field label,.field legend{font-size:12px;font-weight:760}.hint{font-size:11px;color:var(--muted)}
@@ -78,10 +78,10 @@
     /* APP:BEGIN */
     .stage{position:fixed;inset:0;z-index:100;display:none;overflow:hidden;background:#111;color:#fff;touch-action:manipulation;user-select:none}
     .stage.active{display:block}.stage-surface{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(18px,4vw,50px);background:var(--stage-bg,#111);color:var(--stage-fg,#fff);transition:opacity .08s linear}
-    .stage-surface.flash-off{opacity:0}.stage-text{max-width:96vw;max-height:88dvh;text-align:center;font-size:70px;font-weight:950;line-height:.93;letter-spacing:-.045em;white-space:pre-wrap;overflow-wrap:anywhere}
+    .stage-surface.flash-off{opacity:0}.stage-text{min-width:0;text-align:center;font-size:70px;font-weight:950;line-height:.93;letter-spacing:-.045em;white-space:pre-wrap;overflow-wrap:anywhere}
     .stage-qr{display:none;width:min(82vw,82dvh);height:min(82vw,82dvh);padding:clamp(10px,2.4vmin,24px);background:#fff;border-radius:clamp(8px,1.8vmin,18px);box-shadow:0 12px 40px rgba(0,0,0,.24)}
     .stage-qr svg{display:block;width:100%;height:100%}.stage.qr-mode .stage-text{display:none}.stage.qr-mode .stage-qr{display:block}.stage.qr-mode .stage-surface{--stage-bg:#fff!important;--stage-fg:#111!important}.stage.qr-mode #stageFlashButton{display:none}
-    .stage-ui{position:absolute;inset:0;pointer-events:none;transition:opacity .22s ease}.stage-ui.hidden{opacity:0}.stage-ui button{pointer-events:auto}
+    .stage-ui{position:absolute;inset:0;pointer-events:none;transition:opacity .22s ease}.stage-ui.hidden:not(:focus-within){opacity:0}.stage-ui button{pointer-events:auto}
     .stage-top{position:absolute;top:var(--safe-top);left:10px;right:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
     .stage-chip{padding:7px 10px;border:1px solid rgba(255,255,255,.26);border-radius:999px;background:rgba(12,12,12,.42);color:#fff;font-size:11px;font-weight:700;backdrop-filter:blur(7px)}
     .stage-close{width:42px;height:42px;border:1px solid rgba(255,255,255,.26);border-radius:13px;background:rgba(12,12,12,.42);color:#fff;display:grid;place-items:center;backdrop-filter:blur(7px)}
@@ -207,7 +207,7 @@
   </div>
 </main>
 
-<div class="stage" id="stage" aria-hidden="true">
+<div class="stage" id="stage" role="dialog" aria-modal="true" aria-label="全画面で表示" aria-hidden="true" tabindex="-1">
   <div class="stage-surface" id="stageSurface">
     <div class="stage-text" id="stageText">ここです</div>
     <div class="stage-qr" id="stageQr"></div>
@@ -231,7 +231,7 @@
   <div class="dialog-body">
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
-    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。</p>
+    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
     <h3 data-i18n="helpQrTitle">QR表示</h3>
     <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
@@ -252,7 +252,7 @@
 
 <dialog id="resetDialog">
   <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button class="icon-button" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
-  <div class="dialog-body"><p data-i18n="resetBody">入力した文字、背景色、点滅設定を初期状態に戻します。</p></div>
+  <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。</p></div>
   <div class="dialog-actions"><button class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button class="button" id="resetConfirmButton" type="button" style="color:var(--danger)" data-i18n="reset">リセット</button></div>
 </dialog>
 
@@ -278,13 +278,13 @@ __QR_CODE_JS__
       tipBrightnessTitle:"明るさは端末側で調整",tipBrightness:"ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。",
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
       stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
-      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。",
+      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
       helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
       helpLimitsTitle:"制限事項",helpLimits:"ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。",
       flashDialogTitle:"点滅を使用しますか？",flashDialogBody:"点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。",cancel:"キャンセル",enableFlash:"点滅を使う",
-      resetTitle:"設定をリセットしますか？",resetBody:"入力した文字、背景色、点滅設定を初期状態に戻します。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
+      resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
       statusWakeOn:"画面維持を有効にしました",statusWakeOff:"画面維持を解除しました",statusWakeUnavailable:"このブラウザーでは画面維持を利用できません",statusFullscreenUnavailable:"このブラウザーでは全画面表示を利用できません",
       emptyFallback:"ここです"
     },
@@ -297,13 +297,13 @@ __QR_CODE_JS__
       tipBrightnessTitle:"Adjust brightness on the device",tipBrightness:"A browser cannot change screen brightness. Increase device brightness for outdoor use.",
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
       stageHint:"Tap the screen to show or hide controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
-      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls.",
+      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
       helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
       helpLimitsTitle:"Limitations",helpLimits:"Browsers cannot change device screen brightness. Fullscreen and Wake Lock availability depends on the browser and how the file is opened.",
       flashDialogTitle:"Enable flashing?",flashDialogBody:"Flashing screens can cause discomfort or health effects for some people. Use this feature with consideration for people nearby.",cancel:"Cancel",enableFlash:"Enable flashing",
-      resetTitle:"Reset settings?",resetBody:"This restores the message, background color, and flash pattern to their defaults.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
+      resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content and the flashing acknowledgement. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
       statusWakeOn:"Keep-awake enabled",statusWakeOff:"Keep-awake released",statusWakeUnavailable:"Keep-awake is not supported in this browser",statusFullscreenUnavailable:"Full screen is not supported in this browser",
       emptyFallback:"HERE"
     }
@@ -323,6 +323,7 @@ __QR_CODE_JS__
   let state = loadState();
   let lang = resolveLanguage(state.language);
   let flashTimer = 0, flashTimeout = 0, wakeLock = null, stageUiTimer = 0, pendingFlash = null;
+  let stageReturnFocus = null, stageBackground = [], stageOverflow = "", stageSession = 0;
 
   function loadState(){
     try{
@@ -338,7 +339,9 @@ __QR_CODE_JS__
     document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(translations[lang][key])el.textContent=translations[lang][key];});
     els.languageButton.textContent=lang==="ja"?"EN":"JA";
     els.helpButton.setAttribute("aria-label",t("helpTitle"));
-    document.querySelectorAll("[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
+    document.querySelectorAll(".icon-button[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
+    els.stageCloseButton.setAttribute("aria-label",lang==="ja"?"閉じる":"Close");
+    els.stage.setAttribute("aria-label",t("showFullscreen"));
     updateModeChip();
   }
   function luminance(hex){
@@ -378,26 +381,36 @@ __QR_CODE_JS__
     els.previewMessage.hidden=false;els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=true;els.previewMessage.textContent=msg;els.preview.style.background=state.color;els.preview.style.color=fg;
     els.stageText.textContent=msg;els.stageSurface.style.setProperty("--stage-bg",state.color);els.stageSurface.style.setProperty("--stage-fg",fg);
     els.charCount.textContent=`${els.messageInput.value.length} / 60`;
-    fitText(els.previewMessage,els.preview,34,94);
-    if(els.stage.classList.contains("active"))requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,42,Math.min(innerWidth,innerHeight)*.33));
+    fitText(els.previewMessage,els.preview,94);
+    if(els.stage.classList.contains("active"))requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,Math.min(innerWidth,innerHeight)*.34));
   }
-  function fitText(textEl,container,min,max){
-    textEl.style.fontSize=max+"px";
-    const maxW=container.clientWidth*.91,maxH=container.clientHeight*.78;
-    let size=max;
-    while(size>min&&(textEl.scrollWidth>maxW||textEl.scrollHeight>maxH)){size-=2;textEl.style.fontSize=size+"px";}
+  function fitText(textEl,container,max){
+    const style=getComputedStyle(container);
+    const horizontal=(parseFloat(style.paddingLeft)||0)+(parseFloat(style.paddingRight)||0);
+    const vertical=(parseFloat(style.paddingTop)||0)+(parseFloat(style.paddingBottom)||0);
+    const maxW=Math.floor(Math.min(container.clientWidth*.91,container.clientWidth-horizontal));
+    const maxH=Math.floor(Math.min(container.clientHeight*.78,container.clientHeight-vertical));
+    if(maxW<=0||maxH<=0)return;
+    textEl.style.width=maxW+"px";
+    // Measure wrapped content in one fixed box, never against a narrower box.
+    let low=1,high=Math.max(1,Math.floor(max)),best=1;
+    while(low<=high){
+      const size=Math.floor((low+high)/2);textEl.style.fontSize=size+"px";
+      if(textEl.scrollWidth<=maxW&&textEl.scrollHeight<=maxH){best=size;low=size+1;}else{high=size-1;}
+    }
+    textEl.style.fontSize=best+"px";
   }
   function setColor(color){
     state.color=color;saveState();
     document.querySelectorAll(".color-button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===color)));
     updatePreview();
   }
-  function setFlash(mode,{skipConfirm=false}={}){
+  function setFlash(mode,{skipConfirm=false,invoker=null}={}){
     if(mode!=="steady"&&reduceMotion.matches){
       state.flash="steady";saveState();renderFlashButtons();showStatus(t("statusReduced"),"warn");stopFlash();return;
     }
     if(mode!=="steady"&&!state.flashAcknowledged&&!skipConfirm){
-      pendingFlash=mode;els.flashConfirmDialog.showModal();return;
+      pendingFlash=mode;invoker?.focus({preventScroll:true});els.flashConfirmDialog.showModal();return;
     }
     state.flash=mode;saveState();renderFlashButtons();stopFlash();if(els.stage.classList.contains("active"))startFlash();updateModeChip();
   }
@@ -425,28 +438,48 @@ __QR_CODE_JS__
   function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
   async function requestWake(){
     if(!("wakeLock" in navigator)){showStatus(t("statusWakeUnavailable"),"warn");return false;}
+    const session=stageSession;
     try{
-      wakeLock=await navigator.wakeLock.request("screen");
-      wakeLock.addEventListener("release",()=>{wakeLock=null;});
+      const lock=await navigator.wakeLock.request("screen");
+      if(session!==stageSession||!els.stage.classList.contains("active")){await lock.release();return false;}
+      if(wakeLock&&wakeLock!==lock){await lock.release();return true;}
+      wakeLock=lock;
+      lock.addEventListener("release",()=>{if(wakeLock===lock)wakeLock=null;});
       showStatus(t("statusWakeOn"));return true;
     }catch{showStatus(t("statusWakeUnavailable"),"warn");return false;}
   }
-  async function releaseWake(){if(wakeLock){try{await wakeLock.release();}catch{}wakeLock=null;}showStatus(t("statusWakeOff"));}
-  async function requestFullscreen(){if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}try{await document.documentElement.requestFullscreen({navigationUI:"hide"});return true;}catch{showStatus(t("statusFullscreenUnavailable"),"warn");return false;}}
+  async function releaseWake(){const lock=wakeLock;wakeLock=null;if(lock){try{await lock.release();}catch{}}showStatus(t("statusWakeOff"));}
+  async function requestFullscreen(){if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}try{await document.documentElement.requestFullscreen({navigationUI:"hide"});if(!els.stage.classList.contains("active")){await leaveFullscreen();return false;}return true;}catch{showStatus(t("statusFullscreenUnavailable"),"warn");return false;}}
   async function leaveFullscreen(){if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen();}catch{}}}
   async function openStage(){
-    updatePreview();if(els.showButton.disabled)return;els.stage.classList.add("active");els.stage.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+    if(els.stage.classList.contains("active"))return;
+    updatePreview();if(els.showButton.disabled)return;
+    const session=++stageSession;
+    stageReturnFocus=els.showButton;stageOverflow=document.body.style.overflow;
+    stageBackground=[...document.querySelectorAll("header,main")].map(el=>({el,inert:el.inert}));
+    stageBackground.forEach(({el})=>{el.inert=true;});
+    els.stage.classList.add("active");els.stage.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+    els.stageUi.classList.remove("hidden");els.stage.focus({preventScroll:true});
     els.stage.classList.toggle("qr-mode",state.mode==="qr");
-    if(state.mode!=="qr"){requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,42,Math.min(innerWidth,innerHeight)*.34));startFlash();}else{stopFlash();}
-    updateModeChip();const fullscreenRequest=requestFullscreen();const wakeRequest=requestWake();await Promise.allSettled([fullscreenRequest,wakeRequest]);scheduleStageUiHide();
+    if(state.mode!=="qr"){requestAnimationFrame(()=>fitText(els.stageText,els.stageSurface,Math.min(innerWidth,innerHeight)*.34));startFlash();}else{stopFlash();}
+    updateModeChip();const fullscreenRequest=requestFullscreen();const wakeRequest=requestWake();await Promise.allSettled([fullscreenRequest,wakeRequest]);
+    if(session===stageSession&&els.stage.classList.contains("active"))scheduleStageUiHide();
   }
   async function closeStage(){
-    stopFlash();els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow="";clearTimeout(stageUiTimer);await releaseWake();await leaveFullscreen();
+    if(!els.stage.classList.contains("active"))return;
+    const session=++stageSession;stopFlash();els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
+    stageBackground.forEach(({el,inert})=>{el.inert=inert;});stageBackground=[];
+    const target=stageReturnFocus?.isConnected&&!stageReturnFocus.disabled?stageReturnFocus:els.showButton;
+    stageReturnFocus=null;target.focus({preventScroll:true});
+    await releaseWake();if(session===stageSession)await leaveFullscreen();
   }
-  function scheduleStageUiHide(){clearTimeout(stageUiTimer);els.stageUi.classList.remove("hidden");stageUiTimer=setTimeout(()=>els.stageUi.classList.add("hidden"),2600);}
-  function cycleFlash(){if(state.mode==="qr")return;const modes=["steady","slow","beacon","sos"];setFlash(modes[(modes.indexOf(state.flash)+1)%modes.length]);scheduleStageUiHide();}
+  function scheduleStageUiHide(){
+    clearTimeout(stageUiTimer);if(!els.stage.classList.contains("active"))return;els.stageUi.classList.remove("hidden");
+    stageUiTimer=setTimeout(()=>{if(!els.stageUi.contains(document.activeElement)&&!document.querySelector("dialog[open]"))els.stageUi.classList.add("hidden");},2600);
+  }
+  function cycleFlash(){if(state.mode==="qr")return;const modes=["steady","slow","beacon","sos"];setFlash(modes[(modes.indexOf(state.flash)+1)%modes.length],{invoker:els.stageFlashButton});scheduleStageUiHide();}
   function resetAll(){
-    state={...DEFAULTS,language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();els.resetDialog.close();
+    state={...DEFAULTS,message:t("emptyFallback"),language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();els.resetDialog.close();
   }
 
   if(reduceMotion.matches&&state.flash!=="steady"){state.flash="steady";saveState();}
@@ -460,22 +493,34 @@ __QR_CODE_JS__
   els.qrModeButton.addEventListener("click",()=>{state.mode="qr";saveState();renderMode();});
   document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{const value=lang==="en"&&b.dataset.valueEn?b.dataset.valueEn:b.dataset.value;els.messageInput.value=value;state.message=value;saveState();updatePreview();}));
   document.querySelectorAll(".color-button").forEach(b=>b.addEventListener("click",()=>setColor(b.dataset.color)));
-  document.querySelectorAll(".segment").forEach(b=>b.addEventListener("click",()=>setFlash(b.dataset.flash)));
+  document.querySelectorAll(".segment").forEach(b=>b.addEventListener("click",()=>setFlash(b.dataset.flash,{invoker:b})));
   els.flashCancelButton.addEventListener("click",()=>{pendingFlash=null;els.flashConfirmDialog.close();});
+  els.flashConfirmDialog.addEventListener("close",()=>{pendingFlash=null;if(els.stage.classList.contains("active"))scheduleStageUiHide();});
   els.flashAllowButton.addEventListener("click",()=>{state.flashAcknowledged=true;saveState();const mode=pendingFlash||"slow";pendingFlash=null;els.flashConfirmDialog.close();setFlash(mode,{skipConfirm:true});});
   els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>els.resetDialog.showModal());els.resetConfirmButton.addEventListener("click",resetAll);
   els.helpButton.addEventListener("click",()=>els.helpDialog.showModal());
   els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
   document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
   document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}));
-  els.stage.addEventListener("click",e=>{if(e.target.closest("button"))return;els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
+  els.stage.addEventListener("click",e=>{if(e.target.closest("button"))return;els.stage.focus({preventScroll:true});els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
+  els.stageUi.addEventListener("focusin",scheduleStageUiHide);
   els.stageFlashButton.addEventListener("click",cycleFlash);
   els.stageFullscreenButton.addEventListener("click",async()=>{if(document.fullscreenElement)await leaveFullscreen();else await requestFullscreen();scheduleStageUiHide();});
   els.stageWakeButton.addEventListener("click",async()=>{if(wakeLock)await releaseWake();else await requestWake();scheduleStageUiHide();});
   addEventListener("resize",()=>updatePreview());
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&els.stage.classList.contains("active")&&!wakeLock)requestWake();});
   reduceMotion.addEventListener?.("change",()=>{if(reduceMotion.matches&&state.flash!=="steady")setFlash("steady",{skipConfirm:true});});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&els.stage.classList.contains("active"))closeStage();});
+  document.addEventListener("keydown",e=>{
+    if(!els.stage.classList.contains("active")||document.querySelector("dialog[open]"))return;
+    if(e.key==="Escape"){e.preventDefault();closeStage();return;}
+    if(e.key!=="Tab")return;
+    const buttons=[...els.stageUi.querySelectorAll("button")].filter(b=>!b.hidden&&!b.disabled);
+    const first=buttons[0],last=buttons[buttons.length-1];
+    if(!els.stageUi.contains(document.activeElement)){e.preventDefault();(e.shiftKey?last:first)?.focus();}
+    else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
+    scheduleStageUiHide();
+  });
 })();
 </script>
 </body>
