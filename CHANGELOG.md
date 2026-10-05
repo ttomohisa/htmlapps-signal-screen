@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Added a session-only Pin controls toggle with Japanese/English labels and accessible pressed state.
+- Kept manual Keep awake Off across tab returns and prevented obsolete wake-lock requests from reviving an earlier intent.
 - Fixed preview and stage text fitting for short, long, and multiline messages.
 - Isolated display focus, restored invokers, and kept Escape scoped to the topmost dialog.
 - Prevented late display-session completions from retaining wake locks or exiting a newer fullscreen session.

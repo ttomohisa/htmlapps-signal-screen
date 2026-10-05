@@ -41,6 +41,9 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 
 ## Display controls and reset
 
+- Pin controls keeps display controls visible, including after background taps. Unpin resumes auto-hide while respecting keyboard focus and open dialogs. Pinning resets when the display closes.
+- Keep awake is requested when each display session opens. Turning it off stays off when you return to the tab; turn it back on explicitly to retry. A browser-released lock can be reacquired on return while keep-awake is still requested.
+
 - Tab and Shift+Tab stay within display controls; focused controls remain visible. Closing the display returns focus to Show full screen.
 - Escape dismisses an open confirmation first; a subsequent Escape closes the display.
 - Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
