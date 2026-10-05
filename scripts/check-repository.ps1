@@ -18,4 +18,11 @@ foreach ($byte in $builderBytes) { if ($byte -gt 0x7f) { throw "scripts\build-se
 $html = Get-Content -Raw -Encoding UTF8 (Join-Path $Root "dist\index.html")
 $requiredContent = @("Signal Screen","connect-src 'none'","stage-surface","flashConfirmDialog","prefers-reduced-motion","localStorage","SignalQRCode","qrModeButton","stageQr")
 foreach ($item in $requiredContent) { if (-not $html.Contains($item)) { throw "Required content missing: $item" } }
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "Node.js 22 or later is required for regression tests." }
+foreach ($variant in @("src/index.template.html", "dist/index.html", "dist/index.self-extract.html", "signal-screen.html")) {
+  & node (Join-Path $Root "scripts/signal-screen-behavior.test.cjs") (Join-Path $Root $variant)
+  if ($LASTEXITCODE -ne 0) { throw "Signal Screen regression tests failed: $variant" }
+}
+& node (Join-Path $Root "scripts/signal-screen-release.test.cjs")
+if ($LASTEXITCODE -ne 0) { throw "Signal Screen release parity tests failed." }
 Write-Host "[OK] Repository check passed." -ForegroundColor Green
