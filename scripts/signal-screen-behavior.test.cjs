@@ -196,4 +196,28 @@ for (const language of ['ja', 'en']) {
   });
 }
 
+// Changing a target label, translated Help title or privacy text breaks this UI contract.
+for (const initial of ['en', 'ja']) test(`${initial}: header remains localized through repeated language changes and reload`, () => {
+  const app = setup(initial); app.input(app.el('messageInput'), '集合 Gate A →');
+  for (let i = 0; i < 4; i++) {
+    const ja = app.document.documentElement.lang === 'ja';
+    const target = ja ? '英語に切り替え' : 'Switch to Japanese';
+    const help = ja ? '使い方と注意事項' : 'How to use & notes';
+    assert.equal(app.el('languageButton').textContent, ja ? 'EN' : 'JA');
+    assert.equal(app.el('languageButton').getAttribute('aria-label'), target);
+    assert.equal(app.el('languageButton').getAttribute('title'), target);
+    assert.equal(app.el('helpButton').getAttribute('aria-label'), help);
+    assert.equal(app.el('helpButton').getAttribute('title'), help);
+    assert.equal(app.document.querySelector('[data-i18n="localOnly"]').textContent, ja ? '完全ローカル処理' : 'Processed on device');
+    assert.equal(app.el('versionBadge').textContent, 'v1.0.1');
+    app.el('helpButton').click(); assert.equal(app.el('helpDialog').open, true);
+    app.el('helpDialog').querySelector('[data-close-dialog]').click(); assert.equal(app.el('helpDialog').open, false);
+    app.el('languageButton').click();
+    assert.equal(app.el('messageInput').value, '集合 Gate A →');
+    const reloaded = setup(initial, {storage: [...app.storage]});
+    assert.equal(reloaded.document.documentElement.lang, app.document.documentElement.lang);
+    assert.equal(reloaded.el('languageButton').getAttribute('aria-label'), app.el('languageButton').getAttribute('aria-label'));
+  }
+});
+
 (async () => { let failed = 0; for (const {name,body} of tests) { try { await body(); console.log('ok - '+name); } catch (error) { failed++; console.error('not ok - '+name+'\n'+error.stack); } } console.log(`${tests.length-failed}/${tests.length} passed`); process.exitCode = failed ? 1 : 0; })();

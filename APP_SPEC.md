@@ -2,7 +2,7 @@
 
 ## 1. Product identity
 - **Name:** Signal Screen
-- **Version:** 1.0.0
+- **Version:** 1.0.1
 - **Purpose:** Turn a phone or computer screen into a large, high-contrast visual signal.
 - **Primary users:** People who need a temporary sign for meetups, directions, events, travel, or emergencies.
 - **Release artifacts:** `dist/index.html`, `dist/index.self-extract.html`
@@ -32,7 +32,7 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Fullscreen API is progressive enhancement.
 - Screen Wake Lock is progressive enhancement. Manual Off persists for the current display session, including tab visibility changes; obsolete acquisitions are released.
 - Settings persist in LocalStorage.
-- Japanese/English switch without reload.
+- Japanese/English switch without reload; the header shows EN in Japanese and JA in English, with localized target-language and Help accessible names/titles.
 - Core functionality works from `file://`.
 
 ## 5. Safety
