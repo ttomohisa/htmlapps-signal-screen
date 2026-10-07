@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.1 - 2026-10-07
+
+- Standardized header language targets as EN / JA with localized accessible names and tooltips.
+- Localized Help tooltips and standardized the Japanese fully-local processing badge.
 - Added a session-only Pin controls toggle with Japanese/English labels and accessible pressed state.
 - Kept manual Keep awake Off across tab returns and prevented obsolete wake-lock requests from reviving an earlier intent.
 - Fixed preview and stage text fitting for short, long, and multiline messages.

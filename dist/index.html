@@ -110,11 +110,11 @@
   <div class="header-inner">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="7" width="15.5" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M7 12h7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="m11.9 9.4 2.8 2.6-2.8 2.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m17.2 5.2 1-1.3M19.4 6.6l1.7-.5M19.7 8.6l1.6.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.0</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
+      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.1</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
     </div>
     <div class="header-actions">
-      <button class="plain-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
-      <button class="icon-button" id="helpButton" type="button" aria-label="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.7 9a2.45 2.45 0 1 1 3.66 2.13c-.88.52-1.36.94-1.36 1.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="currentColor"/></svg></button>
+      <button class="plain-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
+      <button class="icon-button" id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.7 9a2.45 2.45 0 1 1 3.66 2.13c-.88.52-1.36.94-1.36 1.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="currentColor"/></svg></button>
     </div>
   </div>
 </header>
@@ -122,7 +122,7 @@
 <main>
   <section class="intro">
     <div><h1 data-i18n="headline">画面いっぱいに伝える</h1><p data-i18n="intro">待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。</p></div>
-    <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.8-2.9 8.2-7 10-4.1-1.8-7-5.2-7-10V6z" stroke="currentColor" stroke-width="1.8"/><path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="localOnly">端末内だけで動作</span></div>
+    <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.8-2.9 8.2-7 10-4.1-1.8-7-5.2-7-10V6z" stroke="currentColor" stroke-width="1.8"/><path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="localOnly">完全ローカル処理</span></div>
   </section>
 
   <div class="layout">
@@ -1527,8 +1527,8 @@ module.exports = QRCode;
 })(window);
 
 </script>
-<script id="app-config" type="application/json">{"$schema":"./schemas/app-config.schema.json","name":"Signal Screen","nameJa":"Signal Screen","slug":"signal-screen","version":"1.0.0","description":"Turn a phone screen into a large visual signal with messages, arrows, colors, QR codes, and SOS patterns.","descriptionJa":"スマホ画面を、巨大メッセージ・矢印・色・QRコード・SOS点滅に使える視認性の高いシグナル画面へ変える単一HTMLアプリです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-signal-screen"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}}</script>
-<script id="build-manifest" type="application/json">{"schemaVersion":1,"builder":"single-html-app-template/1.0","generatedAtUtc":"2026-10-05T22:57:53.1905083Z","app":{"name":"Signal Screen","slug":"signal-screen","version":"1.0.0"},"dependencies":[]}</script>
+<script id="app-config" type="application/json">{"$schema":"./schemas/app-config.schema.json","name":"Signal Screen","nameJa":"Signal Screen","slug":"signal-screen","version":"1.0.1","description":"Turn a phone screen into a large visual signal with messages, arrows, colors, QR codes, and SOS patterns.","descriptionJa":"スマホ画面を、巨大メッセージ・矢印・色・QRコード・SOS点滅に使える視認性の高いシグナル画面へ変える単一HTMLアプリです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-signal-screen"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}}</script>
+<script id="build-manifest" type="application/json">{"schemaVersion":1,"builder":"single-html-app-template/1.0","generatedAtUtc":"2026-10-07T06:49:39.0658878Z","app":{"name":"Signal Screen","slug":"signal-screen","version":"1.0.1"},"dependencies":[]}</script>
 <script id="embedded-assets" type="application/octet-stream">eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==</script>
 <script>
 (() => {
@@ -1538,7 +1538,7 @@ module.exports = QRCode;
   const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
   const translations = {
     ja:{
-      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"端末内だけで動作",
+      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",
       previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
       colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
       flashWarning:"点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。",reset:"リセット",showFullscreen:"全画面で表示",
@@ -1557,7 +1557,7 @@ module.exports = QRCode;
       emptyFallback:"ここです"
     },
     en:{
-      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Stored only on this device",
+      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Processed on device",
       previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
       colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
       flashWarning:"Do not use flashing light near people who are sensitive to it. Flash rates are intentionally kept low.",reset:"Reset",showFullscreen:"Show full screen",
@@ -1607,7 +1607,11 @@ module.exports = QRCode;
     document.documentElement.lang=lang;
     document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(translations[lang][key])el.textContent=translations[lang][key];});
     els.languageButton.textContent=lang==="ja"?"EN":"JA";
+    const languageTarget=lang==="ja"?"英語に切り替え":"Switch to Japanese";
+    els.languageButton.setAttribute("aria-label",languageTarget);
+    els.languageButton.setAttribute("title",languageTarget);
     els.helpButton.setAttribute("aria-label",t("helpTitle"));
+    els.helpButton.setAttribute("title",t("helpTitle"));
     document.querySelectorAll(".icon-button[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
     els.stageCloseButton.setAttribute("aria-label",lang==="ja"?"閉じる":"Close");
     els.stage.setAttribute("aria-label",t("showFullscreen"));
