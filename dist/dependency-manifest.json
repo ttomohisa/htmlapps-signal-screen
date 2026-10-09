@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "builder": "single-html-app-template/1.0",
-  "generatedAtUtc": "2026-10-09T06:04:01.8304751Z",
+  "generatedAtUtc": "2026-10-09T08:44:31.4003296Z",
   "app": {
     "name": "Signal Screen",
     "slug": "signal-screen",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "dependencies": []
 }

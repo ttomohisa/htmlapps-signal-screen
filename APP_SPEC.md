@@ -2,7 +2,7 @@
 
 ## 1. Product identity
 - **Name:** Signal Screen
-- **Version:** 1.0.2
+- **Version:** 1.0.3
 - **Purpose:** Turn a phone or computer screen into a large, high-contrast visual signal.
 - **Primary users:** People who need a temporary sign for meetups, directions, events, travel, or emergencies.
 - **Release artifacts:** `dist/index.html`, `dist/index.self-extract.html`
