@@ -209,7 +209,7 @@ for (const initial of ['en', 'ja']) test(`${initial}: header remains localized t
     assert.equal(app.el('helpButton').getAttribute('aria-label'), help);
     assert.equal(app.el('helpButton').getAttribute('title'), help);
     assert.equal(app.document.querySelector('[data-i18n="localOnly"]').textContent, ja ? '完全ローカル処理' : 'Processed on device');
-    assert.equal(app.el('versionBadge').textContent, 'v1.0.1');
+    assert.equal(app.el('versionBadge').textContent, 'v' + require('../app.config.json').version);
     app.el('helpButton').click(); assert.equal(app.el('helpDialog').open, true);
     app.el('helpDialog').querySelector('[data-close-dialog]').click(); assert.equal(app.el('helpDialog').open, false);
     app.el('languageButton').click();

@@ -16,7 +16,7 @@ A privacy-focused single-HTML app that turns a phone or computer display into a 
 
 GitHub Pages delivers the initial HTML. After it loads, text display, QR generation, and settings persistence are processed locally on the device. The app does not upload your message or QR content.
 
-[![Signal Screen screenshot](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
+[![Signal Screen screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
 
 [Smartphone screenshot](assets/screenshot-mobile.png)
 
