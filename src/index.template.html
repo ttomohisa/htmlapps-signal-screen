@@ -72,9 +72,13 @@
     .tip-list{display:grid;gap:10px}.tip{display:flex;gap:11px;padding:11px;border-radius:12px;background:var(--surface-muted)}.tip-icon{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--accent);flex:0 0 auto}.tip-icon svg{width:17px;height:17px}.tip strong{display:block;font-size:12px}.tip p{margin:2px 0 0;color:var(--muted);font-size:11px}
     .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}
     .status-line[data-tone="warn"]{color:var(--warning)}
+    html:has(dialog:modal),body:has(dialog:modal){overflow:hidden;overscroll-behavior:none}
     dialog{width:min(620px,calc(100% - 26px));max-height:calc(100dvh - 28px);padding:0;border:1px solid var(--line);border-radius:17px;background:#fff;color:var(--text);box-shadow:var(--shadow);overflow:hidden}
     dialog::backdrop{background:rgba(13,17,14,.52);backdrop-filter:blur(3px)}
-    .dialog-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:16px}.dialog-body{padding:18px;overflow:auto;max-height:calc(100dvh - 94px)}.dialog-body h3{font-size:13px;margin:20px 0 6px}.dialog-body h3:first-child{margin-top:0}.dialog-body p,.dialog-body li{color:var(--muted);font-size:12px;line-height:1.7}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 17px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+    .dialog-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:16px}.dialog-body{padding:18px;overflow:auto;overscroll-behavior:contain;max-height:calc(100dvh - 94px)}.dialog-body h3{font-size:13px;margin:20px 0 6px}.dialog-body h3:first-child{margin-top:0}.dialog-body p,.dialog-body li{color:var(--muted);font-size:12px;line-height:1.7}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 17px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+    .confirmation-dialog[open]{display:flex;flex-direction:column}
+    .confirmation-dialog .dialog-head,.confirmation-dialog .dialog-actions{flex:0 0 auto}
+    .confirmation-dialog .dialog-body{flex:1 1 auto;min-height:0;max-height:none;overflow:auto}
     /* APP:BEGIN */
     .stage{position:fixed;inset:0;z-index:100;display:none;overflow:hidden;background:#111;color:#fff;touch-action:manipulation;user-select:none}
     .stage.active{display:block}.stage-surface{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(18px,4vw,50px);background:var(--stage-bg,#111);color:var(--stage-fg,#fff);transition:opacity .08s linear}
@@ -116,7 +120,7 @@
   <path d="m34 25.5 6.8 6.5-6.8 6.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="m45.5 14 2.6-3.4M51 17.6l4.3-1.4M51.7 22.3l4.2 1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
 </svg></div>
-      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.3</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
+      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.4</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
     </div>
     <div class="header-actions">
       <button class="plain-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
@@ -240,6 +244,8 @@
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
     <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
+    <h3 data-i18n="helpDialogsTitle">ダイアログの操作</h3>
+    <p data-i18n="helpDialogs">ヘルプや確認ダイアログを開いている間は背景をスクロールできません。長い説明はダイアログ内をスクロールして読めます。高さの低い画面でも確認の見出し・閉じるボタン・操作ボタンを表示します。閉じると開いた操作へフォーカスが戻ります。画面幅の変更でリセットボタンが隠れた場合は、「全画面で表示」へ移動しますが、表示は開始しません。</p>
     <h3 data-i18n="helpQrTitle">QR表示</h3>
     <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
@@ -252,13 +258,13 @@
   </div>
 </dialog>
 
-<dialog id="flashConfirmDialog">
+<dialog id="flashConfirmDialog" class="confirmation-dialog">
   <div class="dialog-head"><h2 data-i18n="flashDialogTitle">点滅を使用しますか？</h2><button class="icon-button" type="button" data-close-dialog="flashConfirmDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <div class="dialog-body"><p data-i18n="flashDialogBody">点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。</p></div>
   <div class="dialog-actions"><button class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
 </dialog>
 
-<dialog id="resetDialog">
+<dialog id="resetDialog" class="confirmation-dialog">
   <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button class="icon-button" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。</p></div>
   <div class="dialog-actions"><button class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button class="button" id="resetConfirmButton" type="button" style="color:var(--danger)" data-i18n="reset">リセット</button></div>
@@ -287,6 +293,7 @@ __QR_CODE_JS__
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
       stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stagePinnedHint:"操作ボタンを固定中。解除すると自動で隠れます",pinControls:"操作を固定",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
       helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
+      helpDialogsTitle:"ダイアログの操作",helpDialogs:"ヘルプや確認ダイアログを開いている間は背景をスクロールできません。長い説明はダイアログ内をスクロールして読めます。高さの低い画面でも確認の見出し・閉じるボタン・操作ボタンを表示します。閉じると開いた操作へフォーカスが戻ります。画面幅の変更でリセットボタンが隠れた場合は、「全画面で表示」へ移動しますが、表示は開始しません。",
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
       helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
@@ -306,6 +313,7 @@ __QR_CODE_JS__
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
       stageHint:"Tap the screen to show or hide controls",stagePinnedHint:"Controls are pinned. Unpin to resume auto-hide",pinControls:"Pin controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
       helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
+      helpDialogsTitle:"Dialogs",helpDialogs:"While Help or a confirmation is open, the background stays still. Scroll inside the dialog to read longer text; confirmation headings, Close, and action buttons remain available in a short window. Closing returns focus to the control that opened it. If resizing hides Reset, focus moves to Show full screen without starting the display.",
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
       helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
@@ -327,6 +335,7 @@ __QR_CODE_JS__
     stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stagePinButton:$("stagePinButton"),stageHint:$("stageHint"),
     flashConfirmDialog:$("flashConfirmDialog"),flashCancelButton:$("flashCancelButton"),flashAllowButton:$("flashAllowButton")
   };
+  const dialogOpeners = new WeakMap();
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
   let state = loadState();
   let lang = resolveLanguage(state.language);
@@ -418,12 +427,35 @@ __QR_CODE_JS__
     document.querySelectorAll(".color-button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===color)));
     updatePreview();
   }
+  function canFocusDialogTarget(target){
+    return target instanceof HTMLElement&&target!==document.body&&target!==document.documentElement&&target.isConnected&&!target.disabled&&!target.closest("[hidden],[inert]")&&target.getClientRects().length>0&&!["hidden","collapse"].includes(getComputedStyle(target).visibility);
+  }
+  function openDialog(dialog,opener){
+    if(dialog.open)return;
+    dialogOpeners.set(dialog,opener);
+    if(canFocusDialogTarget(opener))opener.focus({preventScroll:true});
+    dialog.showModal();
+  }
+  function restoreDialogFocus(dialog){
+    // Native close events are queued: do not disturb a reopened/newer modal or focus.
+    if(dialog.open)return;
+    const opener=dialogOpeners.get(dialog);dialogOpeners.delete(dialog);
+    if(document.querySelector("dialog[open]"))return;
+    const current=document.activeElement;
+    if(canFocusDialogTarget(current)&&!dialog.contains(current))return;
+    const stageTargets=els.stage.classList.contains("active")?[els.stageFlashButton,els.stageCloseButton]:[];
+    for(const target of [opener,...stageTargets,els.showButton,els.helpButton,els.languageButton]){
+      if(!canFocusDialogTarget(target))continue;
+      target.focus({preventScroll:true});
+      if(document.activeElement===target)return;
+    }
+  }
   function setFlash(mode,{skipConfirm=false,invoker=null}={}){
     if(mode!=="steady"&&reduceMotion.matches){
       state.flash="steady";saveState();renderFlashButtons();showStatus(t("statusReduced"),"warn");stopFlash();return;
     }
     if(mode!=="steady"&&!state.flashAcknowledged&&!skipConfirm){
-      pendingFlash=mode;invoker?.focus({preventScroll:true});els.flashConfirmDialog.showModal();return;
+      pendingFlash=mode;openDialog(els.flashConfirmDialog,invoker||document.activeElement);return;
     }
     state.flash=mode;saveState();renderFlashButtons();stopFlash();if(els.stage.classList.contains("active"))startFlash();updateModeChip();
   }
@@ -529,11 +561,14 @@ __QR_CODE_JS__
   els.flashCancelButton.addEventListener("click",()=>{pendingFlash=null;els.flashConfirmDialog.close();});
   els.flashConfirmDialog.addEventListener("close",()=>{pendingFlash=null;if(els.stage.classList.contains("active"))scheduleStageUiHide();});
   els.flashAllowButton.addEventListener("click",()=>{state.flashAcknowledged=true;saveState();const mode=pendingFlash||"slow";pendingFlash=null;els.flashConfirmDialog.close();setFlash(mode,{skipConfirm:true});});
-  els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>els.resetDialog.showModal());els.resetConfirmButton.addEventListener("click",resetAll);
-  els.helpButton.addEventListener("click",()=>els.helpDialog.showModal());
+  els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>openDialog(els.resetDialog,els.resetButton));els.resetConfirmButton.addEventListener("click",resetAll);
+  els.helpButton.addEventListener("click",()=>openDialog(els.helpDialog,els.helpButton));
   els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
   document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
-  document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}));
+  document.querySelectorAll("dialog").forEach(d=>{
+    d.addEventListener("close",()=>restoreDialogFocus(d));
+    d.addEventListener("click",e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();});
+  });
   els.stage.addEventListener("click",e=>{if(e.target.closest("button")||controlsPinned)return;els.stage.focus({preventScroll:true});els.stageUi.classList.toggle("hidden");if(!els.stageUi.classList.contains("hidden"))scheduleStageUiHide();});
   els.stageUi.addEventListener("focusin",scheduleStageUiHide);
   els.stageFlashButton.addEventListener("click",cycleFlash);

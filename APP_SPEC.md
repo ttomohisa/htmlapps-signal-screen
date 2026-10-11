@@ -2,7 +2,7 @@
 
 ## 1. Product identity
 - **Name:** Signal Screen
-- **Version:** 1.0.3
+- **Version:** 1.0.4
 - **Purpose:** Turn a phone or computer screen into a large, high-contrast visual signal.
 - **Primary users:** People who need a temporary sign for meetups, directions, events, travel, or emergencies.
 - **Release artifacts:** `dist/index.html`, `dist/index.self-extract.html`
@@ -60,6 +60,9 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Visible focus and keyboard access; display controls isolate keyboard focus from the editor and return focus to Show on exit.
 - Escape dismisses only the topmost confirmation before closing the display.
 - Reset discloses QR deletion, keeps the language, and restores a localized default message.
+- Native modal dialogs lock both page scroll roots; only their bodies scroll. Reset and flashing confirmations reserve nonshrinking header/footer space in short windows.
+- Dialog dismissal restores the current visible opener without scrolling or activating it. If resizing hides Reset, fall back to a visible enabled Show control, then an available header control; delayed close events never steal newer valid focus or a newer modal.
+- The local-processing badge keeps its shield/check artwork; the app logo is unchanged.
 - No dark-mode switch.
 - Full-stage controls auto-hide after a short delay, unless focused or protected by an open dialog.
 - Session-only Pin controls defaults off, exposes aria-pressed, and prevents both auto-hide and background-tap hiding until unpinned or closed.
@@ -75,3 +78,5 @@ Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display wor
 - `connect-src 'none'` exists.
 - 320px layout has no horizontal overflow.
 - Flashes never activate when reduced-motion is active.
+- At 393×252, Help outside-wheel input does not move the page; Reset and flashing confirmation Close/Cancel/action buttons remain reachable, with internal text scrolling.
+- Desktop-to-mobile and mobile-to-desktop modal resizing preserves safe visible focus on dismissal in both languages; native Escape, Close, Cancel, and backdrop dismissal keep editor data and flashing policy unchanged.

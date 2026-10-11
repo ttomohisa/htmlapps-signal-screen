@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.4 - 2026-10-11
+
+- Keep page scrolling locked while Help or a native confirmation is open, with contained dialog-body scrolling.
+- Reserve Reset and flashing confirmation header/footer space so actions stay reachable in short windows.
+- Restore a visible opener after dismissal or resizing without starting the display or stealing newer focus.
+- Preserve the existing local-processing shield/check and app logo; expand bilingual Help and dialog regressions.
+
 ## 1.0.3 - 2026-10-09
 
 - Normalize the app icon background to `#16624f` with 25% corner radii, and keep the asset, header and favicon consistent without changing the artwork.
