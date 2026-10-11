@@ -220,4 +220,126 @@ for (const initial of ['en', 'ja']) test(`${initial}: header remains localized t
   }
 });
 
+// CSS contracts guard the cause of the short-viewport failures. These are not
+// pixel/scroll simulations; native browser checks still cover actual allocation.
+const cssRules = html => [...html.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+const cssRule = (html, selector) => cssRules(html).filter(match => match[1].trim().split(',').map(s => s.trim()).includes(selector)).map(match => match[2]).join(';');
+test('open native dialogs lock both page scroll roots without changing the Help shell', () => {
+  const app = setup();
+  for (const selector of ['html:has(dialog:modal)', 'body:has(dialog:modal)']) {
+    const rule = cssRule(app.html, selector);
+    assert.match(rule, /overflow\s*:\s*hidden\b/, `${selector} locks outside wheel/touch scroll`);
+    assert.match(rule, /overscroll-behavior\s*:\s*none\b/);
+  }
+  assert.equal(cssRule(app.html, 'html:has(dialog[open])'), '', 'nonmodal dialogs do not lock the page');
+  assert.equal(cssRule(app.html, 'body:has(dialog[open])'), '', 'nonmodal dialogs do not lock the page');
+  assert.match(cssRule(app.html, '.dialog-body'), /overscroll-behavior\s*:\s*contain\b/);
+  assert.match(cssRule(app.html, '.dialog-body'), /max-height\s*:\s*calc\(100dvh - 94px\)/, 'preserve the working Help allocation');
+});
+test('only open confirmations reserve fixed header/footer space around a shrinking scroll body', () => {
+  const app = setup();
+  for (const id of ['resetDialog', 'flashConfirmDialog']) {
+    assert.equal(app.el(id).classList.contains('confirmation-dialog'), true);
+  }
+  assert.equal(app.el('helpDialog').classList.contains('confirmation-dialog'), false);
+  assert.match(cssRule(app.html, '.confirmation-dialog[open]'), /display\s*:\s*flex\b/);
+  assert.match(cssRule(app.html, '.confirmation-dialog[open]'), /flex-direction\s*:\s*column\b/);
+  for (const child of ['.dialog-head', '.dialog-actions']) assert.match(cssRule(app.html, `.confirmation-dialog ${child}`), /flex\s*:\s*0 0 auto\b/);
+  const body = cssRule(app.html, '.confirmation-dialog .dialog-body');
+  assert.match(body, /min-height\s*:\s*0\b/);
+  assert.match(body, /max-height\s*:\s*none\b/);
+  assert.match(body, /overflow\s*:\s*auto\b/);
+  assert.match(body, /flex\s*:\s*1 1 auto\b/);
+});
+test('the local-processing badge keeps its existing shield/check artwork', () => {
+  const app = setup(); const paths = app.document.querySelector('.local-badge').querySelectorAll('path');
+  assert.equal(paths[0].getAttribute('d'), 'M12 3l7 3v5c0 4.8-2.9 8.2-7 10-4.1-1.8-7-5.2-7-10V6z');
+  assert.equal(paths[1].getAttribute('d'), 'm9 12 2 2 4-5');
+});
+const openEditorDialog = (app, id) => {
+  const opener = id === 'helpDialog' ? app.el('helpButton') : id === 'resetDialog' ? app.el('resetButton') : app.document.querySelector('[data-flash="slow"]');
+  opener.click(); assert.equal(app.el(id).open, true); return opener;
+};
+const dismissDialog = (app, id, mode) => {
+  const dialog = app.el(id);
+  if (mode === 'escape') { dialog.dispatch('cancel'); dialog.close(); } // Native default action.
+  if (mode === 'cancel') (id === 'flashConfirmDialog' ? app.el('flashCancelButton') : dialog.querySelector('[data-i18n="cancel"]')).click();
+  if (mode === 'close') dialog.querySelector('[data-close-dialog]').click();
+  if (mode === 'backdrop') dialog.dispatch('click', {clientX:-1, clientY:-1});
+};
+for (const language of ['ja', 'en']) {
+  for (const id of ['helpDialog', 'resetDialog', 'flashConfirmDialog']) for (const mode of id === 'helpDialog' ? ['escape', 'close', 'backdrop'] : ['escape', 'close', 'cancel', 'backdrop']) {
+    test(`${language}: ${id} ${mode} restores its pointer opener and preserves editor data`, () => {
+      const app = setup(language); app.input(app.el('messageInput'), 'Gate A'); app.input(app.el('qrInput'), 'synthetic QR');
+      const saved = [...app.storage];
+      for (let i = 0; i < 2; i++) {
+        app.el('messageInput').focus(); const opener = openEditorDialog(app, id);
+        dismissDialog(app, id, mode); assert.equal(app.el(id).open, false);
+        assert.ok(app.document.activeElement === opener, 'focus returns to the current opener'); assert.equal(opener.lastFocusOptions?.preventScroll, true);
+        assert.deepEqual([...app.storage], saved); assert.equal(active(app), false); assert.equal(app.run('state.flash'), 'steady');
+      }
+    });
+  }
+  for (const mode of ['escape', 'close', 'cancel', 'backdrop', 'confirm']) test(`${language}: reset ${mode} after desktop-to-mobile resize restores visible Show without activating it`, () => {
+    const app = setup(language); app.el('resetButton').focus(); openEditorDialog(app, 'resetDialog'); app.resize(393, 252);
+    if (mode === 'confirm') app.el('resetConfirmButton').click(); else dismissDialog(app, 'resetDialog', mode);
+    assert.equal(app.el('resetDialog').open, false); assert.equal(app.document.activeElement?.id, 'showButton');
+    assert.equal(app.el('showButton').lastFocusOptions?.preventScroll, true); assert.equal(active(app), false);
+  });
+  test(`${language}: a mobile Help opener remains current through resize to desktop`, () => {
+    const app = setup(language, {viewportWidth:393, viewportHeight:252}); app.el('messageInput').focus();
+    openEditorDialog(app, 'helpDialog'); app.resize(1184, 763); dismissDialog(app, 'helpDialog', 'escape');
+    assert.equal(app.document.activeElement?.id, 'helpButton');
+  });
+  test(`${language}: Reset returns to its opener when a narrow window becomes desktop width again`, () => {
+    const app = setup(language); openEditorDialog(app, 'resetDialog'); app.resize(393, 252); app.resize(1184, 763);
+    dismissDialog(app, 'resetDialog', 'escape'); assert.equal(app.document.activeElement?.id, 'resetButton');
+    assert.equal(active(app), false);
+  });
+  test(`${language}: Help explains contained dialog scrolling and visible focus fallback`, () => {
+    const app = setup(language); assert.match(app.run("t('helpDialogs')"), language === 'ja' ? /スクロール/ : /scroll/i);
+    assert.match(app.run("t('helpDialogs')"), language === 'ja' ? /全画面で表示/ : /Show full screen/);
+    assert.ok(app.document.querySelector('[data-i18n="helpDialogs"]'));
+  });
+}
+for (const unavailable of ['hidden', 'disconnected', 'disabled', 'visibility', 'inert']) test(`dialog close skips an ${unavailable} opener`, () => {
+  const app = setup(); const opener = openEditorDialog(app, 'resetDialog');
+  if (unavailable === 'hidden') opener.hidden = true;
+  if (unavailable === 'disconnected') opener.remove();
+  if (unavailable === 'disabled') opener.disabled = true;
+  if (unavailable === 'visibility') opener.style.visibility = 'hidden';
+  if (unavailable === 'inert') opener.inert = true;
+  dismissDialog(app, 'resetDialog', 'escape'); assert.equal(app.document.activeElement?.id, 'showButton');
+});
+test('dialog fallback continues if Show is disabled or cannot accept focus', () => {
+  for (const failure of ['disabled', 'unfocusable']) {
+    const app = setup(); openEditorDialog(app, 'resetDialog'); app.resize(393, 252);
+    if (failure === 'disabled') app.el('showButton').disabled = true; else app.el('showButton').focus = () => {};
+    dismissDialog(app, 'resetDialog', 'escape'); assert.equal(app.document.activeElement?.id, 'helpButton');
+    assert.equal(active(app), false);
+  }
+});
+test('delayed close cleanup does not steal a newer valid editor focus', () => {
+  const app = setup('en', {deferDialogClose:true}); openEditorDialog(app, 'resetDialog'); app.resize(393, 252);
+  dismissDialog(app, 'resetDialog', 'escape'); app.el('messageInput').focus(); app.flushCloseEvents();
+  assert.equal(app.document.activeElement?.id, 'messageInput');
+});
+test('delayed close cleanup does not steal focus from a newer dialog', () => {
+  const app = setup('en', {deferDialogClose:true}); openEditorDialog(app, 'resetDialog'); app.resize(393, 252);
+  dismissDialog(app, 'resetDialog', 'escape'); openEditorDialog(app, 'helpDialog'); const current = app.document.activeElement;
+  app.flushCloseEvents(); assert.equal(app.el('helpDialog').open, true); assert.ok(app.document.activeElement === current, 'newer focus is preserved');
+  dismissDialog(app, 'helpDialog', 'close'); app.flushCloseEvents(); assert.equal(app.document.activeElement?.id, 'helpButton');
+});
+test('a queued close cannot clear the current opener of the same reopened dialog', () => {
+  const app = setup('en', {deferDialogClose:true}); openEditorDialog(app, 'helpDialog'); dismissDialog(app, 'helpDialog', 'close');
+  openEditorDialog(app, 'helpDialog'); const current = app.document.activeElement; app.flushCloseEvents();
+  assert.equal(app.el('helpDialog').open, true); assert.ok(app.document.activeElement === current, 'newer focus is preserved');
+  dismissDialog(app, 'helpDialog', 'close'); app.flushCloseEvents(); assert.equal(app.document.activeElement?.id, 'helpButton');
+});
+test('a child click with out-of-dialog keyboard coordinates is not a backdrop dismissal', () => {
+  const app = setup(); openEditorDialog(app, 'helpDialog');
+  app.el('helpDialog').querySelector('.dialog-body').dispatch('click', {clientX:-1,clientY:-1});
+  assert.equal(app.el('helpDialog').open, true);
+});
+
 (async () => { let failed = 0; for (const {name,body} of tests) { try { await body(); console.log('ok - '+name); } catch (error) { failed++; console.error('not ok - '+name+'\n'+error.stack); } } console.log(`${tests.length-failed}/${tests.length} passed`); process.exitCode = failed ? 1 : 0; })();

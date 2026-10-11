@@ -14,6 +14,7 @@ function loadHtml(filename) {
 function createApp(filename, options = {}) {
   const html = loadHtml(filename), frames = new Map(), timers = new Map(), storage = new Map(options.storage || []);
   let frameId = 0, timerId = 0, now = 0, context;
+  const closeEvents = [];
   class Target {
     constructor() { this.listeners = new Map(); }
     addEventListener(type, fn, opts = {}) { const list = this.listeners.get(type) || []; list.push({ fn, once: opts.once }); this.listeners.set(type, list); }
@@ -48,10 +49,17 @@ function createApp(filename, options = {}) {
     removeAttribute(key) { delete this.attrs[key]; }
     contains(el) { return this === el || this.children.some(child => child === el || child.contains(el)); }
     replaceChildren(...children) { this.textContent = ''; this.append(...children); }
-    focus() { if (this.disabled || this.closest('[inert]')) return; if (document.activeElement === this) return; const previous = document.activeElement; document.activeElement = this; if (previous) previous.dispatch('blur'); this.dispatch('focus'); this.dispatch('focusin'); }
+    focus(options) { if (this.disabled || !this.isConnected || !this.getClientRects().length || this.closest('[inert]') || ['hidden', 'collapse'].includes(globals.getComputedStyle(this).visibility)) return; this.lastFocusOptions = options; if (document.activeElement === this) return; const previous = document.activeElement; document.activeElement = this; if (previous) previous.dispatch('blur'); this.dispatch('focus'); this.dispatch('focusin'); }
     click() { if (!this.disabled) this.dispatch('click'); }
     showModal() { this.returnFocus = document.activeElement; this.open = true; this.querySelector('button')?.focus(); }
-    close() { this.open = false; this.returnFocus?.focus(); this.dispatch('close'); }
+    close() { if (!this.open) return; this.open = false; if (this.contains(document.activeElement)) document.activeElement = document.body; this.returnFocus?.focus({preventScroll:true}); if (options.deferDialogClose) closeEvents.push(() => this.dispatch('close')); else this.dispatch('close'); }
+    getClientRects() {
+      for (let el = this; el; el = el.parentElement) {
+        if (el.hidden || el.style.display === 'none' || (el.tagName === 'DIALOG' && !el.open) || (el.id === 'stage' && !el.classList.contains('active'))) return [];
+      }
+      if (this.id === 'resetButton' && globals.innerWidth <= 760) return [];
+      return [this.getBoundingClientRect()];
+    }
     get clientWidth() {
       if (this.id === 'preview') return options.width || 547;
       if (this.id === 'stageSurface') return options.stageWidth || 1184;
@@ -103,7 +111,7 @@ function createApp(filename, options = {}) {
     for (const textarea of root.querySelectorAll('textarea')) textarea.value = textarea.textContent;
   }
   parseHtml(html, document.documentElement);
-  document.body = document.querySelector('body'); document.head = document.querySelector('head');
+  document.body = document.querySelector('body'); document.head = document.querySelector('head'); document.activeElement = document.body;
   const appConfig = new Element('script'); appConfig.id = 'app-config'; appConfig.textContent = fs.readFileSync(path.join(__dirname, '..', 'app.config.json'), 'utf8'); document.body.append(appConfig);
   const window = new Target(); window.matchMedia = () => ({ matches: false }); window.scrollTo = () => {}; window.scrollY = 0;
   const setTimeout = fn => { timers.set(++timerId, fn); return timerId; }, clearTimeout = id => timers.delete(id);
@@ -111,7 +119,7 @@ function createApp(filename, options = {}) {
     performance: { now: () => now }, requestAnimationFrame(fn) { frames.set(++frameId, fn); return frameId; }, cancelAnimationFrame(id) { frames.delete(id); }, setTimeout, clearTimeout,
   };
   Object.assign(window, { setTimeout, clearTimeout, requestAnimationFrame: globals.requestAnimationFrame, cancelAnimationFrame: globals.cancelAnimationFrame });
-  globals.matchMedia = () => ({ matches: false, addEventListener() {} }); globals.addEventListener = (...args) => window.addEventListener(...args); globals.innerWidth = 1184; globals.innerHeight = 763; globals.getComputedStyle = el => ({ paddingLeft: el.id === 'stageSurface' ? '40px' : '0px', paddingRight: el.id === 'stageSurface' ? '40px' : '0px', paddingTop: el.id === 'stageSurface' ? '40px' : '0px', paddingBottom: el.id === 'stageSurface' ? '40px' : '0px' }); globals.setInterval = () => { throw Error('Tests must never activate flashing'); }; globals.clearInterval = clearTimeout;
+  globals.matchMedia = () => ({ matches: false, addEventListener() {} }); globals.addEventListener = (...args) => window.addEventListener(...args); globals.innerWidth = options.viewportWidth || 1184; globals.innerHeight = options.viewportHeight || 763; globals.getComputedStyle = el => ({ visibility: el.style.visibility || 'visible', paddingLeft: el.id === 'stageSurface' ? '40px' : '0px', paddingRight: el.id === 'stageSurface' ? '40px' : '0px', paddingTop: el.id === 'stageSurface' ? '40px' : '0px', paddingBottom: el.id === 'stageSurface' ? '40px' : '0px' }); globals.setInterval = () => { throw Error('Tests must never activate flashing'); }; globals.clearInterval = clearTimeout;
   let source = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]).find(script => script.includes('const translations ='));
   if (!source) throw Error('Application script not found in ' + filename);
   const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.config.json'), 'utf8'));
@@ -123,6 +131,8 @@ function createApp(filename, options = {}) {
   vm.runInContext(source, context, { filename });
   const app = { html, document, window, storage, frames, timers, globals, run: code => context.testRun(code), el: id => document.getElementById(id),
     frame(time) { now = time; const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach(fn => fn(time)); },
+    resize(width, height) { globals.innerWidth = width; globals.innerHeight = height; window.dispatch('resize'); },
+    flushCloseEvents() { closeEvents.splice(0).forEach(fn => fn()); },
     flushTimers() { const callbacks = [...timers.values()]; timers.clear(); callbacks.forEach(fn => fn()); },
     input(el, value) { el.value = value; el.dispatch('input'); },
     async settle() { for (let index = 0; index < 8; index++) await Promise.resolve(); },
