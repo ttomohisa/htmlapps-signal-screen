@@ -244,8 +244,8 @@
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
     <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
-    <h3 data-i18n="helpDialogsTitle">ダイアログの操作</h3>
-    <p data-i18n="helpDialogs">ヘルプや確認ダイアログを開いている間は背景をスクロールできません。長い説明はダイアログ内をスクロールして読めます。高さの低い画面でも確認の見出し・閉じるボタン・操作ボタンを表示します。閉じると開いた操作へフォーカスが戻ります。画面幅の変更でリセットボタンが隠れた場合は、「全画面で表示」へ移動しますが、表示は開始しません。</p>
+
+
     <h3 data-i18n="helpQrTitle">QR表示</h3>
     <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
@@ -1540,7 +1540,7 @@ module.exports = QRCode;
 
 </script>
 <script id="app-config" type="application/json">{"$schema":"./schemas/app-config.schema.json","name":"Signal Screen","nameJa":"Signal Screen","slug":"signal-screen","version":"1.0.4","description":"Turn a phone screen into a large visual signal with messages, arrows, colors, QR codes, and SOS patterns.","descriptionJa":"スマホ画面を、巨大メッセージ・矢印・色・QRコード・SOS点滅に使える視認性の高いシグナル画面へ変える単一HTMLアプリです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-signal-screen"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}}</script>
-<script id="build-manifest" type="application/json">{"schemaVersion":1,"builder":"single-html-app-template/1.0","generatedAtUtc":"2026-10-11T02:10:01.0000000Z","app":{"name":"Signal Screen","slug":"signal-screen","version":"1.0.4"},"dependencies":[]}</script>
+<script id="build-manifest" type="application/json">{"schemaVersion":1,"builder":"single-html-app-template/1.0","generatedAtUtc":"2026-10-11T22:25:11.9427249Z","app":{"name":"Signal Screen","slug":"signal-screen","version":"1.0.4"},"dependencies":[]}</script>
 <script id="embedded-assets" type="application/octet-stream">eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==</script>
 <script>
 (() => {
@@ -1559,7 +1559,7 @@ module.exports = QRCode;
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
       stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stagePinnedHint:"操作ボタンを固定中。解除すると自動で隠れます",pinControls:"操作を固定",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
       helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
-      helpDialogsTitle:"ダイアログの操作",helpDialogs:"ヘルプや確認ダイアログを開いている間は背景をスクロールできません。長い説明はダイアログ内をスクロールして読めます。高さの低い画面でも確認の見出し・閉じるボタン・操作ボタンを表示します。閉じると開いた操作へフォーカスが戻ります。画面幅の変更でリセットボタンが隠れた場合は、「全画面で表示」へ移動しますが、表示は開始しません。",
+
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
       helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
@@ -1579,7 +1579,7 @@ module.exports = QRCode;
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
       stageHint:"Tap the screen to show or hide controls",stagePinnedHint:"Controls are pinned. Unpin to resume auto-hide",pinControls:"Pin controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
       helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
-      helpDialogsTitle:"Dialogs",helpDialogs:"While Help or a confirmation is open, the background stays still. Scroll inside the dialog to read longer text; confirmation headings, Close, and action buttons remain available in a short window. Closing returns focus to the control that opened it. If resizing hides Reset, focus moves to Show full screen without starting the display.",
+
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
       helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
