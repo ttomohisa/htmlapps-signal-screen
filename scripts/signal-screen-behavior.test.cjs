@@ -296,10 +296,10 @@ for (const language of ['ja', 'en']) {
     dismissDialog(app, 'resetDialog', 'escape'); assert.equal(app.document.activeElement?.id, 'resetButton');
     assert.equal(active(app), false);
   });
-  test(`${language}: Help explains contained dialog scrolling and visible focus fallback`, () => {
-    const app = setup(language); assert.match(app.run("t('helpDialogs')"), language === 'ja' ? /スクロール/ : /scroll/i);
-    assert.match(app.run("t('helpDialogs')"), language === 'ja' ? /全画面で表示/ : /Show full screen/);
-    assert.ok(app.document.querySelector('[data-i18n="helpDialogs"]'));
+  test(`${language}: Help omits layout implementation commentary`, () => {
+    const app = setup(language);
+    assert.equal(app.run("t('helpDialogs')"), 'helpDialogs');
+    assert.equal(app.document.querySelector('[data-i18n="helpDialogs"]'), null);
   });
 }
 for (const unavailable of ['hidden', 'disconnected', 'disabled', 'visibility', 'inert']) test(`dialog close skips an ${unavailable} opener`, () => {
