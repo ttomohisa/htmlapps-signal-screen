@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Standardize the English local-processing badge to “Fully local processing” without changing its artwork or behavior.
+
 ## 1.0.4 - 2026-10-11
 
 - Keep page scrolling locked while Help or a native confirmation is open, with contained dialog-body scrolling.

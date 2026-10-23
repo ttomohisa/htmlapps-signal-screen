@@ -62,7 +62,7 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Reset discloses QR deletion, keeps the language, and restores a localized default message.
 - Native modal dialogs lock both page scroll roots; only their bodies scroll. Reset and flashing confirmations reserve nonshrinking header/footer space in short windows.
 - Dialog dismissal restores the current visible opener without scrolling or activating it. If resizing hides Reset, fall back to a visible enabled Show control, then an available header control; delayed close events never steal newer valid focus or a newer modal.
-- The local-processing badge keeps its shield/check artwork; the app logo is unchanged.
+- The local-processing badge keeps its shield/check artwork; the app logo is unchanged. Its English label is “Fully local processing”, matching 完全ローカル処理.
 - No dark-mode switch.
 - Full-stage controls auto-hide after a short delay, unless focused or protected by an open dialog.
 - Session-only Pin controls defaults off, exposes aria-pressed, and prevents both auto-hide and background-tap hiding until unpinned or closed.
