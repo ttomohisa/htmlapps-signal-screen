@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-11T22:25:12.1210283Z",
+  "generatedAtUtc": "2026-10-23T08:54:58.6271084Z",
   "source": {
     "path": "index.html",
-    "bytes": 91903,
-    "sha256": "5660b67e2734754b9baaf75519bd79817e56166f2801f5e7b6b5ade67418c5e3"
+    "bytes": 91906,
+    "sha256": "2f3ca54bb6e99813efb40cbd9a066985834e86c15ac5393b6aa004c0b947edd1"
   },
   "compressedPayload": {
     "format": "gzip",
-    "bytes": 26180,
-    "sha256": "64dfa8fc30db0b17ffb4942fb486f2680bd5792ef12b73dc469ba4dd6851a7ba",
+    "bytes": 26179,
+    "sha256": "ee0d210676037ef4b90cace3b6ad8b1542f9c7b6030232a7fffc90cfef97042f",
     "encoding": "base64"
   },
   "output": {
     "path": "index.self-extract.html",
     "bytes": 40453,
-    "sha256": "c11c99b8afa3a1688c5baadc7e873f71a74d2cb0ec64a4dd9258ff894ebd09a6",
+    "sha256": "9248f7a6b4413650732846e9113f28d1055860b536e3e7f72fd5be835b9a0d4b",
     "loaderEncoding": "ascii",
     "faviconInherited": true
   },

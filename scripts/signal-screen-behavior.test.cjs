@@ -9,6 +9,10 @@ const setup = (language = 'en', options = {}) => createApp(filename, {language, 
 const active = app => app.el('stage').classList.contains('active');
 async function open(app) { app.el('showButton').focus(); app.el('showButton').click(); await app.settle(); app.frame(1); }
 for (const language of ['ja', 'en']) {
+  test(`${language}: local-processing badge uses the shared bilingual wording`, () => {
+    const app = setup(language);
+    assert.equal(app.run("t('localOnly')"), language === 'ja' ? '完全ローカル処理' : 'Fully local processing');
+  });
   test(`${language}: short preview uses available size rather than shrinking to 34px`, () => {
     const app = setup(language); app.input(app.el('messageInput'), language === 'ja' ? 'ここです' : 'Gate A');
     assert.ok(parseFloat(app.el('previewMessage').style.fontSize) > 34);
@@ -208,7 +212,7 @@ for (const initial of ['en', 'ja']) test(`${initial}: header remains localized t
     assert.equal(app.el('languageButton').getAttribute('title'), target);
     assert.equal(app.el('helpButton').getAttribute('aria-label'), help);
     assert.equal(app.el('helpButton').getAttribute('title'), help);
-    assert.equal(app.document.querySelector('[data-i18n="localOnly"]').textContent, ja ? '完全ローカル処理' : 'Processed on device');
+    assert.equal(app.document.querySelector('[data-i18n="localOnly"]').textContent, ja ? '完全ローカル処理' : 'Fully local processing');
     assert.equal(app.el('versionBadge').textContent, 'v' + require('../app.config.json').version);
     app.el('helpButton').click(); assert.equal(app.el('helpDialog').open, true);
     app.el('helpDialog').querySelector('[data-close-dialog]').click(); assert.equal(app.el('helpDialog').open, false);
