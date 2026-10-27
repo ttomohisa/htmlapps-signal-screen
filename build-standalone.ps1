@@ -1,4 +1,4 @@
-param(
+﻿param(
   [switch]$ForceDownload,
   [switch]$SkipSelfExtract,
   [string]$OutputPath = ""
@@ -51,6 +51,8 @@ $manifest = [ordered]@{
 
 $bundle = [ordered]@{ schemaVersion = 1; dependencies = [ordered]@{} }
 $template = Read-Utf8 $TemplatePath
+. (Join-Path $Root "scripts/embed-ui-conventions.ps1")
+$template = Expand-BrowserKittyUI -Template $template -ComponentsPath (Join-Path $Root "components")
 $qrLibrary = Read-Utf8 $QrLibraryPath
 $bundleJson = ConvertTo-SafeJson $bundle 10
 $replacements = [ordered]@{

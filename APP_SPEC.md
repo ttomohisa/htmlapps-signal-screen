@@ -80,3 +80,11 @@ Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display wor
 - Flashes never activate when reduced-motion is active.
 - At 393×252, Help outside-wheel input does not move the page; Reset and flashing confirmation Close/Cancel/action buttons remain reachable, with internal text scrolling.
 - Desktop-to-mobile and mobile-to-desktop modal resizing preserves safe visible focus on dismissal in both languages; native Escape, Close, Cancel, and backdrop dismissal keep editor data and flashing policy unchanged.
+
+
+## 11. Shared UI conventions
+- Editor reports actual autosave state and last successful write time; display controls expose save errors. Retry preserves current work, and unreadable prior data requires explicit scope confirmation before overwrite. Storage keys and fields stay unchanged.
+- Language priority is valid URL, shared same-origin key, legacy stored language, first supported browser language, English. Startup reads do not write storage. Only explicit switching persists language and never resets drafts/settings/dialogs. Denied preference storage has a session-only notice.
+- Reset remains irreversible, lists the exact message/QR/flash scope, starts on Cancel, and preserves common language. Existing modal focus guards stay intact.
+- Fullscreen API requests block duplicates while pending; failed native support remains progressive with visible recovery. Stage high-contrast actions and selected mode/color/pin controls keep their specialized visual semantics.
+- Human acceptance: both distributions, 320/360px and393x252, JA/EN, native dialog/focus/reduced-motion/QR scanning, storage failure/retry/reload, Fullscreen/Wake Lock permissions. Pass requires no lost input or clipped controls, truthful status, Cancel-first focus and correct original QR/display behavior.

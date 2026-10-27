@@ -198,3 +198,8 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+
+## Shared UI conventions
+
+Actual autosave success/failure is shown in the editor; a failure is also visible in display controls. Failed writes preserve current work and offer Retry saving. Unreadable saved data is never automatically overwritten; retry checks access and confirms replacement scope. The existing signal-screen:v1 fields and QR/flash behavior remain compatible. Explicit language switches use the shared same-origin preference without overwriting message/QR drafts or rewriting signal data. Fullscreen requests are guarded while pending. The signal-stage controls preserve their high-contrast appearance as a deliberate visual exception. Native browser/device validation remains necessary.

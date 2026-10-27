@@ -13,7 +13,7 @@ function loadHtml(filename) {
 }
 function createApp(filename, options = {}) {
   const html = loadHtml(filename), frames = new Map(), timers = new Map(), storage = new Map(options.storage || []);
-  let frameId = 0, timerId = 0, now = 0, context;
+  let frameId = 0, timerId = 0, now = 0, context; const storageControl={readFails:!!options.readFails,writeFails:!!options.writeFails},writes=[];
   const closeEvents = [];
   class Target {
     constructor() { this.listeners = new Map(); }
@@ -115,7 +115,7 @@ function createApp(filename, options = {}) {
   const appConfig = new Element('script'); appConfig.id = 'app-config'; appConfig.textContent = fs.readFileSync(path.join(__dirname, '..', 'app.config.json'), 'utf8'); document.body.append(appConfig);
   const window = new Target(); window.matchMedia = () => ({ matches: false }); window.scrollTo = () => {}; window.scrollY = 0;
   const setTimeout = fn => { timers.set(++timerId, fn); return timerId; }, clearTimeout = id => timers.delete(id);
-  const globals = { console, Blob, TextDecoder, TextEncoder, Uint8Array, HTMLElement: Element, document, window, navigator: { language: options.language || 'en', ...options.navigator }, localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) }, crypto: require('node:crypto').webcrypto,
+  const globals = { console, Blob, TextDecoder, TextEncoder, Uint8Array, HTMLElement: Element, document, window, URL,location:{href:options.url||'https://example.test/'},history:{replaceState(state,title,url){globals.location.href=String(url);}},navigator: { language: options.language || 'en',languages:options.languages||[options.language||'en'], ...options.navigator }, localStorage: { getItem: key => {if(storageControl.readFails)throw Error('read denied');return storage.get(key) ?? null;}, setItem: (key, value) => {if(storageControl.writeFails)throw Error('quota');writes.push({key,value});storage.set(key, value);} }, crypto: require('node:crypto').webcrypto,
     performance: { now: () => now }, requestAnimationFrame(fn) { frames.set(++frameId, fn); return frameId; }, cancelAnimationFrame(id) { frames.delete(id); }, setTimeout, clearTimeout,
   };
   Object.assign(window, { setTimeout, clearTimeout, requestAnimationFrame: globals.requestAnimationFrame, cancelAnimationFrame: globals.cancelAnimationFrame });
@@ -128,8 +128,9 @@ function createApp(filename, options = {}) {
   source = source.replace(/\}\)\(\);\s*$/, 'globalThis.testRun = code => eval(code);\n})();');
   context = vm.createContext(globals); vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src/vendor/qrcode.js'), 'utf8'), context); // Browser window properties are also global bindings; mirror the real QR exports.
   Object.assign(globals, {SignalQRCode: window.SignalQRCode, SignalQRErrorCorrectLevel: window.SignalQRErrorCorrectLevel});
+  const shared=path.join(__dirname,'../components/ui-conventions.js');if(fs.existsSync(shared)){Object.assign(window,{document,localStorage:globals.localStorage,navigator:globals.navigator,location:globals.location,history:globals.history});vm.runInContext(fs.readFileSync(shared,'utf8'),context);window.BrowserKittyUI=globals.BrowserKittyUI;}
   vm.runInContext(source, context, { filename });
-  const app = { html, document, window, storage, frames, timers, globals, run: code => context.testRun(code), el: id => document.getElementById(id),
+  const app = { html, document, window, storage,storageControl,writes, frames, timers, globals, run: code => context.testRun(code), el: id => document.getElementById(id),
     frame(time) { now = time; const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach(fn => fn(time)); },
     resize(width, height) { globals.innerWidth = width; globals.innerHeight = height; window.dispatch('resize'); },
     flushCloseEvents() { closeEvents.splice(0).forEach(fn => fn()); },

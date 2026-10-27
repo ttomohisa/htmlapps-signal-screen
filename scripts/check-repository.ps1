@@ -1,4 +1,4 @@
-param([switch]$ForceDownload)
+﻿param([switch]$ForceDownload)
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -22,6 +22,12 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "Node.js 22 o
 foreach ($variant in @("src/index.template.html", "dist/index.html", "dist/index.self-extract.html", "signal-screen.html")) {
   & node (Join-Path $Root "scripts/signal-screen-behavior.test.cjs") (Join-Path $Root $variant)
   if ($LASTEXITCODE -ne 0) { throw "Signal Screen regression tests failed: $variant" }
+  $priorSignalHtml = $env:SIGNAL_SCREEN_HTML
+  try {
+    $env:SIGNAL_SCREEN_HTML = Join-Path $Root $variant
+    & node --test (Join-Path $Root "tests/ui-conventions.test.cjs")
+    if ($LASTEXITCODE -ne 0) { throw "Shared UI regressions failed: $variant" }
+  } finally { $env:SIGNAL_SCREEN_HTML = $priorSignalHtml }
 }
 & node (Join-Path $Root "scripts/signal-screen-release.test.cjs")
 if ($LASTEXITCODE -ne 0) { throw "Signal Screen release parity tests failed." }

@@ -1,26 +1,26 @@
 {
-  "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-23T08:54:58.6271084Z",
-  "source": {
-    "path": "index.html",
-    "bytes": 91906,
-    "sha256": "2f3ca54bb6e99813efb40cbd9a066985834e86c15ac5393b6aa004c0b947edd1"
-  },
-  "compressedPayload": {
-    "format": "gzip",
-    "bytes": 26179,
-    "sha256": "ee0d210676037ef4b90cace3b6ad8b1542f9c7b6030232a7fffc90cfef97042f",
-    "encoding": "base64"
-  },
-  "output": {
-    "path": "index.self-extract.html",
-    "bytes": 40453,
-    "sha256": "9248f7a6b4413650732846e9113f28d1055860b536e3e7f72fd5be835b9a0d4b",
-    "loaderEncoding": "ascii",
-    "faviconInherited": true
-  },
-  "runtime": {
-    "decompressor": "DecompressionStream",
-    "networkRequired": false
-  }
+    "schemaVersion":  1,
+    "generatedAtUtc":  "2026-10-27T11:21:04.7538282Z",
+    "source":  {
+                   "path":  "index.html",
+                   "bytes":  109192,
+                   "sha256":  "7cbba97ee21c4a94969edf85f45dd05f5d002119ece5bea34f0f2fa48d7d5db7"
+               },
+    "compressedPayload":  {
+                              "format":  "gzip",
+                              "bytes":  30703,
+                              "sha256":  "11ae841991dd2723b7985e7198e0ceb4a27317a9531cbc41336790c95e5211d8",
+                              "encoding":  "base64"
+                          },
+    "output":  {
+                   "path":  "index.self-extract.html",
+                   "bytes":  46486,
+                   "sha256":  "7b1cfa332f10a825a22437f9aeacf6c7f90006be4e944848c642b1313b58f847",
+                   "loaderEncoding":  "ascii",
+                   "faviconInherited":  true
+               },
+    "runtime":  {
+                    "decompressor":  "DecompressionStream",
+                    "networkRequired":  false
+                }
 }

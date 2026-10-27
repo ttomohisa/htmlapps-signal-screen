@@ -8,7 +8,10 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Signal Screen</title>
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxNjYyNGYiLz4KICA8cmVjdCB4PSIxMCIgeT0iMTgiIHdpZHRoPSI0MCIgaGVpZ2h0PSIyOCIgcng9IjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIzLjUiLz4KICA8cGF0aCBkPSJNMTkgMzJoMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJtMzQgMjUuNSA2LjggNi41LTYuOCA2LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBkPSJtNDUuNSAxNCAyLjYtMy40TTUxIDE3LjZsNC4zLTEuNE01MS43IDIyLjNsNC4yIDEuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=">
+  <script data-bk-ui-version="1.0.0">__BK_UI_JS__</script>
+  <meta name="description" content="Show a large visual signal with text, arrows and QR codes.">
   <style>
+    .save-notice{margin:0 0 16px;font-size:13px}.save-notice p{margin:4px 0}.stage-bottom{flex-wrap:wrap}#stageSaveStatus[hidden]{display:none}#stageSaveStatus{flex:0 0 100%;font-size:12px;background:#fff;color:#b3261e;padding:4px 8px;border-radius:6px}.save-notice button{border-radius:10px;padding:6px 12px}#languageNotice{color:#b3261e}.stage-control[data-bk-button]:enabled,.stage-close[data-bk-button]:enabled{background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.5)}
     :root{
       color-scheme:light;
       --bg:#f5f5f2;--surface:#fff;--surface-muted:#eeeeea;--text:#20211f;--muted:#686b65;
@@ -92,7 +95,7 @@
     .stage-close svg{width:21px;height:21px}
     .stage-bottom{position:absolute;left:10px;right:10px;bottom:var(--safe-bottom);display:flex;justify-content:center;gap:7px}
     .stage-control[aria-pressed="true"]{border-color:#fff;background:rgba(12,12,12,.85);box-shadow:inset 0 0 0 1px #fff}
-    .stage-control{min-width:82px;min-height:42px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
+    .stage-control{min-width:82px;min-height:44px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
     .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
     @media (max-width:760px){
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
@@ -108,6 +111,7 @@
     @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}.preview,.stage-surface{transition:none}}
     /* APP:END */
   </style>
+  <style data-bk-ui-version="1.0.0">__BK_UI_CSS__</style>
 </head>
 <body>
 <header class="app-header">
@@ -123,8 +127,8 @@
       <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.4</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
     </div>
     <div class="header-actions">
-      <button class="plain-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
-      <button class="icon-button" id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.7 9a2.45 2.45 0 1 1 3.66 2.13c-.88.52-1.36.94-1.36 1.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="currentColor"/></svg></button>
+      <button data-bk-header-action data-bk-button data-bk-variant="secondary" class="plain-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
+      <button data-bk-header-action data-bk-button data-bk-variant="secondary" class="icon-button" id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.7 9a2.45 2.45 0 1 1 3.66 2.13c-.88.52-1.36.94-1.36 1.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="currentColor"/></svg></button>
     </div>
   </div>
 </header>
@@ -137,7 +141,8 @@
 
   <div class="layout">
     <section class="panel">
-      <div class="mode-switch" role="group" aria-label="Display mode">
+      <section class="save-notice" aria-label="保存" data-i18n-aria-label="storageLabel"><p id="saveStatus" role="status" aria-live="polite"></p><p id="saveDetails"></p><button id="saveRetry" data-bk-button data-bk-variant="secondary" type="button" data-i18n="retrySave" hidden>保存を再試行</button><p id="languageNotice" role="status" hidden></p></section>
+      <div class="mode-switch" role="group" aria-label="表示モード" data-i18n-aria-label="modeLabel">
         <button class="mode-button" id="messageModeButton" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h12M4 18h9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span data-i18n="modeMessage">文字・矢印</span></button>
         <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 14h2v2h-2zM18 14h2v5h-2zM14 18h3v2h-3z" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="modeQr">QR</span></button>
       </div>
@@ -162,14 +167,14 @@
         <div class="field" id="quickField">
           <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label><span class="hint" data-i18n="quickHint">タップで切替</span></div>
           <div class="quick-grid" id="presetGrid">
-            <button class="preset" type="button" data-value="ここです" data-value-en="HERE" data-i18n="presetHere">ここです</button>
-            <button class="preset" type="button" data-value="助けて" data-value-en="HELP" data-i18n="presetHelp">助けて</button>
-            <button class="preset" type="button" data-value="SOS">SOS</button>
-            <button class="preset" type="button" data-value="止まって" data-value-en="STOP" data-i18n="presetStop">止まって</button>
-            <button class="preset arrow" type="button" data-value="←">←</button>
-            <button class="preset arrow" type="button" data-value="↑">↑</button>
-            <button class="preset arrow" type="button" data-value="↓">↓</button>
-            <button class="preset arrow" type="button" data-value="→">→</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset" type="button" data-value="ここです" data-value-en="HERE" data-i18n="presetHere">ここです</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset" type="button" data-value="助けて" data-value-en="HELP" data-i18n="presetHelp">助けて</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset" type="button" data-value="SOS">SOS</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset" type="button" data-value="止まって" data-value-en="STOP" data-i18n="presetStop">止まって</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset arrow" type="button" data-value="←">←</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset arrow" type="button" data-value="↑">↑</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset arrow" type="button" data-value="↓">↓</button>
+            <button data-bk-button data-bk-variant="secondary" class="preset arrow" type="button" data-value="→">→</button>
           </div>
         </div>
         <div class="field" id="colorField">
@@ -197,10 +202,10 @@
           </div>
         </div>
         <div class="action-row">
-          <button class="button" id="resetButton" type="button" data-i18n="reset">リセット</button>
-          <button class="button primary" id="showButton" type="button"><span data-i18n="showFullscreen">全画面で表示</span></button>
+          <button data-bk-button data-bk-variant="secondary" class="button" id="resetButton" type="button" data-i18n="reset">リセット</button>
+          <button data-bk-button data-bk-variant="primary" class="button primary" id="showButton" type="button"><span data-i18n="showFullscreen">全画面で表示</span></button>
         </div>
-        <div class="status-line" id="statusLine" aria-live="polite" data-i18n="savedLocally">設定はこの端末に自動保存されます</div>
+        <div class="status-line" id="statusLine" aria-live="polite"></div>
       </div>
     </section>
 
@@ -226,20 +231,21 @@
   <div class="stage-ui" id="stageUi">
     <div class="stage-top">
       <span class="stage-chip" id="stageModeChip">固定表示</span>
-      <button class="stage-close" id="stageCloseButton" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button data-bk-button data-bk-variant="secondary" class="stage-close" id="stageCloseButton" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     </div>
     <div class="stage-hint" id="stageHint" data-i18n="stageHint">画面をタップすると操作ボタンを表示 / 非表示</div>
     <div class="stage-bottom">
-      <button class="stage-control" id="stageFlashButton" type="button" data-i18n="stageFlash">点滅切替</button>
-      <button class="stage-control" id="stageFullscreenButton" type="button" data-i18n="fullscreen">全画面</button>
+      <span id="stageSaveStatus" role="status" aria-live="polite" hidden></span>
+      <button data-bk-button data-bk-variant="secondary" class="stage-control" id="stageFlashButton" type="button" data-i18n="stageFlash">点滅切替</button>
+      <button data-bk-button data-bk-variant="secondary" class="stage-control" id="stageFullscreenButton" type="button" data-i18n="fullscreen">全画面</button>
       <button class="stage-control" id="stagePinButton" type="button" aria-pressed="false" data-i18n="pinControls">操作を固定</button>
-      <button class="stage-control" id="stageWakeButton" type="button" data-i18n="keepAwake">画面維持</button>
+      <button data-bk-button data-bk-variant="secondary" class="stage-control" id="stageWakeButton" type="button" data-i18n="keepAwake">画面維持</button>
     </div>
   </div>
 </div>
 
 <dialog id="helpDialog">
-  <div class="dialog-head"><h2 data-i18n="helpTitle">使い方と注意事項</h2><button class="icon-button" type="button" data-close-dialog="helpDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-head"><h2 data-i18n="helpTitle">使い方と注意事項</h2><button data-bk-button data-bk-variant="secondary" class="icon-button" type="button" data-close-dialog="helpDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <div class="dialog-body">
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
@@ -251,7 +257,7 @@
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
     <p data-i18n="helpFlash">点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。</p>
     <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
-    <p data-i18n="helpPrivacy">入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。</p>
+    <p data-i18n="helpPrivacy">入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。保存に失敗しても現在の表示は使えます。編集画面の「保存を再試行」で再保存できます。保存済みデータを読み込めないときは自動保存を停止し、置き換える前に確認します。</p>
     <h3 data-i18n="helpLimitsTitle">制限事項</h3>
     <p data-i18n="helpLimits">ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。</p>
     <!-- APP:HELP:END -->
@@ -259,15 +265,21 @@
 </dialog>
 
 <dialog id="flashConfirmDialog" class="confirmation-dialog">
-  <div class="dialog-head"><h2 data-i18n="flashDialogTitle">点滅を使用しますか？</h2><button class="icon-button" type="button" data-close-dialog="flashConfirmDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-head"><h2 data-i18n="flashDialogTitle">点滅を使用しますか？</h2><button data-bk-button data-bk-variant="secondary" class="icon-button" type="button" data-close-dialog="flashConfirmDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <div class="dialog-body"><p data-i18n="flashDialogBody">点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。</p></div>
-  <div class="dialog-actions"><button class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
+  <div class="dialog-actions"><button data-bk-button data-bk-variant="secondary" class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button data-bk-button data-bk-variant="primary" class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
+</dialog>
+
+<dialog id="storageRecoveryDialog" class="confirmation-dialog" aria-labelledby="storageRecoveryTitle">
+  <div class="dialog-head"><h2 id="storageRecoveryTitle" data-i18n="recoveryTitle">保存済みの設定を置き換えますか？</h2><button data-bk-button data-bk-variant="secondary" class="icon-button" type="button" data-close-dialog="storageRecoveryDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="recoveryBody">保存済みの文字・QR・設定を現在の内容で置き換えます。元に戻せません。共通言語や他ツールのデータは残ります。</p></div>
+  <div class="dialog-actions"><button data-bk-button data-bk-variant="secondary" class="button" id="storageRecoveryCancel" type="button" data-close-dialog="storageRecoveryDialog" data-i18n="cancel">キャンセル</button><button data-bk-button data-bk-variant="danger" class="button" id="storageRecoveryConfirm" type="button" data-i18n="replaceSaved">現在の内容で置き換える</button></div>
 </dialog>
 
 <dialog id="resetDialog" class="confirmation-dialog">
-  <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button class="icon-button" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
-  <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。</p></div>
-  <div class="dialog-actions"><button class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button class="button" id="resetConfirmButton" type="button" style="color:var(--danger)" data-i18n="reset">リセット</button></div>
+  <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button data-bk-button data-bk-variant="secondary" class="icon-button" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。元に戻せません。言語は変更しません。</p></div>
+  <div class="dialog-actions"><button data-bk-button data-bk-variant="secondary" class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button data-bk-button data-bk-variant="danger" class="button" id="resetConfirmButton" type="button" data-i18n="reset">リセット</button></div>
 </dialog>
 
 <script>
@@ -283,7 +295,7 @@ __QR_CODE_JS__
   const STORAGE_KEY = "signal-screen:v1";
   const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
   const translations = {
-    ja:{
+    ja:{storageLabel:"保存",modeLabel:"表示モード",retrySave:"保存を再試行",retention:"文字・QRの内容・表示設定を、このブラウザーへ自動保存します。ファイル保存機能はありません。保存に失敗しても表示は使えます。編集画面で再試行できます。",readBlocked:"保存済みの内容を読み込めなかったため、自動保存を停止しています。現在の文字・QRは表示したまま使えます。再試行で保存先へのアクセスを確認します。",recoveryTitle:"保存済みの設定を置き換えますか？",recoveryBody:"読み込めなかった保存済みの文字・QR・表示設定を、現在の内容で置き換えます。以前の保存内容は元に戻せません。共通言語や他ツールのデータは残ります。",replaceSaved:"現在の内容で置き換える",description:"文字・矢印・QRコードを大きく表示するローカルのシグナル画面。",black:"黒",white:"白",red:"赤",yellow:"黄",green:"緑",blue:"青",
       brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",
       previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
       colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
@@ -296,14 +308,14 @@ __QR_CODE_JS__
 
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
-      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
+      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。保存に失敗しても現在の表示は使えます。編集画面の「保存を再試行」で再保存できます。保存済みデータを読み込めないときは自動保存を停止し、置き換える前に確認します。",
       helpLimitsTitle:"制限事項",helpLimits:"ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。",
       flashDialogTitle:"点滅を使用しますか？",flashDialogBody:"点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。",cancel:"キャンセル",enableFlash:"点滅を使う",
-      resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
+      resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。元に戻せません。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
       statusWakeOn:"画面維持を有効にしました",statusWakeOff:"画面維持を解除しました",statusWakeUnavailable:"このブラウザーでは画面維持を利用できません",statusFullscreenUnavailable:"このブラウザーでは全画面表示を利用できません",
       emptyFallback:"ここです"
     },
-    en:{
+    en:{storageLabel:"Saving",modeLabel:"Display mode",retrySave:"Retry saving",retention:"Message, QR content and display settings are saved automatically in this browser. This tool does not save files. A failed write keeps your current display available; return to the editor to retry.",readBlocked:"Saved content could not be read, so automatic saving is paused. Keep using the current message and QR; retry to check storage access.",recoveryTitle:"Replace the saved settings?",recoveryBody:"Replace unreadable saved message, QR content and display settings with the current content. Previous saved data cannot be undone. Shared language and other tools remain unchanged.",replaceSaved:"Replace with current content",description:"Show a large local visual signal with text, arrows and QR codes.",black:"Black",white:"White",red:"Red",yellow:"Yellow",green:"Green",blue:"Blue",
       brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",
       previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
       colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
@@ -316,10 +328,10 @@ __QR_CODE_JS__
 
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
-      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
+      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking. A failed save keeps the current display usable; return to the editor and Retry saving. Unreadable saved data pauses automatic writes and asks before replacement.",
       helpLimitsTitle:"Limitations",helpLimits:"Browsers cannot change device screen brightness. Fullscreen and Wake Lock availability depends on the browser and how the file is opened.",
       flashDialogTitle:"Enable flashing?",flashDialogBody:"Flashing screens can cause discomfort or health effects for some people. Use this feature with consideration for people nearby.",cancel:"Cancel",enableFlash:"Enable flashing",
-      resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content and the flashing acknowledgement. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
+      resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content and the flashing acknowledgement. This cannot be undone. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
       statusWakeOn:"Keep-awake enabled",statusWakeOff:"Keep-awake released",statusWakeUnavailable:"Keep-awake is not supported in this browser",statusFullscreenUnavailable:"Full screen is not supported in this browser",
       emptyFallback:"HERE"
     }
@@ -337,24 +349,44 @@ __QR_CODE_JS__
   };
   const dialogOpeners = new WeakMap();
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const ui=window.BrowserKittyUI;let storageBlocked=false,loadedExisting=false,saveStatus="dirty",lastSavedAt=null,languageEphemeral=false,statusKey=null,statusTone="";
   let state = loadState();
+  saveStatus=storageBlocked?"error":loadedExisting?"saved":"dirty";
   let lang = resolveLanguage(state.language);
   let flashTimer = 0, flashTimeout = 0, wakeLock = null, stageUiTimer = 0, pendingFlash = null;
-  let controlsPinned = false, wakeWanted = false, wakeGeneration = 0, wakePending = null;
+  let controlsPinned = false, wakeWanted = false, wakeGeneration = 0, wakePending = null, fullscreenPending=null;
   let stageReturnFocus = null, stageBackground = [], stageOverflow = "", stageSession = 0;
 
   function loadState(){
     try{
-      const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
-      return {...DEFAULTS,...saved};
-    }catch{return {...DEFAULTS};}
+      const raw=localStorage.getItem(STORAGE_KEY);if(raw===null)return {...DEFAULTS};
+      const saved=JSON.parse(raw);if(!saved||Array.isArray(saved)||typeof saved!=="object")throw Error("Invalid saved settings");
+      const merged={...DEFAULTS,...saved};
+      if(!['message','qr'].includes(merged.mode)||typeof merged.message!=="string"||typeof merged.qrText!=="string"||!/^#[0-9a-f]{6}$/i.test(merged.color)||!['steady','slow','beacon','sos'].includes(merged.flash)||typeof merged.flashAcknowledged!=="boolean")throw Error("Invalid saved settings");
+      loadedExisting=true;return merged;
+    }catch{storageBlocked=true;return {...DEFAULTS};}
   }
-  function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
-  function resolveLanguage(value){if(value==="ja"||value==="en")return value;return navigator.language.toLowerCase().startsWith("ja")?"ja":"en";}
+  function renderSaveStatus(){
+    for(const id of ["saveStatus","stageSaveStatus"])ui.setSaveStatus($(id),{mode:"autosave",state:saveStatus,language:lang,time:lastSavedAt?new Date(lastSavedAt).toLocaleTimeString(lang==='ja'?'ja-JP':'en-US',{hour:'2-digit',minute:'2-digit'}):''});
+    $("saveDetails").textContent=t(storageBlocked?'readBlocked':'retention');$("saveRetry").hidden=saveStatus!=='error';$("stageSaveStatus").hidden=saveStatus!=='error';
+    $("languageNotice").hidden=!languageEphemeral;$("languageNotice").textContent=languageEphemeral?ui.text('languageSessionOnly',lang):'';
+  }
+  function saveState(){
+    if(storageBlocked){saveStatus='error';renderSaveStatus();return false;}
+    saveStatus='saving';renderSaveStatus();try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));lastSavedAt=Date.now();saveStatus='saved';}catch{saveStatus='error';}
+    renderSaveStatus();return saveStatus==='saved';
+  }
+  function retrySave(){
+    if(storageBlocked){let raw;try{raw=localStorage.getItem(STORAGE_KEY);}catch{renderSaveStatus();return;}
+      if(raw!==null){openDialog($("storageRecoveryDialog"),$("saveRetry"));return;}storageBlocked=false;
+    }saveState();
+  }
+  function resolveLanguage(value){return ui.resolveLanguage({legacyKeys:[STORAGE_KEY],storage:{getItem:key=>key===STORAGE_KEY?value:localStorage.getItem(key)}});}
   function t(key){return translations[lang][key]||key;}
   function applyLanguage(){
-    document.documentElement.lang=lang;
+    document.documentElement.lang=lang;document.title=lang==="ja"?"Signal Screen | シグナル画面":"Signal Screen";document.querySelector('meta[name="description"]')?.setAttribute("content",t("description"));
     document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(translations[lang][key])el.textContent=translations[lang][key];});
+    document.querySelectorAll("[data-i18n-aria-label]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.i18nAriaLabel)));
     els.languageButton.textContent=lang==="ja"?"EN":"JA";
     const languageTarget=lang==="ja"?"英語に切り替え":"Switch to Japanese";
     els.languageButton.setAttribute("aria-label",languageTarget);
@@ -364,7 +396,8 @@ __QR_CODE_JS__
     document.querySelectorAll(".icon-button[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
     els.stageCloseButton.setAttribute("aria-label",lang==="ja"?"閉じる":"Close");
     els.stage.setAttribute("aria-label",t("showFullscreen"));
-    updateModeChip();updateStageControls();
+    document.querySelectorAll(".color-button").forEach(b=>b.setAttribute("aria-label",t(({"#101110":"black","#ffffff":"white","#d7261e":"red","#ffd400":"yellow","#0a7a45":"green","#1769d1":"blue"})[b.dataset.color])));
+    updateModeChip();updateStageControls();renderSaveStatus();renderStatus();
   }
   function luminance(hex){
     const c=hex.replace("#","");const r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
@@ -422,8 +455,8 @@ __QR_CODE_JS__
     }
     textEl.style.fontSize=best+"px";
   }
-  function setColor(color){
-    state.color=color;saveState();
+  function setColor(color,{persist=true}={}){
+    state.color=color;if(persist)saveState();
     document.querySelectorAll(".color-button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===color)));
     updatePreview();
   }
@@ -434,7 +467,7 @@ __QR_CODE_JS__
     if(dialog.open)return;
     dialogOpeners.set(dialog,opener);
     if(canFocusDialogTarget(opener))opener.focus({preventScroll:true});
-    dialog.showModal();
+    dialog.showModal();dialog.querySelector('[data-i18n="cancel"]')?.focus({preventScroll:true});
   }
   function restoreDialogFocus(dialog){
     // Native close events are queued: do not disturb a reopened/newer modal or focus.
@@ -480,7 +513,8 @@ __QR_CODE_JS__
     const key={steady:"modeSteady",slow:"modeSlow",beacon:"modeBeacon",sos:"modeSos"}[state.flash];
     els.stageModeChip.textContent=t(key);
   }
-  function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
+  function renderStatus(){els.statusLine.textContent=statusKey?t(statusKey):'';els.statusLine.dataset.tone=statusTone;}
+  function showStatus(message,tone=""){statusKey=Object.keys(translations[lang]).find(key=>translations[lang][key]===message)||null;statusTone=tone;renderStatus();clearTimeout(showStatus.timer);if(tone!=='warn')showStatus.timer=setTimeout(()=>{statusKey=null;statusTone='';renderStatus();},2800);}
   function updateStageControls(){
     els.stagePinButton.setAttribute("aria-pressed",String(controlsPinned));
     els.stageHint.textContent=t(controlsPinned?"stagePinnedHint":"stageHint");
@@ -510,7 +544,15 @@ __QR_CODE_JS__
     const lock=wakeLock;wakeLock=null;updateStageControls();showStatus(t("statusWakeOff"));
     if(lock){try{await lock.release();}catch{}}
   }
-  async function requestFullscreen(){if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}try{await document.documentElement.requestFullscreen({navigationUI:"hide"});if(!els.stage.classList.contains("active")){await leaveFullscreen();return false;}return true;}catch{showStatus(t("statusFullscreenUnavailable"),"warn");return false;}}
+  async function requestFullscreen(){
+    if(fullscreenPending&&fullscreenPending.session===stageSession)return fullscreenPending.promise;
+    if(document.fullscreenElement)return true;if(!document.documentElement.requestFullscreen){showStatus(t("statusFullscreenUnavailable"),"warn");return false;}
+    const request={session:stageSession};fullscreenPending=request;ui.setButtonState(els.stageFullscreenButton,'busy');
+    request.promise=(async()=>{try{await document.documentElement.requestFullscreen({navigationUI:"hide"});if(!els.stage.classList.contains("active")){await leaveFullscreen();return false;}return request.session===stageSession;}
+      catch{if(request.session===stageSession)showStatus(t("statusFullscreenUnavailable"),"warn");return false;}
+      finally{if(fullscreenPending===request){fullscreenPending=null;ui.setButtonState(els.stageFullscreenButton,'ready');}}
+    })();return request.promise;
+  }
   async function leaveFullscreen(){if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen();}catch{}}}
   async function openStage(){
     if(els.stage.classList.contains("active"))return;
@@ -546,11 +588,13 @@ __QR_CODE_JS__
     state={...DEFAULTS,message:t("emptyFallback"),language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();els.resetDialog.close();
   }
 
-  if(reduceMotion.matches&&state.flash!=="steady"){state.flash="steady";saveState();}
+  if(reduceMotion.matches&&state.flash!=="steady"){state.flash="steady";saveStatus="dirty";}
   els.messageInput.value=state.message;els.qrInput.value=state.qrText||"";
-  applyLanguage();setColor(state.color);renderFlashButtons();renderMode();
+  applyLanguage();setColor(state.color,{persist:false});renderFlashButtons();renderMode();
   $("versionBadge").textContent="v"+config.version;
 
+  $("saveRetry").addEventListener("click",retrySave);
+  $("storageRecoveryConfirm").addEventListener("click",()=>{storageBlocked=false;saveState();$("storageRecoveryDialog").close();});
   els.messageInput.addEventListener("input",()=>{state.message=els.messageInput.value;saveState();updatePreview();});
   els.qrInput.addEventListener("input",()=>{state.qrText=els.qrInput.value;saveState();updatePreview();});
   els.messageModeButton.addEventListener("click",()=>{state.mode="message";saveState();renderMode();});
@@ -563,7 +607,7 @@ __QR_CODE_JS__
   els.flashAllowButton.addEventListener("click",()=>{state.flashAcknowledged=true;saveState();const mode=pendingFlash||"slow";pendingFlash=null;els.flashConfirmDialog.close();setFlash(mode,{skipConfirm:true});});
   els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>openDialog(els.resetDialog,els.resetButton));els.resetConfirmButton.addEventListener("click",resetAll);
   els.helpButton.addEventListener("click",()=>openDialog(els.helpDialog,els.helpButton));
-  els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
+  els.languageButton.addEventListener("click",()=>{const choice=ui.chooseLanguage(lang==="ja"?"en":"ja");lang=choice.language;languageEphemeral=!choice.persisted;applyLanguage();renderMode();});
   document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
   document.querySelectorAll("dialog").forEach(d=>{
     d.addEventListener("close",()=>restoreDialogFocus(d));
