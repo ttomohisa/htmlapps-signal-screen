@@ -1,3 +1,7 @@
 * text=auto eol=lf
 *.bat text eol=crlf
 *.png binary
+
+# Keep fixed shared UI hashes stable on every checkout.
+components/ui-conventions.js text eol=lf
+components/ui-conventions.css text eol=lf
