@@ -255,9 +255,9 @@ test('only open confirmations reserve fixed header/footer space around a shrinki
   assert.match(body, /overflow\s*:\s*auto\b/);
   assert.match(body, /flex\s*:\s*1 1 auto\b/);
 });
-test('the local-processing badge keeps its existing shield/check artwork', () => {
+test('the local-processing badge uses the shared shield/check artwork', () => {
   const app = setup(); const paths = app.document.querySelector('.local-badge').querySelectorAll('path');
-  assert.equal(paths[0].getAttribute('d'), 'M12 3l7 3v5c0 4.8-2.9 8.2-7 10-4.1-1.8-7-5.2-7-10V6z');
+  assert.equal(paths[0].getAttribute('d'), 'M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z');
   assert.equal(paths[1].getAttribute('d'), 'm9 12 2 2 4-5');
 });
 const openEditorDialog = (app, id) => {
