@@ -62,17 +62,17 @@
     .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;margin:14px 14px 12px;border:1px solid #e1e2dd;border-radius:12px;background:var(--surface-muted)}
     .mode-button{min-height:42px;border:0;border-radius:9px;background:transparent;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
     .mode-button[aria-pressed="true"]{background:#fff;color:var(--accent);box-shadow:0 1px 5px rgba(0,0,0,.08)}
-    .mode-button svg{width:17px;height:17px}
+    .mode-button svg{width:17px;height:17px}#qrModeButton svg{width:19px;height:19px}
     .qr-preview-wrap{width:min(78%,286px);aspect-ratio:1;padding:12px;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;place-items:center}
     .qr-preview-wrap[hidden]{display:none}.qr-preview-wrap svg{display:block;width:100%;height:100%}
     .qr-empty{width:min(78%,286px);aspect-ratio:1;border:2px dashed rgba(255,255,255,.34);border-radius:12px;display:grid;place-items:center;padding:20px;color:rgba(255,255,255,.72);font-size:12px;text-align:center}
-    .qr-empty[hidden]{display:none}.qr-note{margin-top:7px;color:var(--muted);font-size:11px}.qr-note.error{color:var(--danger)}
+    .qr-empty[hidden]{display:none}.qr-note{margin-top:7px;color:var(--muted);font-size:11px}.qr-note:empty{margin-top:0}.qr-note.error{color:var(--danger)}
     .warning{display:flex;gap:9px;margin-top:12px;padding:10px 11px;border:1px solid #ead7b2;border-radius:11px;background:#fff8e8;color:#654500;font-size:11px;line-height:1.55}
     .warning svg{width:17px;height:17px;flex:0 0 auto;margin-top:1px}
     .action-row{display:flex;gap:8px;margin-top:16px}.button{min-height:44px;padding:9px 14px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:760}.button:hover{background:var(--surface-muted);border-color:var(--line-strong)}
     .button.primary{flex:1;border-color:var(--accent);background:var(--accent);color:#fff}.button.primary:hover{background:var(--accent-hover)}.button:disabled{opacity:.46;cursor:not-allowed}
     .tip-list{display:grid;gap:10px}.tip{display:flex;gap:11px;padding:11px;border-radius:12px;background:var(--surface-muted)}.tip-icon{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--accent);flex:0 0 auto}.tip-icon svg{width:17px;height:17px}.tip strong{display:block;font-size:12px}.tip p{margin:2px 0 0;color:var(--muted);font-size:11px}
-    .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}
+    .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}.status-line:empty{margin-top:0}
     .status-line[data-tone="warn"]{color:var(--warning)}
     html:has(dialog:modal),body:has(dialog:modal){overflow:hidden;overscroll-behavior:none}
     dialog{width:min(620px,calc(100% - 26px));max-height:calc(100dvh - 28px);padding:0;border:1px solid var(--line);border-radius:17px;background:#fff;color:var(--text);box-shadow:var(--shadow);overflow:hidden}
@@ -143,7 +143,7 @@
     <section class="panel">
       <div class="mode-switch" role="group" aria-label="Display mode">
         <button class="mode-button" id="messageModeButton" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h12M4 18h9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span data-i18n="modeMessage">文字・矢印</span></button>
-        <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 14h2v2h-2zM18 14h2v5h-2zM14 18h3v2h-3z" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="modeQr">QR</span></button>
+        <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M5.3 5.3h2.4v2.4H5.3zM16.3 5.3h2.4v2.4h-2.4zM5.3 16.3h2.4v2.4H5.3zM14 14h3v3h-3zM19 14h2v2h-2zM19 18h2v3h-2zM14 19h3v2h-3z" fill="currentColor"/></svg><span data-i18n="modeQr">QR</span></button>
       </div>
       <div class="preview-shell">
         <div class="preview" id="preview">
@@ -161,10 +161,10 @@
         <div class="field" id="qrField" hidden>
           <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><span class="hint" id="qrByteCount">0 / 300 bytes</span></div>
           <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
-          <div class="qr-note" id="qrNote" data-i18n="qrNote">QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。</div>
+          <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
         </div>
         <div class="field" id="quickField">
-          <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label><span class="hint" data-i18n="quickHint">タップで切替</span></div>
+          <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label></div>
           <div class="quick-grid" id="presetGrid">
             <button class="preset" type="button" data-value="ここです" data-value-en="HERE" data-i18n="presetHere">ここです</button>
             <button class="preset" type="button" data-value="助けて" data-value-en="HELP" data-i18n="presetHelp">助けて</button>
@@ -177,7 +177,7 @@
           </div>
         </div>
         <div class="field" id="colorField">
-          <div class="label-row"><label data-i18n="colorLabel">背景色</label><span class="hint" data-i18n="contrastAuto">文字色は自動</span></div>
+          <div class="label-row"><label data-i18n="colorLabel">背景色</label></div>
           <div class="color-grid" id="colorGrid">
             <button class="color-button" type="button" style="--swatch:#101110" data-color="#101110" aria-label="Black" aria-pressed="true"></button>
             <button class="color-button" type="button" style="--swatch:#ffffff" data-color="#ffffff" aria-label="White" aria-pressed="false"></button>
@@ -188,7 +188,7 @@
           </div>
         </div>
         <div class="field" id="flashField">
-          <div class="label-row"><label data-i18n="flashLabel">点滅</label><span class="hint" id="flashHint" data-i18n="flashHint">必要なときだけ</span></div>
+          <div class="label-row"><label data-i18n="flashLabel">点滅</label></div>
           <div class="segmented" id="flashSegments">
             <button class="segment" type="button" data-flash="steady" aria-pressed="true" data-i18n="flashOff">なし</button>
             <button class="segment" type="button" data-flash="slow" aria-pressed="false" data-i18n="flashSlow">ゆっくり</button>
@@ -204,7 +204,7 @@
           <button class="button" id="resetButton" type="button" data-i18n="reset">リセット</button>
           <button class="button primary" id="showButton" type="button"><span data-i18n="showFullscreen">全画面で表示</span></button>
         </div>
-        <div class="status-line" id="statusLine" aria-live="polite" data-i18n="savedLocally">設定はこの端末に自動保存されます</div>
+        <div class="status-line" id="statusLine" aria-live="polite"></div>
       </div>
     </section>
 
@@ -248,7 +248,7 @@
   <div class="dialog-body">
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
-    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
+    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。</p>
 
 
     <h3 data-i18n="helpQrTitle">QR表示</h3>
@@ -256,7 +256,7 @@
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
     <p data-i18n="helpFlash">点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。</p>
     <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
-    <p data-i18n="helpPrivacy">入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。</p>
+    <p data-i18n="helpPrivacy">入力した文字やQRの内容、設定は、この端末のブラウザーに自動保存されます。外部への送信、解析、アカウント登録はありません。</p>
     <h3 data-i18n="helpLimitsTitle">制限事項</h3>
     <p data-i18n="helpLimits">ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。</p>
     <!-- APP:HELP:END -->
@@ -289,19 +289,19 @@ __QR_CODE_JS__
   const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
   const translations = {
     ja:{
-      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
-      previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
-      colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
+      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
+      previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
+      colorLabel:"背景色",flashLabel:"点滅",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
       flashWarning:"点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。",reset:"リセット",showFullscreen:"全画面で表示",
-      savedLocally:"設定はこの端末に自動保存されます",tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
+      tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
       tipBrightnessTitle:"明るさは端末側で調整",tipBrightness:"ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。",
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
       stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stagePinnedHint:"操作ボタンを固定中。解除すると自動で隠れます",pinControls:"操作を固定",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
-      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
+      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。",
 
       helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
-      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
+      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字やQRの内容、設定は、この端末のブラウザーに自動保存されます。外部への送信、解析、アカウント登録はありません。",
       helpLimitsTitle:"制限事項",helpLimits:"ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。",
       flashDialogTitle:"点滅を使用しますか？",flashDialogBody:"点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。",cancel:"キャンセル",enableFlash:"点滅を使う",
       resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
@@ -309,19 +309,19 @@ __QR_CODE_JS__
       emptyFallback:"ここです"
     },
     en:{
-      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
-      previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
-      colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
+      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
+      previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
+      colorLabel:"Background",flashLabel:"Flash pattern",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
       flashWarning:"Do not use flashing light near people who are sensitive to it. Flash rates are intentionally kept low.",reset:"Reset",showFullscreen:"Show full screen",
-      savedLocally:"Settings are saved automatically on this device",tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
+      tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
       tipBrightnessTitle:"Adjust brightness on the device",tipBrightness:"A browser cannot change screen brightness. Increase device brightness for outdoor use.",
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
       stageHint:"Tap the screen to show or hide controls",stagePinnedHint:"Controls are pinned. Unpin to resume auto-hide",pinControls:"Pin controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
-      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
+      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab.",
 
       helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
-      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
+      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message, QR content, and settings are automatically saved in this browser on your device. There is no upload, analytics, account, or tracking.",
       helpLimitsTitle:"Limitations",helpLimits:"Browsers cannot change device screen brightness. Fullscreen and Wake Lock availability depends on the browser and how the file is opened.",
       flashDialogTitle:"Enable flashing?",flashDialogBody:"Flashing screens can cause discomfort or health effects for some people. Use this feature with consideration for people nearby.",cancel:"Cancel",enableFlash:"Enable flashing",
       resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content and the flashing acknowledgement. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
@@ -397,7 +397,7 @@ __QR_CODE_JS__
   }
   function updateQrPreview(){
     const value=els.qrInput.value.trim(),bytes=qrBytes(),tooLong=bytes>300;
-    els.qrByteCount.textContent=`${bytes} / 300 bytes`;els.qrNote.textContent=tooLong?t("qrTooLong"):t("qrNote");els.qrNote.classList.toggle("error",tooLong);
+    els.qrByteCount.textContent=`${bytes} / 300 bytes`;els.qrNote.textContent=tooLong?t("qrTooLong"):"";els.qrNote.classList.toggle("error",tooLong);
     if(!value||tooLong){els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=tooLong?t("qrTooLong"):t("qrEmpty");els.stageQr.innerHTML="";els.showButton.disabled=true;return;}
     try{const svg=makeQrSvg(value);els.qrPreview.innerHTML=svg;els.stageQr.innerHTML=svg;els.qrPreviewWrap.hidden=false;els.qrEmpty.hidden=true;els.showButton.disabled=false;}catch{els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=t("qrGenerateError");els.qrNote.textContent=t("qrGenerateError");els.qrNote.classList.add("error");els.stageQr.innerHTML="";els.showButton.disabled=true;}
   }
@@ -485,7 +485,7 @@ __QR_CODE_JS__
     const key={steady:"modeSteady",slow:"modeSlow",beacon:"modeBeacon",sos:"modeSos"}[state.flash];
     els.stageModeChip.textContent=t(key);
   }
-  function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
+  function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent="";els.statusLine.dataset.tone=""},2800);}
   function updateStageControls(){
     els.stagePinButton.setAttribute("aria-pressed",String(controlsPinned));
     els.stageHint.textContent=t(controlsPinned?"stagePinnedHint":"stageHint");
