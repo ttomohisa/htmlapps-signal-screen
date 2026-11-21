@@ -35,10 +35,10 @@
 .dialog-close{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
 .dialog-close svg{width:18px;height:18px}
     .icon-button:hover{background:var(--surface-muted);color:var(--text)}.icon-button svg{width:20px;height:20px}
-    main{width:min(1120px,100%);margin:auto;padding:24px clamp(14px,2.7vw,28px) 72px}
-    .intro{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
-    .intro h1{margin:0;font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;line-height:1.22}.intro p{margin:6px 0 0;color:var(--muted);font-size:13px}
-    .local-badge{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;margin-top:3px;padding:7px 0;border:0;border-radius:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;white-space:nowrap}
+    main{width:min(1120px,100%);margin:auto;padding:20px clamp(14px,2.7vw,28px) 72px}
+    .intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+    .intro p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+    .local-badge{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;padding:7px 0;border:0;border-radius:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;white-space:nowrap}
     .local-badge svg{width:15px;height:15px}
     .layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
     .panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:0 2px 9px rgba(25,28,24,.04);overflow:hidden}
@@ -98,14 +98,14 @@
     .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
     @media (max-width:760px){
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
-      main{padding-top:17px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:13px}.intro h1{font-size:25px}.intro p{max-width:310px}.local-badge{display:none}
+      main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:12px}.local-badge{display:none}
       .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
       .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:0;margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
       .action-row .button:not(.primary){display:none}.button.primary{min-height:50px;border-radius:13px}.desktop-tips{display:none}
       dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:18px 18px 0 0;border-left:0;border-right:0;border-bottom:0}
       .stage-text{max-width:94vw}.stage-bottom{gap:5px}.stage-control{min-width:0;flex:1;max-width:120px}
     }
-    @media (max-width:360px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:5px}.preset{font-size:11px;padding:7px 4px}.segmented{gap:3px}.segment{font-size:11px}.color-grid{gap:5px}.panel-body{padding:13px}.intro p{font-size:12px}}
+    @media (max-width:360px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:5px}.preset{font-size:11px;padding:7px 4px}.segmented{gap:3px}.segment{font-size:11px}.color-grid{gap:5px}.panel-body{padding:13px}.intro p{font-size:13px}}
     @media (orientation:landscape) and (max-height:520px){.stage-text{max-height:76dvh}.stage-bottom{bottom:8px}.stage-top{top:8px}.stage-hint{display:none}}
     @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}.preview,.stage-surface{transition:none}}
     /* APP:END */
@@ -134,10 +134,10 @@
 </header>
 
 <main>
-  <section class="intro">
-    <div><h1 data-i18n="headline">画面いっぱいに伝える</h1><p data-i18n="intro">待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。</p></div>
+  <div class="intro">
+    <p data-i18n="intro">待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。</p>
     <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="localOnly">完全ローカル処理</span></div>
-  </section>
+  </div>
 
   <div class="layout">
     <section class="panel">
@@ -289,7 +289,7 @@ __QR_CODE_JS__
   const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
   const translations = {
     ja:{
-      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
+      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
       previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
       colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
       flashWarning:"点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。",reset:"リセット",showFullscreen:"全画面で表示",
@@ -309,7 +309,7 @@ __QR_CODE_JS__
       emptyFallback:"ここです"
     },
     en:{
-      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
+      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
       previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
       colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
       flashWarning:"Do not use flashing light near people who are sensitive to it. Flash rates are intentionally kept low.",reset:"Reset",showFullscreen:"Show full screen",
