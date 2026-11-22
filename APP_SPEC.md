@@ -77,7 +77,7 @@ Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display wor
 
 ## 10. Release integrity
 - The GitHub Pages build is generated from the current source; checked-in distribution snapshots may lag behind a pull request.
-- The post-merge release workflow publishes versioned HTML downloads, a ZIP, SHA-256 hashes, and screenshots after validation succeeds.
+- The post-merge release workflow publishes versioned HTML downloads, a ZIP, SHA-256 hashes, screenshots, and the first-party and third-party license notices after validation succeeds.
 - README and the release must identify the same version and limitations.
 
 ## 11. Acceptance criteria
