@@ -34,9 +34,12 @@ async function main() {
         await page.locator('#messageInput').fill('ここです');
         const oneLine=await page.locator('#previewMessage').evaluate(el=>({
           whiteSpace:getComputedStyle(el).whiteSpace,
+          fontSize:parseFloat(getComputedStyle(el).fontSize),
+          width:el.clientWidth,scrollWidth:el.scrollWidth,
           withinWidth:el.scrollWidth<=el.clientWidth+1
         }));
-        assert.equal(oneLine.whiteSpace,'nowrap',label+': short signals remain on one line');
+        assert.equal(oneLine.whiteSpace,'nowrap',label+': short signals remain on one line '+JSON.stringify(oneLine));
+        assert.ok(oneLine.fontSize>=34,label+': short signal remains legible '+JSON.stringify(oneLine));
         assert.equal(oneLine.withinWidth,true,label+': short text stays inside the preview');
         const presetFirst=await page.evaluate(()=>document.querySelector('#quickField').compareDocumentPosition(document.querySelector('#messageField'))&Node.DOCUMENT_POSITION_FOLLOWING);
         assert.ok(presetFirst,label+': presets precede freeform entry in DOM');
