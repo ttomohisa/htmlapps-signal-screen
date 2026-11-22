@@ -71,34 +71,8 @@ jobs:
         id: package
         shell: pwsh
         run: |
-          $tag = "${{ steps.version.outputs.tag }}"
-          $name = "htmlapps-signal-screen-$tag"
           $root = Join-Path $env:RUNNER_TEMP "signal-screen-release"
-          New-Item -ItemType Directory -Force -Path $root | Out-Null
-          $regular = Join-Path $root "$name.html"
-          $compressed = Join-Path $root "$name.self-extract.html"
-          Copy-Item "dist/index.html" $regular
-          Copy-Item "dist/index.self-extract.html" $compressed
-          $licenseFile = Join-Path $root "LICENSE"
-          $noticesFile = Join-Path $root "THIRD_PARTY_NOTICES.md"
-          Copy-Item "LICENSE" $licenseFile
-          Copy-Item "THIRD_PARTY_NOTICES.md" $noticesFile
-          $zip = Join-Path $root "$name.zip"
-          Compress-Archive -Path @($regular,$compressed,$licenseFile,$noticesFile) -DestinationPath $zip -CompressionLevel Optimal -Force
-          $screenshots = @(
-            @{ Source = "assets/screenshot.png"; Target = "screenshot-ja.png" },
-            @{ Source = "assets/screenshot-en.png"; Target = "screenshot-en.png" },
-            @{ Source = "assets/screenshot-mobile.png"; Target = "screenshot-mobile-ja.png" }
-          )
-          foreach ($item in $screenshots) {
-            Copy-Item $item.Source (Join-Path $root $item.Target)
-          }
-          $assets = @($regular,$compressed,$zip,$licenseFile,$noticesFile) + @($screenshots | ForEach-Object { Join-Path $root $_.Target })
-          $checksums = foreach ($asset in $assets) {
-            $hash = (Get-FileHash -Path $asset -Algorithm SHA256).Hash.ToLowerInvariant()
-            "$hash  $(Split-Path -Leaf $asset)"
-          }
-          [System.IO.File]::WriteAllLines((Join-Path $root "SHA256SUMS.txt"),[string[]]$checksums,[System.Text.UTF8Encoding]::new($false))
+          ./scripts/package-release.ps1 -OutputDir $root
           "package_path=$root" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Publish GitHub Release and tag only after validation
