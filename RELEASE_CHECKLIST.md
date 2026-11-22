@@ -28,7 +28,7 @@ This checklist distinguishes automatic validation from checks that require a phy
 
 - [ ] `main` build and GitHub Pages deployment pass.
 - [ ] The release workflow creates **v1.1.0** only after the main-branch checks pass; it does not overwrite an existing release.
-- [ ] The GitHub Release contains normal and self-extracting HTML, ZIP, `SHA256SUMS.txt`, and three fresh screenshots.
+- [ ] The GitHub Release contains normal and self-extracting HTML, ZIP, `SHA256SUMS.txt`, and three fresh screenshots, LICENSE, and THIRD_PARTY_NOTICES.md.
 - [ ] Check the downloaded file names, SHA-256 hashes, offline opening, version badge, and release notes.
 - [ ] Confirm the README's versioned Release link points to current downloads. Note: checked-in `dist/`, root HTML, and repository screenshot files can be older build snapshots; release assets are the versioned distribution.
 
