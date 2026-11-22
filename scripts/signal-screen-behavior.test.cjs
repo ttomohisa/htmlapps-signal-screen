@@ -346,4 +346,78 @@ test('a child click with out-of-dialog keyboard coordinates is not a backdrop di
   assert.equal(app.el('helpDialog').open, true);
 });
 
+
+for (const language of ['ja', 'en']) {
+  test(`${language}: short message stays on one line, explicit newline wraps`, () => {
+    const app=setup(language,{width:250,height:180});
+    app.input(app.el('messageInput'),'ここです');
+    assert.equal(app.el('previewMessage').style.whiteSpace,'nowrap');
+    app.input(app.el('messageInput'),'受付\\nこちら');
+    assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
+    app.input(app.el('messageInput'),'W'.repeat(60));
+    assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
+  });
+  test(`${language}: saved signals persist, apply their colors, and remove only after confirmation`, () => {
+    const app=setup(language);
+    app.input(app.el('messageInput'),'Gate A');app.run("setColor('#ffd400')");
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),1);
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),1,'duplicates are ignored');
+    app.input(app.el('messageInput'),'Gate B');app.run("setColor('#1769d1')");
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),2);
+    app.document.querySelector('.saved-apply').click();
+    assert.equal(app.el('messageInput').value,'Gate A');
+    assert.equal(app.run('state.color'),'#ffd400');
+    const reloaded=setup(language,{storage:[...app.storage]});
+    assert.equal(reloaded.run('state.savedSignals.length'),2);
+    reloaded.document.querySelector('.saved-remove').click();
+    assert.equal(reloaded.el('removeSavedDialog').open,true);
+    reloaded.el('removeSavedDialog').querySelector('[data-i18n="cancel"]').click();
+    assert.equal(reloaded.run('state.savedSignals.length'),2);
+    reloaded.document.querySelector('.saved-remove').click();
+    reloaded.el('removeSavedConfirmButton').click();
+    assert.equal(reloaded.run('state.savedSignals.length'),1);
+    const resetReloaded=setup(language,{storage:[...reloaded.storage]});
+    resetReloaded.el('mobileResetButton').click();
+    assert.equal(resetReloaded.el('resetDialog').open,true);
+    resetReloaded.el('resetConfirmButton').click();
+    assert.equal(resetReloaded.run('state.savedSignals.length'),0);
+    assert.equal(resetReloaded.el('qrInput').value,'');
+  });
+  test(`${language}: saved signals cap at three without changing the selected flashing mode`, () => {
+    const app=setup(language);
+    for(let i=0;i<3;i++){app.input(app.el('messageInput'),'Gate '+i);app.el('saveSignalButton').click();}
+    assert.equal(app.run('state.savedSignals.length'),3);
+    assert.equal(app.el('saveSignalButton').disabled,true);
+    assert.equal(app.document.querySelectorAll('.saved-item').length,3);
+  });
+  test(`${language}: QR paste works without uploading and preserves content on denial`, async () => {
+    let permitted=true;
+    const app=setup(language,{navigator:{clipboard:{readText:async()=>{if(!permitted)throw Error('denied');return 'https://example.test/local';}}}});
+    app.el('qrModeButton').click();
+    app.el('pasteQrButton').click();await app.settle();
+    assert.equal(app.el('qrInput').value,'https://example.test/local');
+    assert.equal(app.run('state.qrText'),'https://example.test/local');
+    permitted=false;app.el('pasteQrButton').click();await app.settle();
+    assert.equal(app.el('qrInput').value,'https://example.test/local');
+    assert.match(app.el('statusLine').textContent,/clipboard|クリップボード/);
+  });
+  test(`${language}: stage notifications are shown on the display, then dismissed`, async () => {
+    const app=setup(language);await open(app);
+    app.run('showStatus("example warning","warn")');
+    assert.equal(app.el('stageNotice').hidden,false);
+    assert.equal(app.el('stageNotice').textContent,'example warning');
+    assert.equal(app.el('statusLine').textContent,'');
+    app.flushTimers();
+    assert.equal(app.el('stageNotice').hidden,true);
+  });
+}
+test('mobile preset-first order matches document and focus order', () => {
+  const app=setup('ja');
+  const field=app.document.querySelector('.panel-body');
+  assert.ok(field.children.indexOf(app.el('quickField'))<field.children.indexOf(app.el('messageField')));
+});
+
 (async () => { let failed = 0; for (const {name,body} of tests) { try { await body(); console.log('ok - '+name); } catch (error) { failed++; console.error('not ok - '+name+'\n'+error.stack); } } console.log(`${tests.length-failed}/${tests.length} passed`); process.exitCode = failed ? 1 : 0; })();
