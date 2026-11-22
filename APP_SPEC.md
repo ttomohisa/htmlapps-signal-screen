@@ -75,7 +75,12 @@ A user can enter a short message or choose a preset, choose a signal color and o
 ## 9. Browser target
 Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display works with `file://`. Fullscreen and Wake Lock depend on browser/security context support.
 
-## 10. Acceptance criteria
+## 10. Release integrity
+- The GitHub Pages build is generated from the current source; checked-in distribution snapshots may lag behind a pull request.
+- The post-merge release workflow publishes versioned HTML downloads, a ZIP, SHA-256 hashes, and screenshots after validation succeeds.
+- README and the release must identify the same version and limitations.
+
+## 11. Acceptance criteria
 - Both release HTML variants build.
 - Self-extract wrapper is ASCII-only, inherits favicon, and restores readable HTML byte-for-byte.
 - No unresolved placeholders.
