@@ -109,7 +109,7 @@ Signal Screen does not provide a high-frequency strobe. If `prefers-reduced-moti
 
 ## Release and GitHub Pages
 
-On a push to `main`, the release workflow validates the code and creates a versioned GitHub Release when that version is not already published. The tag and release are never created while this PR is open. Release assets include normal/self-extract HTML, a ZIP, checksums, and current screenshots.
+On a push to `main`, the release workflow validates the code and creates a versioned GitHub Release when that version is not already published. The tag and release are never created while this PR is open. Release assets include normal/self-extract HTML, a ZIP, checksums, current screenshots, and the applicable license notices.
 
 ## Publish with GitHub Pages
 
