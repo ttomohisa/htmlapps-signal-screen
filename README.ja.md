@@ -133,6 +133,7 @@ Pagesがまだ有効になっていない場合、ワークフローはHTMLの�
 ├─ build-standalone.ps1                # 通常版HTMLの生成
 ├─ scripts/
 │  ├─ release-screenshots.browser.cjs  # リリース用スクリーンショット生成
+│  ├─ package-release.ps1              # ZIP・ライセンス・チェックサム
 │  ├─ build-self-extract.ps1           # 自己解凍版の生成
 │  ├─ verify-standalone.ps1            # 通常版の検証
 │  ├─ verify-self-extract.ps1          # 自己解凍版の検証
