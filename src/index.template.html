@@ -48,6 +48,20 @@
     .preview-message{position:absolute;min-width:0;padding:0;text-align:center;font-weight:900;line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere;font-size:clamp(40px,8vw,88px);white-space:pre-wrap}
     .preview.flash-off{opacity:0}
     .preview-label{position:absolute;top:10px;left:10px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.13);color:inherit;font-size:10px;font-weight:700;backdrop-filter:blur(4px)}
+    .preview-reset{display:none;position:absolute;z-index:2;top:10px;right:10px;width:38px;height:38px;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);border-radius:11px;background:rgba(20,24,23,.82);color:#fff}
+    .preview-reset svg{width:19px;height:19px}
+    .subtle-button{min-height:34px;padding:5px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--accent);font-size:12px;font-weight:700}
+    .subtle-button:disabled{opacity:.5;cursor:not-allowed}
+    .qr-tools{display:flex;align-items:center;gap:8px}
+    .saved-list{display:grid;gap:7px}
+    .saved-list:empty{display:none}
+    .saved-item{display:flex;align-items:stretch;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .saved-apply{display:flex;align-items:center;gap:9px;min-width:0;flex:1;padding:9px 10px;border:0;border-radius:10px;background:transparent;text-align:left;font-size:13px}
+    .saved-apply:hover,.saved-remove:hover{background:var(--surface-muted)}
+    .saved-swatch{display:block;width:16px;height:16px;border:1px solid rgba(0,0,0,.18);border-radius:5px;flex:0 0 auto}
+    .saved-text{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .saved-remove{display:grid;place-items:center;width:42px;min-width:42px;padding:0;border:0;border-left:1px solid var(--line);border-radius:0 9px 9px 0;background:transparent;color:var(--muted)}
+    .saved-remove svg{width:17px;height:17px}
     .field{margin-top:15px}.field:first-child{margin-top:0}.label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.field label,.field legend{font-size:12px;font-weight:760}.hint{font-size:11px;color:var(--muted)}
     textarea{width:100%;min-height:112px;padding:12px 13px;resize:vertical;border:1px solid var(--line);border-radius:11px;background:#fbfbf9;line-height:1.55}
     textarea:hover{border-color:var(--line-strong)}
@@ -96,9 +110,17 @@
     .stage-control[aria-pressed="true"]{border-color:#fff;background:rgba(12,12,12,.85);box-shadow:inset 0 0 0 1px #fff}
     .stage-control{min-width:82px;min-height:42px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
     .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
+    .stage-notice{position:absolute;z-index:4;left:50%;bottom:calc(var(--safe-bottom) + 100px);transform:translateX(-50%);max-width:min(92vw,440px);padding:10px 14px;border-radius:12px;background:rgba(20,24,23,.93);color:#fff;font-size:13px;font-weight:650;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.2);pointer-events:none}
+    .stage-notice[hidden]{display:none}
     @media (max-width:760px){
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
       main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:12px}.local-badge{display:none}
+      .preview-reset{display:flex}.preview{min-height:clamp(180px,32dvh,232px)}
+      .panel-body{display:flex;flex-direction:column}
+      #quickField{order:0;margin-top:0}#messageField,#qrField{order:1;margin-top:14px}#savedField{order:2}#colorField{order:3}#flashField{order:4}
+      .panel-body>.action-row{order:5}.panel-body>.status-line{order:6}
+      .action-row{bottom:var(--keyboard-offset,0px)}
+      .qr-tools{gap:5px}
       .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
       .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:0;margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
       .action-row .button:not(.primary){display:none}.button.primary{min-height:50px;border-radius:13px}.desktop-tips{display:none}
@@ -148,6 +170,7 @@
       <div class="preview-shell">
         <div class="preview" id="preview">
           <span class="preview-label" data-i18n="previewLabel">プレビュー</span>
+          <button class="preview-reset" id="mobileResetButton" type="button" data-i18n-title="reset" aria-label="リセット" title="リセット"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10a8 8 0 1 1-.1 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M4.5 4.5V10H10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="preview-message" id="previewMessage">ここです</div>
           <div class="qr-preview-wrap" id="qrPreviewWrap" hidden><div id="qrPreview"></div></div>
           <div class="qr-empty" id="qrEmpty" hidden data-i18n="qrEmpty">URLやテキストを入力するとQRを表示します</div>
@@ -159,7 +182,7 @@
           <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
         </div>
         <div class="field" id="qrField" hidden>
-          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><span class="hint" id="qrByteCount">0 / 300 bytes</span></div>
+          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><div class="qr-tools"><span class="hint" id="qrByteCount">0 / 300 bytes</span><button class="subtle-button" id="pasteQrButton" type="button" data-i18n="paste">貼り付け</button></div></div>
           <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
           <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
         </div>
@@ -175,6 +198,10 @@
             <button class="preset arrow" type="button" data-value="↓">↓</button>
             <button class="preset arrow" type="button" data-value="→">→</button>
           </div>
+        </div>
+        <div class="field" id="savedField">
+          <div class="label-row"><label data-i18n="savedTitle">保存した合図</label><button class="subtle-button" id="saveSignalButton" type="button" data-i18n="saveSignal">今の合図を保存</button></div>
+          <div class="saved-list" id="savedList" aria-label="保存した合図"></div>
         </div>
         <div class="field" id="colorField">
           <div class="label-row"><label data-i18n="colorLabel">背景色</label></div>
@@ -224,6 +251,7 @@
   <footer><span id="footerName">Signal Screen</span> · MIT License · <span data-i18n="footer">合図の表示はブラウザー内で完結</span></footer>
 
 <div class="stage" id="stage" role="dialog" aria-modal="true" aria-label="全画面で表示" aria-hidden="true" tabindex="-1">
+  <div class="stage-notice" id="stageNotice" role="status" aria-live="polite" hidden></div>
   <div class="stage-surface" id="stageSurface">
     <div class="stage-text" id="stageText">ここです</div>
     <div class="stage-qr" id="stageQr"></div>
@@ -267,6 +295,12 @@
   <div class="dialog-head"><h2 data-i18n="flashDialogTitle">点滅を使用しますか？</h2><button class="dialog-close" type="button" data-close-dialog="flashConfirmDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
   <div class="dialog-body"><p data-i18n="flashDialogBody">点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。</p></div>
   <div class="dialog-actions"><button class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
+</dialog>
+
+<dialog id="removeSavedDialog" class="confirmation-dialog">
+  <div class="dialog-head"><h2 data-i18n="removeSavedTitle">保存した合図を削除しますか？</h2><button class="dialog-close" type="button" data-close-dialog="removeSavedDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="removeSavedBody">保存した合図を1件削除します。入力中の文字は変わりません。</p></div>
+  <div class="dialog-actions"><button class="button" type="button" data-close-dialog="removeSavedDialog" data-i18n="cancel">キャンセル</button><button class="button" id="removeSavedConfirmButton" type="button" data-i18n="removeSaved" style="color:var(--danger)">削除</button></div>
 </dialog>
 
 <dialog id="resetDialog" class="confirmation-dialog">
