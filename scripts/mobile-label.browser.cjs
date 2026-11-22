@@ -47,17 +47,25 @@ async function main() {
         if(width<=760)assert.ok(await page.locator('#preview').evaluate(el=>el.clientHeight<=234),label+': mobile preview is compact');
         if(width<=760){
           const position=await page.locator('.action-row').evaluate(el=>{
-            const root=document.documentElement;
             const initial=getComputedStyle(el).bottom;
-            root.style.setProperty('--keyboard-offset','144px');
-            const raised=getComputedStyle(el).bottom;
-            root.style.removeProperty('--keyboard-offset');
-            return {initial,raised,restored:getComputedStyle(el).bottom,
-              variable:getComputedStyle(root).getPropertyValue('--keyboard-offset'),
-              position:getComputedStyle(el).position,
-              css: [...document.styleSheets].flatMap(sheet=>[...sheet.cssRules]).filter(rule=>rule.conditionText?.includes('760px')).map(rule=>[...rule.cssRules].filter(r=>r.selectorText?.includes('.action-row')).map(r=>r.cssText)).flat()};
+            const original=Object.getOwnPropertyDescriptor(window,'visualViewport');
+            let raised;
+            try {
+              Object.defineProperty(window,'visualViewport',{
+                configurable:true,value:{height:innerHeight-144,offsetTop:0}
+              });
+              document.getElementById('messageInput').focus();
+              window.dispatchEvent(new Event('resize'));
+              raised=getComputedStyle(el).bottom;
+            } finally {
+              if(original)Object.defineProperty(window,'visualViewport',original);
+              else delete window.visualViewport;
+              document.getElementById('messageInput').blur();
+              window.dispatchEvent(new Event('resize'));
+            }
+            return {initial,raised,restored:getComputedStyle(el).bottom};
           });
-          assert.equal(position.raised,'144px',label+': fixed action bar respects keyboard offset '+JSON.stringify(position));
+          assert.deepEqual(position,{initial:'0px',raised:'144px',restored:'0px'},label+': toolbar avoids simulated keyboard '+JSON.stringify(position));
           if(language==='ja'){
             const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
             assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
