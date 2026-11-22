@@ -200,6 +200,8 @@ The GitHub Pages version needs an initial request to download the HTML, but Sign
 
 The embedded QR implementation is modified to support UTF-8 input and is included directly in the single HTML. No third-party runtime library is downloaded from the network. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
 
+Before merging a version bump, work through [the release checklist](RELEASE_CHECKLIST.md). CI covers Chromium, while Safari/Firefox and real-device behavior still require manual confirmation.
+
 ## Contributing
 
 Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidance.
