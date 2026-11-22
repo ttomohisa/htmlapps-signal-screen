@@ -414,6 +414,16 @@ for (const language of ['ja', 'en']) {
     assert.equal(app.el('stageNotice').hidden,true);
   });
 }
+test('mobile action bar uses visual viewport occlusion only while editing', () => {
+  const app=setup('ja',{viewportWidth:393,viewportHeight:800});
+  app.window.visualViewport={height:460,offsetTop:0};
+  app.el('messageInput').focus();
+  app.run('updateKeyboardOffset()');
+  assert.equal(app.document.documentElement.style['--keyboard-offset'],'340px');
+  app.resize(1184,800);
+  app.run('updateKeyboardOffset()');
+  assert.equal(app.document.documentElement.style['--keyboard-offset'],'0px');
+});
 test('mobile preset-first order matches document and focus order', () => {
   const app=setup('ja');
   const field=app.document.querySelector('.panel-body');
