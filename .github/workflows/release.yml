@@ -79,8 +79,12 @@ jobs:
           $compressed = Join-Path $root "$name.self-extract.html"
           Copy-Item "dist/index.html" $regular
           Copy-Item "dist/index.self-extract.html" $compressed
+          $licenseFile = Join-Path $root "LICENSE"
+          $noticesFile = Join-Path $root "THIRD_PARTY_NOTICES.md"
+          Copy-Item "LICENSE" $licenseFile
+          Copy-Item "THIRD_PARTY_NOTICES.md" $noticesFile
           $zip = Join-Path $root "$name.zip"
-          Compress-Archive -Path @($regular,$compressed) -DestinationPath $zip -CompressionLevel Optimal -Force
+          Compress-Archive -Path @($regular,$compressed,$licenseFile,$noticesFile) -DestinationPath $zip -CompressionLevel Optimal -Force
           $screenshots = @(
             @{ Source = "assets/screenshot.png"; Target = "screenshot-ja.png" },
             @{ Source = "assets/screenshot-en.png"; Target = "screenshot-en.png" },
@@ -89,7 +93,7 @@ jobs:
           foreach ($item in $screenshots) {
             Copy-Item $item.Source (Join-Path $root $item.Target)
           }
-          $assets = @($regular,$compressed,$zip) + @($screenshots | ForEach-Object { Join-Path $root $_.Target })
+          $assets = @($regular,$compressed,$zip,$licenseFile,$noticesFile) + @($screenshots | ForEach-Object { Join-Path $root $_.Target })
           $checksums = foreach ($asset in $assets) {
             $hash = (Get-FileHash -Path $asset -Algorithm SHA256).Hash.ToLowerInvariant()
             "$hash  $(Split-Path -Leaf $asset)"
