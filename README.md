@@ -22,13 +22,15 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 
 ## Features
 
-- Auto-fit a message to fill the available screen
+- Auto-fit a message to fill the available screen; short messages of up to 12 characters without line breaks are kept on one line
 - Quick presets for HERE, HELP, SOS, and STOP
+- Save, reuse, and remove up to three custom text/background signals
 - Large `←` `↑` `↓` `→` direction arrows
 - Black, white, red, yellow, green, and blue backgrounds
 - Automatic black/white text contrast based on the background
 - One-tap **Text & arrows / QR** mode switching
 - Generate QR codes locally from URLs or short UTF-8 text
+- User-initiated QR paste from the clipboard on supported browsers
 - Fixed black modules, white background, and quiet zone for reliable QR scanning
 - Flashing is automatically disabled in QR mode
 - Steady, Slow, Beacon, and SOS display patterns
@@ -37,8 +39,9 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 - Fullscreen API support
 - Screen Wake Lock on supported browsers
 - Japanese and English in the same HTML
-- LocalStorage persistence for messages, QR content, colors, and settings
-- Responsive desktop and smartphone layouts
+- LocalStorage persistence for messages, QR content, colors, saved signals, and settings
+- Responsive desktop and smartphone layouts with a compact mobile preview, preset-first entry, mobile Reset, and on-screen keyboard positioning
+- Full-stage feedback for unsupported Fullscreen or Wake Lock operations
 - Readable and gzip self-extracting single-HTML release variants
 
 ## Display controls and reset
@@ -48,7 +51,7 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 
 - Tab and Shift+Tab stay within display controls; focused controls remain visible. Closing the display returns focus to Show full screen.
 - Escape dismisses an open confirmation first; a subsequent Escape closes the display.
-- Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
+- Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content, saved signals, and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
 
 ## Quick start
 
@@ -81,14 +84,18 @@ The self-extracting variant requires `DecompressionStream`. Its loader is intent
 5. Press **Show full screen**.
 6. Tap the stage to hide or reveal the controls.
 
-Text is automatically resized to fit the stage. Short messages and arrows can become even larger when a phone is rotated to landscape.
+Tap Save current signal to save up to three favorite messages and their background colors. Restoring one does not change the flash mode. Removal and full Reset require confirmation. A mobile Reset button is also available at the top-right of the preview.
+
+Text is automatically resized to fit the stage. Messages of up to 12 characters without explicit line breaks are kept on one line when resized to fit. Short messages and arrows can become even larger when a phone is rotated to landscape.
 
 ### Show a QR code
 
 1. Select **QR**.
-2. Enter a URL or short text.
+2. Enter a URL or short text. On supported browsers you can press Paste to insert clipboard text.
 3. The QR preview updates immediately.
 4. Press **Show full screen** to maximize the QR code for scanning.
+
+Clipboard text is read only when Paste is pressed. If access is denied or unavailable, long-press the input field to paste manually.
 
 QR generation happens entirely on the device. QR mode keeps a fixed black-on-white design and disables flashing to prioritize scanning reliability. The current input limit is 300 UTF-8 bytes.
 
