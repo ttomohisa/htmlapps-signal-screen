@@ -10,6 +10,7 @@ This checklist distinguishes automatic validation from checks that require a phy
 - [ ] Chromium checks pass for Japanese and English at desktop, 768px, 760px, 393px short landscape, and 320px.
 - [ ] QR paste, save/restore/delete/reset, keyboard-offset CSS, dialogs, reduced-motion, no horizontal overflow, and no external requests pass.
 - [ ] Fresh Japanese/English desktop and Japanese mobile screenshots are generated from the built HTML without external runtime requests.
+- [ ] The release packaging script produces a ZIP containing both standalone files and license notices, with SHA-256 hashes.
 - [ ] The PR preview is published and returns HTTP 200.
 
 ## Physical-device and cross-browser checks
