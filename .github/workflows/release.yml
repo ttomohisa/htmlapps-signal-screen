@@ -38,11 +38,17 @@ jobs:
           if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Expected a SemVer release version." }
           $tag = "v$version"
           "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          gh release view $tag --repo $env:GITHUB_REPOSITORY --json id *> $null
-          if ($LASTEXITCODE -eq 0) {
+          # A missing release is normal for a version bump. Do not use
+          # 'gh release view' here: its non-zero exit can abort a pwsh Actions step.
+          $publishedJson = gh release list --repo $env:GITHUB_REPOSITORY --limit 1000 --json tagName
+          if ($LASTEXITCODE -ne 0) { throw "Could not query existing GitHub Releases." }
+          $published = @($publishedJson | ConvertFrom-Json)
+          $exists = @($published | Where-Object { $_.tagName -eq $tag }).Count -gt 0
+          if ($exists) {
             Write-Host "Release $tag already exists. No tag or release will be changed."
             "publish=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           } else {
+            Write-Host "Release $tag is not published yet; continue with validation."
             "publish=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           }
 
