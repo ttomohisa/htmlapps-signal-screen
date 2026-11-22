@@ -424,6 +424,47 @@ test('mobile action bar uses visual viewport occlusion only while editing', () =
   app.run('updateKeyboardOffset()');
   assert.equal(app.document.documentElement.style['--keyboard-offset'],'0px');
 });
+
+test('invalid stored values are sanitized without crashing or activating flashing', () => {
+  const corrupt = {mode:'unknown',message:999,qrText:{url:'https://example.test'},color:'not-a-color',flash:'invalid',flashAcknowledged:'yes',language:'de',
+    savedSignals:[{message:'valid',color:'#ffd400'},{message:'<img src=x>',color:'red'},{message:'',color:'#101110'}]};
+  const app=setup('ja',{storage:[['signal-screen:v1',JSON.stringify(corrupt)]]});
+  assert.equal(app.run('state.mode'),'message');
+  assert.equal(app.run('state.message'),'ここです');
+  assert.equal(app.run('state.qrText'),'');
+  assert.equal(app.run('state.color'),'#101110');
+  assert.equal(app.run('state.flash'),'steady');
+  assert.equal(app.run('state.flashAcknowledged'),false);
+  assert.equal(app.run('state.savedSignals.length'),1);
+  assert.equal(app.run('state.savedSignals[0].message'),'valid');
+});
+test('saved input is limited to textarea length when the browser restores oversized storage', () => {
+  const saved={message:'X'.repeat(100000),qrText:'z'.repeat(10000),savedSignals:[{message:'safe',color:'#101110'}]};
+  const app=setup('en',{storage:[['signal-screen:v1',JSON.stringify(saved)]]});
+  assert.equal(app.el('messageInput').value.length,60);
+  assert.equal(app.el('qrInput').value.length,300);
+  assert.equal(app.run('state.savedSignals.length'),1);
+});
+test('QR paste refuses oversized UTF-8 data without discarding the current QR', async () => {
+  const app=setup('ja',{navigator:{clipboard:{readText:async()=> 'あ'.repeat(101)}}});
+  app.el('qrModeButton').click();app.input(app.el('qrInput'),'https://example.test/preserved');
+  app.el('pasteQrButton').click();await app.settle();
+  assert.equal(app.el('qrInput').value,'https://example.test/preserved');
+  assert.equal(app.run('state.qrText'),'https://example.test/preserved');
+});
+test('delayed clipboard read cannot overwrite text after leaving QR mode', async () => {
+  let resolve;const app=setup('en',{navigator:{clipboard:{readText:()=>new Promise(done=>{resolve=done;})}}});
+  app.el('qrModeButton').click();app.input(app.el('qrInput'),'original');app.el('pasteQrButton').click();
+  app.el('messageModeButton').click();resolve('should not replace');await app.settle();
+  assert.equal(app.el('qrInput').value,'original');
+  assert.equal(app.run('state.qrText'),'original');
+});
+test('saved signal message is inserted as text, not interpreted as HTML', () => {
+  const app=setup('en',{storage:[['signal-screen:v1',JSON.stringify({savedSignals:[{message:'<img src=x>',color:'#ffd400'}]})]]});
+  assert.equal(app.document.querySelector('.saved-text').textContent,'<img src=x>');
+  assert.equal(app.document.querySelector('.saved-text').querySelector('img'),null);
+});
+
 test('mobile preset-first order matches document and focus order', () => {
   const app=setup('ja');
   const field=app.document.querySelector('.panel-body');
