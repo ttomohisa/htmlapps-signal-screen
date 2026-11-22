@@ -9,7 +9,7 @@ async function main() {
   fs.mkdirSync(evidence, { recursive: true });
   const browser = await chromium.launch();
   try {
-    for (const language of ['ja', 'en']) for (const [width, height] of [[1360,900],[320,568],[393,252]]) {
+    for (const language of ['ja', 'en']) for (const [width, height] of [[1360,900],[768,900],[760,780],[320,568],[393,252]]) {
       const context = await browser.newContext({ viewport: {width,height}, locale: language, reducedMotion:'reduce' });
       const page = await context.newPage();
       const errors=[], requests=[];
@@ -45,6 +45,22 @@ async function main() {
         assert.ok(presetFirst,label+': presets precede freeform entry in DOM');
         if(width<=760)assert.equal(await page.locator('#mobileResetButton').isVisible(),true,label+': mobile reset is reachable');
         if(width<=760)assert.ok(await page.locator('#preview').evaluate(el=>el.clientHeight<=234),label+': mobile preview is compact');
+        if(width<=760){
+          const position=await page.locator('.action-row').evaluate(el=>{
+            const root=document.documentElement;
+            const initial=getComputedStyle(el).bottom;
+            root.style.setProperty('--keyboard-offset','144px');
+            const raised=getComputedStyle(el).bottom;
+            root.style.removeProperty('--keyboard-offset');
+            return {initial,raised,restored:getComputedStyle(el).bottom};
+          });
+          assert.deepEqual(position,{initial:'0px',raised:'144px',restored:'0px'},label+': fixed action bar respects keyboard offset');
+          if(language==='ja'){
+            const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
+            assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
+          }
+        }
+
         if(height>520){
           await page.locator('#messageInput').fill('Gate A');
           await page.locator('#saveSignalButton').click();
