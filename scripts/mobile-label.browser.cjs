@@ -69,7 +69,8 @@ async function main() {
             }
             return {initial,raised,during,restored:getComputedStyle(el).bottom};
           });
-          assert.equal(position.raised,'144px',label+': toolbar avoids simulated keyboard '+JSON.stringify(position));
+          assert.equal(position.during.inlineBottom,'144px',label+': viewport event sets the keyboard-safe toolbar position '+JSON.stringify(position));
+          assert.equal(position.during.customOffset,'144px',label+': keyboard offset is also reflected in the editor bottom padding');
           if(language==='ja'){
             const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
             assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
