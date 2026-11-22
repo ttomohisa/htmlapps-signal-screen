@@ -11,6 +11,7 @@
 - Add user-initiated QR clipboard paste with safe denial/unsupported behavior.
 - Display temporary Fullscreen / Wake Lock warnings on the active signal screen.
 - Update Help, README and regression tests for the new workflows.
+- Bundle full QR-library MIT license terms in the single HTML and the release archive.
 - Standardize the English local-processing badge to “Fully local processing” without changing its artwork or behavior.
 - Validate stored settings and saved messages before restoring a session.
 - Correct the fixed mobile action bar positioning when a virtual keyboard is open.
