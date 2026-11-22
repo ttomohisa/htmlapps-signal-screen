@@ -429,9 +429,11 @@ test('mobile action bar uses visual viewport occlusion only while editing', () =
   app.el('messageInput').focus();
   app.run('updateKeyboardOffset()');
   assert.equal(app.document.documentElement.style['--keyboard-offset'],'340px');
+  assert.equal(app.el('showButton').closest('.action-row').style.bottom,'340px');
   app.resize(1184,800);
   app.run('updateKeyboardOffset()');
   assert.equal(app.document.documentElement.style['--keyboard-offset'],'0px');
+  assert.equal(app.el('showButton').closest('.action-row').style.bottom,'');
 });
 
 test('invalid stored values are sanitized without crashing or activating flashing', () => {
