@@ -119,7 +119,7 @@
       .panel-body>.field:first-child{margin-top:0}
       .action-row{bottom:var(--keyboard-offset,0px)}
       .qr-tools{gap:5px}
-      .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
+      .layout{grid-template-columns:1fr;gap:12px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
       .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:0;margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
       .action-row .button:not(.primary){display:none}.button.primary{min-height:50px;border-radius:13px}.desktop-tips{display:none}
       dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:18px 18px 0 0;border-left:0;border-right:0;border-bottom:0}
@@ -457,6 +457,13 @@ __QR_CODE_JS__
     const maxH=Math.floor(Math.min(container.clientHeight*.78,container.clientHeight-vertical));
     if(maxW<=0||maxH<=0)return;
     textEl.style.width=maxW+"px";
+    // Tiny signs should not depend on scroll measurement when the preview is compact.
+    const chars=[...textEl.textContent],explicitBreak=textEl.textContent.includes("\n");
+    if(!explicitBreak&&chars.length<=6){
+      textEl.style.whiteSpace="nowrap";
+      textEl.style.fontSize=Math.max(1,Math.floor(Math.min(max,maxH/.98,maxW/(chars.length*1.1))))+"px";
+      return;
+    }
     // Keep short signals on one line; explicit line breaks and longer messages retain wrapping.
     textEl.style.whiteSpace=!textEl.textContent.includes("\n")&&[...textEl.textContent].length<=12?"nowrap":"pre-wrap";
     // Measure wrapped content in one fixed box, never against a narrower box.
