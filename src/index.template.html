@@ -644,8 +644,8 @@ __QR_CODE_JS__
     const viewport=window.visualViewport;
     const focused=document.activeElement;
     const editing=focused&&(focused.tagName==="TEXTAREA"||focused.tagName==="INPUT");
-    const overlap=viewport?Math.max(0,window.innerHeight-viewport.height-viewport.offsetTop):0;
-    document.documentElement.style.setProperty("--keyboard-offset",editing&&window.innerWidth<=760&&overlap>=120?overlap+"px":"0px");
+    const overlap=viewport?Math.max(0,innerHeight-viewport.height-viewport.offsetTop):0;
+    document.documentElement.style.setProperty("--keyboard-offset",editing&&innerWidth<=760&&overlap>=120?overlap+"px":"0px");
   }
   if(window.visualViewport){window.visualViewport.addEventListener("resize",updateKeyboardOffset);window.visualViewport.addEventListener("scroll",updateKeyboardOffset);}
   document.addEventListener("focusin",updateKeyboardOffset);document.addEventListener("focusout",()=>requestAnimationFrame(updateKeyboardOffset));
