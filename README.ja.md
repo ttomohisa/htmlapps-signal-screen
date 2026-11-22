@@ -200,6 +200,8 @@ GitHub Pages版では最初のHTMLを取得する通信は発生しますが、S
 
 QR生成コードはUTF-8入力へ対応するため一部変更してHTML内へ直接内包しています。ランタイムに外部ライブラリを読み込むことはありません。詳細は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を確認してください。
 
+リリース前は[確認チェックリスト](RELEASE_CHECKLIST.md)を参照してください。CIではChromiumを確認しますが、Safari・Firefoxや実機の動作は別途確認が必要です。
+
 ## コントリビューション
 
 バグ報告や機能提案はIssueからお願いします。開発への参加方法は [CONTRIBUTING.md](CONTRIBUTING.md) を確認してください。
