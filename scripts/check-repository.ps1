@@ -14,7 +14,10 @@ foreach ($relative in $required) { if (-not (Test-Path (Join-Path $Root $relativ
 
 $appConfig = Get-Content -Raw -Encoding UTF8 (Join-Path $Root "app.config.json") | ConvertFrom-Json
 $version = [string]$appConfig.version
-if ($version -notmatch '^\d+\.\d+\.\d+
+if ($version -notmatch '^\\d+\\.\\d+\\.\\d+$') { throw "app.config.json must use a SemVer version: $version" }
+$changelog = Get-Content -Raw -Encoding UTF8 (Join-Path $Root "CHANGELOG.md")
+$expectedHeading = "(?m)^## " + [regex]::Escape($version) + "(?:\\s|$)"
+if ($changelog -notmatch $expectedHeading) { throw "CHANGELOG.md must contain release notes for version $version." }
 
 $builderBytes = [System.IO.File]::ReadAllBytes((Join-Path $Root "scripts\build-self-extract.ps1"))
 foreach ($byte in $builderBytes) { if ($byte -gt 0x7f) { throw "scripts\build-self-extract.ps1 must contain ASCII text only so Windows PowerShell 5.1 cannot corrupt loader text." } }
