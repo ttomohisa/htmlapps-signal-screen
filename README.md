@@ -86,7 +86,7 @@ The self-extracting variant requires `DecompressionStream`. Its loader is intent
 
 Tap Save current signal to save up to three favorite messages and their background colors. Restoring one does not change the flash mode. Removal and full Reset require confirmation. A mobile Reset button is also available at the top-right of the preview.
 
-Text is automatically resized to fit the stage. Messages of up to 12 characters without explicit line breaks are kept on one line when resized to fit. Short messages and arrows can become even larger when a phone is rotated to landscape.
+Text is automatically resized to fit the stage. Messages of up to 12 characters without explicit line breaks prefer a single line, but wrap if one-line text would become too small. Short messages and arrows can become even larger when a phone is rotated to landscape.
 
 ### Show a QR code
 
