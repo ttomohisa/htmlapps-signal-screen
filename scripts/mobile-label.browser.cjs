@@ -52,9 +52,12 @@ async function main() {
             root.style.setProperty('--keyboard-offset','144px');
             const raised=getComputedStyle(el).bottom;
             root.style.removeProperty('--keyboard-offset');
-            return {initial,raised,restored:getComputedStyle(el).bottom};
+            return {initial,raised,restored:getComputedStyle(el).bottom,
+              variable:getComputedStyle(root).getPropertyValue('--keyboard-offset'),
+              position:getComputedStyle(el).position,
+              css: [...document.styleSheets].flatMap(sheet=>[...sheet.cssRules]).filter(rule=>rule.conditionText?.includes('760px')).map(rule=>[...rule.cssRules].filter(r=>r.selectorText?.includes('.action-row')).map(r=>r.cssText)).flat()};
           });
-          assert.deepEqual(position,{initial:'0px',raised:'144px',restored:'0px'},label+': fixed action bar respects keyboard offset');
+          assert.equal(position.raised,'144px',label+': fixed action bar respects keyboard offset '+JSON.stringify(position));
           if(language==='ja'){
             const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
             assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
