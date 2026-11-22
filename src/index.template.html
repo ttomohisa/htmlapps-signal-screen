@@ -114,7 +114,7 @@
     .stage-notice[hidden]{display:none}
     @media (max-width:760px){
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
-      main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:12px}.local-badge{display:none}
+      main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom) + var(--keyboard-offset,0px))}.intro{margin-bottom:12px}.local-badge{display:none}
       .preview-reset{display:flex}.preview{min-height:clamp(180px,32dvh,232px)}
       .panel-body>.field:first-child{margin-top:0}
       .qr-tools{gap:5px}
@@ -384,9 +384,20 @@ __QR_CODE_JS__
 
   function loadState(){
     try{
-      const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
-      const savedSignals=Array.isArray(saved.savedSignals)?saved.savedSignals.filter(item=>item&&typeof item.message==="string"&&item.message.trim()&&item.message.length<=60&&typeof item.color==="string"&&/^#[\da-fA-F]{6}$/.test(item.color)).slice(0,3):[];
-      return {...DEFAULTS,...saved,savedSignals};
+      const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+      const saved=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{};
+      const colors=new Set(["#101110","#ffffff","#d7261e","#ffd400","#0a7a45","#1769d1"]);
+      const savedSignals=Array.isArray(saved.savedSignals)?saved.savedSignals.filter(item=>item&&typeof item.message==="string"&&item.message.trim()&&item.message.length<=60&&colors.has(item.color)).slice(0,3).map(item=>({message:item.message,color:item.color})):[];
+      return {
+        mode:saved.mode==="qr"?"qr":"message",
+        message:typeof saved.message==="string"?saved.message.slice(0,60):DEFAULTS.message,
+        qrText:typeof saved.qrText==="string"?saved.qrText.slice(0,300):DEFAULTS.qrText,
+        color:colors.has(saved.color)?saved.color:DEFAULTS.color,
+        flash:["steady","slow","beacon","sos"].includes(saved.flash)?saved.flash:DEFAULTS.flash,
+        flashAcknowledged:saved.flashAcknowledged===true,
+        language:["ja","en"].includes(saved.language)?saved.language:DEFAULTS.language,
+        savedSignals
+      };
     }catch{return {...DEFAULTS};}
   }
   function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
