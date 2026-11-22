@@ -7,9 +7,17 @@ $required = @(
   "AGENTS.md","APP_SPEC.md","app.config.json","dependencies.json","src\index.template.html",
   "build-standalone.ps1","src\vendor\qrcode.js","scripts\build-self-extract.ps1","scripts\verify-standalone.ps1",
   "scripts\verify-self-extract.ps1","README.md","README.ja.md","LICENSE","THIRD_PARTY_NOTICES.md",
-  "schemas\app-config.schema.json","schemas\dependencies.schema.json"
+  "schemas\app-config.schema.json","schemas\dependencies.schema.json",
+  "CHANGELOG.md","RELEASE_CHECKLIST.md",".github\workflows\release.yml","scripts\release-screenshots.browser.cjs","scripts\package-release.ps1"
 )
 foreach ($relative in $required) { if (-not (Test-Path (Join-Path $Root $relative))) { throw "Required repository file is missing: $relative" } }
+
+$appConfig = Get-Content -Raw -Encoding UTF8 (Join-Path $Root "app.config.json") | ConvertFrom-Json
+$version = [string]$appConfig.version
+if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "app.config.json must use a SemVer version: $version" }
+$changelog = Get-Content -Raw -Encoding UTF8 (Join-Path $Root "CHANGELOG.md")
+$expectedHeading = "(?m)^## " + [regex]::Escape($version) + "(?:\s|$)"
+if ($changelog -notmatch $expectedHeading) { throw "CHANGELOG.md must contain release notes for version $version." }
 
 $builderBytes = [System.IO.File]::ReadAllBytes((Join-Path $Root "scripts\build-self-extract.ps1"))
 foreach ($byte in $builderBytes) { if ($byte -gt 0x7f) { throw "scripts\build-self-extract.ps1 must contain ASCII text only so Windows PowerShell 5.1 cannot corrupt loader text." } }

@@ -12,7 +12,7 @@
     :root{
       color-scheme:light;
       --bg:#f5f5f2;--surface:#fff;--surface-muted:#eeeeea;--text:#20211f;--muted:#686b65;
-      --line:#d8dad4;--line-strong:#bfc2ba;--accent:#166552;--accent-hover:#0f5141;--accent-soft:#e3f1ec;
+      --line:#d8dad4;--line-strong:#bfc2ba;--accent:#16624f;--accent-hover:#0f5141;--accent-soft:#e3f1ec;
       --danger:#ad2e28;--warning:#8a5a00;--shadow:0 8px 28px rgba(24,28,24,.08);--radius:16px;
       --safe-bottom:max(14px,env(safe-area-inset-bottom));--safe-top:max(10px,env(safe-area-inset-top));
     }
@@ -35,10 +35,10 @@
 .dialog-close{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
 .dialog-close svg{width:18px;height:18px}
     .icon-button:hover{background:var(--surface-muted);color:var(--text)}.icon-button svg{width:20px;height:20px}
-    main{width:min(1120px,100%);margin:auto;padding:24px clamp(14px,2.7vw,28px) 72px}
-    .intro{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
-    .intro h1{margin:0;font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;line-height:1.22}.intro p{margin:6px 0 0;color:var(--muted);font-size:13px}
-    .local-badge{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;margin-top:3px;padding:7px 0;border:0;border-radius:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;white-space:nowrap}
+    main{width:min(1120px,100%);margin:auto;padding:20px clamp(14px,2.7vw,28px) 72px}
+    .intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+    .intro p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+    .local-badge{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;padding:7px 0;border:0;border-radius:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;white-space:nowrap}
     .local-badge svg{width:15px;height:15px}
     .layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
     .panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:0 2px 9px rgba(25,28,24,.04);overflow:hidden}
@@ -48,11 +48,25 @@
     .preview-message{position:absolute;min-width:0;padding:0;text-align:center;font-weight:900;line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere;font-size:clamp(40px,8vw,88px);white-space:pre-wrap}
     .preview.flash-off{opacity:0}
     .preview-label{position:absolute;top:10px;left:10px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.13);color:inherit;font-size:10px;font-weight:700;backdrop-filter:blur(4px)}
+    .preview-reset{display:none;position:absolute;z-index:2;top:10px;right:10px;width:38px;height:38px;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);border-radius:11px;background:rgba(20,24,23,.82);color:#fff}
+    .preview-reset svg{width:19px;height:19px}
+    .subtle-button{min-height:44px;padding:5px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--accent);font-size:12px;font-weight:700}
+    .subtle-button:disabled{opacity:.5;cursor:not-allowed}
+    .qr-tools{display:flex;align-items:center;gap:8px}
+    .saved-list{display:grid;gap:7px}
+    .saved-list:empty{display:none}
+    .saved-item{display:flex;align-items:stretch;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .saved-apply{display:flex;align-items:center;gap:9px;min-width:0;flex:1;padding:9px 10px;border:0;border-radius:10px;background:transparent;text-align:left;font-size:13px}
+    .saved-apply:hover,.saved-remove:hover{background:var(--surface-muted)}
+    .saved-swatch{display:block;width:16px;height:16px;border:1px solid rgba(0,0,0,.18);border-radius:5px;flex:0 0 auto}
+    .saved-text{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .saved-remove{display:grid;place-items:center;width:44px;min-width:44px;padding:0;border:0;border-left:1px solid var(--line);border-radius:0 9px 9px 0;background:transparent;color:var(--muted)}
+    .saved-remove svg{width:17px;height:17px}
     .field{margin-top:15px}.field:first-child{margin-top:0}.label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.field label,.field legend{font-size:12px;font-weight:760}.hint{font-size:11px;color:var(--muted)}
     textarea{width:100%;min-height:112px;padding:12px 13px;resize:vertical;border:1px solid var(--line);border-radius:11px;background:#fbfbf9;line-height:1.55}
     textarea:hover{border-color:var(--line-strong)}
     .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-    .preset{min-height:42px;padding:8px 7px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:720;font-size:12px}
+    .preset{min-height:44px;padding:8px 7px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:720;font-size:12px}
     .preset:hover{background:var(--surface-muted);border-color:var(--line-strong)}.preset.arrow{font-size:21px;line-height:1}
     .color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
     .color-button{position:relative;min-height:42px;border:2px solid transparent;border-radius:10px;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
@@ -62,17 +76,17 @@
     .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;margin:14px 14px 12px;border:1px solid #e1e2dd;border-radius:12px;background:var(--surface-muted)}
     .mode-button{min-height:42px;border:0;border-radius:9px;background:transparent;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
     .mode-button[aria-pressed="true"]{background:#fff;color:var(--accent);box-shadow:0 1px 5px rgba(0,0,0,.08)}
-    .mode-button svg{width:17px;height:17px}
+    .mode-button svg{width:17px;height:17px}#qrModeButton svg{width:19px;height:19px}
     .qr-preview-wrap{width:min(78%,286px);aspect-ratio:1;padding:12px;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;place-items:center}
     .qr-preview-wrap[hidden]{display:none}.qr-preview-wrap svg{display:block;width:100%;height:100%}
     .qr-empty{width:min(78%,286px);aspect-ratio:1;border:2px dashed rgba(255,255,255,.34);border-radius:12px;display:grid;place-items:center;padding:20px;color:rgba(255,255,255,.72);font-size:12px;text-align:center}
-    .qr-empty[hidden]{display:none}.qr-note{margin-top:7px;color:var(--muted);font-size:11px}.qr-note.error{color:var(--danger)}
+    .qr-empty[hidden]{display:none}.qr-note{margin-top:7px;color:var(--muted);font-size:11px}.qr-note:empty{margin-top:0}.qr-note.error{color:var(--danger)}
     .warning{display:flex;gap:9px;margin-top:12px;padding:10px 11px;border:1px solid #ead7b2;border-radius:11px;background:#fff8e8;color:#654500;font-size:11px;line-height:1.55}
     .warning svg{width:17px;height:17px;flex:0 0 auto;margin-top:1px}
     .action-row{display:flex;gap:8px;margin-top:16px}.button{min-height:44px;padding:9px 14px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:760}.button:hover{background:var(--surface-muted);border-color:var(--line-strong)}
     .button.primary{flex:1;border-color:var(--accent);background:var(--accent);color:#fff}.button.primary:hover{background:var(--accent-hover)}.button:disabled{opacity:.46;cursor:not-allowed}
     .tip-list{display:grid;gap:10px}.tip{display:flex;gap:11px;padding:11px;border-radius:12px;background:var(--surface-muted)}.tip-icon{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--accent);flex:0 0 auto}.tip-icon svg{width:17px;height:17px}.tip strong{display:block;font-size:12px}.tip p{margin:2px 0 0;color:var(--muted);font-size:11px}
-    .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}
+    .status-line{margin-top:15px;color:var(--muted);font-size:11px;text-align:center}.status-line:empty{margin-top:0}
     .status-line[data-tone="warn"]{color:var(--warning)}
     html:has(dialog:modal),body:has(dialog:modal){overflow:hidden;overscroll-behavior:none}
     dialog{width:min(620px,calc(100% - 26px));max-height:calc(100dvh - 28px);padding:0;border:1px solid var(--line);border-radius:17px;background:#fff;color:var(--text);box-shadow:var(--shadow);overflow:hidden}
@@ -96,16 +110,21 @@
     .stage-control[aria-pressed="true"]{border-color:#fff;background:rgba(12,12,12,.85);box-shadow:inset 0 0 0 1px #fff}
     .stage-control{min-width:82px;min-height:42px;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:rgba(12,12,12,.48);color:#fff;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}
     .stage-hint{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + 56px);transform:translateX(-50%);padding:6px 9px;border-radius:999px;background:rgba(12,12,12,.35);color:#fff;font-size:10px;white-space:nowrap;transition:opacity .3s}
+    .stage-notice{position:absolute;z-index:4;left:50%;bottom:calc(var(--safe-bottom) + 100px);transform:translateX(-50%);max-width:min(92vw,440px);padding:10px 14px;border-radius:12px;background:rgba(20,24,23,.93);color:#fff;font-size:13px;font-weight:650;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.2);pointer-events:none}
+    .stage-notice[hidden]{display:none}
     @media (max-width:760px){
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
-      main{padding-top:17px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:13px}.intro h1{font-size:25px}.intro p{max-width:310px}.local-badge{display:none}
-      .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
-      .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:0;margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
+      main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom) + var(--keyboard-offset,0px))}.intro{margin-bottom:12px}.local-badge{display:none}
+      .preview-reset{display:flex}.preview{min-height:clamp(180px,32dvh,232px)}
+      .panel-body>.field:first-child{margin-top:0}
+      .qr-tools{gap:5px}
+      .layout{grid-template-columns:1fr;gap:12px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
+      .color-grid{grid-template-columns:repeat(6,1fr)}.action-row{position:fixed;z-index:28;left:0;right:0;bottom:var(--keyboard-offset,0px);margin:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,245,242,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px)}
       .action-row .button:not(.primary){display:none}.button.primary{min-height:50px;border-radius:13px}.desktop-tips{display:none}
       dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:18px 18px 0 0;border-left:0;border-right:0;border-bottom:0}
       .stage-text{max-width:94vw}.stage-bottom{gap:5px}.stage-control{min-width:0;flex:1;max-width:120px}
     }
-    @media (max-width:360px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:5px}.preset{font-size:11px;padding:7px 4px}.segmented{gap:3px}.segment{font-size:11px}.color-grid{gap:5px}.panel-body{padding:13px}.intro p{font-size:12px}}
+    @media (max-width:360px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:5px}.preset{font-size:11px;padding:7px 4px}.segmented{gap:3px}.segment{font-size:11px}.color-grid{gap:5px}.panel-body{padding:13px}.intro p{font-size:13px}}
     @media (orientation:landscape) and (max-height:520px){.stage-text{max-height:76dvh}.stage-bottom{bottom:8px}.stage-top{top:8px}.stage-hint{display:none}}
     @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}.preview,.stage-surface{transition:none}}
     /* APP:END */
@@ -124,7 +143,7 @@
   <path d="m34 25.5 6.8 6.5-6.8 6.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="m45.5 14 2.6-3.4M51 17.6l4.3-1.4M51.7 22.3l4.2 1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
 </svg></div>
-      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.0.4</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
+      <div class="brand-copy"><h1 class="brand-name">Signal Screen <span class="version" id="versionBadge">v1.1.0</span></h1><p class="brand-meta" data-i18n="brandMeta">スマホ画面を、大きな合図に</p></div>
     </div>
     <div class="header-actions">
       <button class="plain-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
@@ -134,37 +153,29 @@
 </header>
 
 <main>
-  <section class="intro">
-    <div><h1 data-i18n="headline">画面いっぱいに伝える</h1><p data-i18n="intro">待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。</p></div>
+  <div class="intro">
+    <p data-i18n="intro">文字・矢印・QRを大きく表示します。</p>
     <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="localOnly">完全ローカル処理</span></div>
-  </section>
+  </div>
 
   <div class="layout">
     <section class="panel">
       <div class="mode-switch" role="group" aria-label="Display mode">
         <button class="mode-button" id="messageModeButton" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h12M4 18h9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span data-i18n="modeMessage">文字・矢印</span></button>
-        <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 14h2v2h-2zM18 14h2v5h-2zM14 18h3v2h-3z" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="modeQr">QR</span></button>
+        <button class="mode-button" id="qrModeButton" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M5.3 5.3h2.4v2.4H5.3zM16.3 5.3h2.4v2.4h-2.4zM5.3 16.3h2.4v2.4H5.3zM14 14h3v3h-3zM19 14h2v2h-2zM19 18h2v3h-2zM14 19h3v2h-3z" fill="currentColor"/></svg><span data-i18n="modeQr">QR</span></button>
       </div>
       <div class="preview-shell">
         <div class="preview" id="preview">
           <span class="preview-label" data-i18n="previewLabel">プレビュー</span>
+          <button class="preview-reset" id="mobileResetButton" type="button" data-i18n-title="reset" aria-label="リセット" title="リセット"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10a8 8 0 1 1-.1 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M4.5 4.5V10H10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="preview-message" id="previewMessage">ここです</div>
           <div class="qr-preview-wrap" id="qrPreviewWrap" hidden><div id="qrPreview"></div></div>
           <div class="qr-empty" id="qrEmpty" hidden data-i18n="qrEmpty">URLやテキストを入力するとQRを表示します</div>
         </div>
       </div>
       <div class="panel-body">
-        <div class="field" id="messageField">
-          <div class="label-row"><label for="messageInput" data-i18n="messageLabel">表示する文字</label><span class="hint" id="charCount">4 / 60</span></div>
-          <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
-        </div>
-        <div class="field" id="qrField" hidden>
-          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><span class="hint" id="qrByteCount">0 / 300 bytes</span></div>
-          <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
-          <div class="qr-note" id="qrNote" data-i18n="qrNote">QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。</div>
-        </div>
         <div class="field" id="quickField">
-          <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label><span class="hint" data-i18n="quickHint">タップで切替</span></div>
+          <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label></div>
           <div class="quick-grid" id="presetGrid">
             <button class="preset" type="button" data-value="ここです" data-value-en="HERE" data-i18n="presetHere">ここです</button>
             <button class="preset" type="button" data-value="助けて" data-value-en="HELP" data-i18n="presetHelp">助けて</button>
@@ -176,8 +187,17 @@
             <button class="preset arrow" type="button" data-value="→">→</button>
           </div>
         </div>
+        <div class="field" id="messageField">
+          <div class="label-row"><label for="messageInput" data-i18n="messageLabel">表示する文字</label><span class="hint" id="charCount">4 / 60</span></div>
+          <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
+        </div>
+        <div class="field" id="qrField" hidden>
+          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><div class="qr-tools"><span class="hint" id="qrByteCount">0 / 300 bytes</span><button class="subtle-button" id="pasteQrButton" type="button" data-i18n="paste">貼り付け</button></div></div>
+          <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
+          <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
+        </div>
         <div class="field" id="colorField">
-          <div class="label-row"><label data-i18n="colorLabel">背景色</label><span class="hint" data-i18n="contrastAuto">文字色は自動</span></div>
+          <div class="label-row"><label data-i18n="colorLabel">背景色</label></div>
           <div class="color-grid" id="colorGrid">
             <button class="color-button" type="button" style="--swatch:#101110" data-color="#101110" aria-label="Black" aria-pressed="true"></button>
             <button class="color-button" type="button" style="--swatch:#ffffff" data-color="#ffffff" aria-label="White" aria-pressed="false"></button>
@@ -187,8 +207,12 @@
             <button class="color-button" type="button" style="--swatch:#1769d1" data-color="#1769d1" aria-label="Blue" aria-pressed="false"></button>
           </div>
         </div>
+        <div class="field" id="savedField">
+          <div class="label-row"><label data-i18n="savedTitle">保存した合図</label><button class="subtle-button" id="saveSignalButton" type="button" data-i18n="saveSignal">今の合図を保存</button></div>
+          <div class="saved-list" id="savedList" aria-label="保存した合図"></div>
+        </div>
         <div class="field" id="flashField">
-          <div class="label-row"><label data-i18n="flashLabel">点滅</label><span class="hint" id="flashHint" data-i18n="flashHint">必要なときだけ</span></div>
+          <div class="label-row"><label data-i18n="flashLabel">点滅</label></div>
           <div class="segmented" id="flashSegments">
             <button class="segment" type="button" data-flash="steady" aria-pressed="true" data-i18n="flashOff">なし</button>
             <button class="segment" type="button" data-flash="slow" aria-pressed="false" data-i18n="flashSlow">ゆっくり</button>
@@ -204,7 +228,7 @@
           <button class="button" id="resetButton" type="button" data-i18n="reset">リセット</button>
           <button class="button primary" id="showButton" type="button"><span data-i18n="showFullscreen">全画面で表示</span></button>
         </div>
-        <div class="status-line" id="statusLine" aria-live="polite" data-i18n="savedLocally">設定はこの端末に自動保存されます</div>
+        <div class="status-line" id="statusLine" aria-live="polite"></div>
       </div>
     </section>
 
@@ -224,6 +248,7 @@
   <footer><span id="footerName">Signal Screen</span> · MIT License · <span data-i18n="footer">合図の表示はブラウザー内で完結</span></footer>
 
 <div class="stage" id="stage" role="dialog" aria-modal="true" aria-label="全画面で表示" aria-hidden="true" tabindex="-1">
+  <div class="stage-notice" id="stageNotice" role="status" aria-live="polite" hidden></div>
   <div class="stage-surface" id="stageSurface">
     <div class="stage-text" id="stageText">ここです</div>
     <div class="stage-qr" id="stageQr"></div>
@@ -248,15 +273,15 @@
   <div class="dialog-body">
     <!-- APP:HELP:BEGIN -->
     <h3 data-i18n="helpUseTitle">基本操作</h3>
-    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。</p>
+    <p data-i18n="helpUse">文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。よく使う文字と背景色は3件まで保存できます。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。</p>
 
 
     <h3 data-i18n="helpQrTitle">QR表示</h3>
-    <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
+    <p data-i18n="helpQr">QRモードではURLや短いテキストを端末内でQRへ変換します。「貼り付け」でクリップボードの文字を入力できます。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。</p>
     <h3 data-i18n="helpFlashTitle">点滅について</h3>
     <p data-i18n="helpFlash">点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。</p>
     <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
-    <p data-i18n="helpPrivacy">入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。</p>
+    <p data-i18n="helpPrivacy">入力した文字やQRの内容、保存した合図、設定は、この端末のブラウザーに自動保存されます。外部への送信、解析、アカウント登録はありません。</p>
     <h3 data-i18n="helpLimitsTitle">制限事項</h3>
     <p data-i18n="helpLimits">ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。</p>
     <!-- APP:HELP:END -->
@@ -269,9 +294,15 @@
   <div class="dialog-actions"><button class="button" id="flashCancelButton" type="button" data-i18n="cancel">キャンセル</button><button class="button primary" id="flashAllowButton" type="button" data-i18n="enableFlash">点滅を使う</button></div>
 </dialog>
 
+<dialog id="removeSavedDialog" class="confirmation-dialog">
+  <div class="dialog-head"><h2 data-i18n="removeSavedTitle">保存した合図を削除しますか？</h2><button class="dialog-close" type="button" data-close-dialog="removeSavedDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
+  <div class="dialog-body"><p data-i18n="removeSavedBody">保存した合図を1件削除します。入力中の文字は変わりません。</p></div>
+  <div class="dialog-actions"><button class="button" type="button" data-close-dialog="removeSavedDialog" data-i18n="cancel">キャンセル</button><button class="button" id="removeSavedConfirmButton" type="button" data-i18n="removeSaved" style="color:var(--danger)">削除</button></div>
+</dialog>
+
 <dialog id="resetDialog" class="confirmation-dialog">
   <div class="dialog-head"><h2 data-i18n="resetTitle">設定をリセットしますか？</h2><button class="dialog-close" type="button" data-close-dialog="resetDialog" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
-  <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。</p></div>
+  <div class="dialog-body"><p data-i18n="resetBody">文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容、保存した合図、点滅の確認も消去します。言語は変更しません。</p></div>
   <div class="dialog-actions"><button class="button" type="button" data-close-dialog="resetDialog" data-i18n="cancel">キャンセル</button><button class="button" id="resetConfirmButton" type="button" style="color:var(--danger)" data-i18n="reset">リセット</button></div>
 </dialog>
 
@@ -286,45 +317,47 @@ __QR_CODE_JS__
   "use strict";
   const config = JSON.parse(document.getElementById("app-config").textContent);
   const STORAGE_KEY = "signal-screen:v1";
-  const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto"};
+  const DEFAULTS = {mode:"message",message:"ここです",qrText:"",color:"#101110",flash:"steady",flashAcknowledged:false,language:"auto",savedSignals:[]};
   const translations = {
     ja:{
-      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrNote:"QRは読み取りやすさを優先し、黒色・白背景・十分な余白で表示します。",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",headline:"画面いっぱいに伝える",intro:"待ち合わせ、誘導、緊急時の合図。文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
-      previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",quickHint:"タップで切替",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
-      colorLabel:"背景色",contrastAuto:"文字色は自動",flashLabel:"点滅",flashHint:"必要なときだけ",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
+      brandMeta:"スマホ画面を、大きな合図に",modeMessage:"文字・矢印",modeQr:"QR",qrLabel:"QRに入れる内容",qrEmpty:"URLやテキストを入力するとQRを表示します",qrTooLong:"QRの内容はUTF-8で300 bytes以内にしてください。",qrGenerateError:"QRを生成できませんでした。内容を短くしてください。",intro:"文字・矢印・QRを大きく表示します。",localOnly:"完全ローカル処理",footer:"合図の表示はブラウザー内で完結",
+      savedTitle:"保存した合図",saveSignal:"今の合図を保存",useSaved:"合図を使う",removeSaved:"削除",removeSavedTitle:"保存した合図を削除しますか？",removeSavedBody:"保存した合図を1件削除します。入力中の文字は変わりません。",savedDone:"合図を保存しました",alreadySaved:"すでに保存されています",saveLimit:"保存できるのは3件までです",paste:"貼り付け",pasteDone:"QRの内容を貼り付けました",pasteUnavailable:"クリップボードを読み取れません。入力欄を長押しして貼り付けてください。",pasteEmpty:"クリップボードにテキストがありません",
+      previewLabel:"プレビュー",messageLabel:"表示する文字",quickLabel:"すぐ使う",presetHere:"ここです",presetHelp:"助けて",presetStop:"止まって",
+      colorLabel:"背景色",flashLabel:"点滅",flashOff:"なし",flashSlow:"ゆっくり",flashBeacon:"ビーコン",
       flashWarning:"点滅する光が苦手な方の近くでは使用しないでください。点滅速度は安全側に抑えています。",reset:"リセット",showFullscreen:"全画面で表示",
-      savedLocally:"設定はこの端末に自動保存されます",tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
+      tipsTitle:"見やすく使うコツ",tipLandscapeTitle:"横向きもおすすめ",tipLandscape:"短い文字や矢印は横向きにするとさらに大きく表示できます。",
       tipBrightnessTitle:"明るさは端末側で調整",tipBrightness:"ブラウザーから画面輝度は変更できません。屋外では端末の明るさを上げてください。",
       tipContrastTitle:"読みやすさを優先",tipContrast:"文字は背景に応じて高コントラスト、QRは黒・白固定で表示します。",tipWakeTitle:"表示中はスリープを防止",tipWake:"対応ブラウザーでは、全画面表示中に画面が消えにくいようWake Lockを使用します。",
       stageHint:"画面をタップすると操作ボタンを表示 / 非表示",stagePinnedHint:"操作ボタンを固定中。解除すると自動で隠れます",pinControls:"操作を固定",stageFlash:"点滅切替",fullscreen:"全画面",keepAwake:"画面維持",modeQrStage:"QR表示",modeSteady:"固定表示",modeSlow:"ゆっくり点滅",modeBeacon:"ビーコン",modeSos:"SOS点滅",
-      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。Tabで表示中の操作ボタンを移動し、Escで閉じます。確認ダイアログが開いている場合、Escはそのダイアログだけを閉じます。",
+      helpTitle:"使い方と注意事項",helpUseTitle:"基本操作",helpUse:"文字を入力するかプリセットを選び、背景色と点滅を設定して「全画面で表示」を押します。よく使う文字と背景色は3件まで保存できます。全画面表示中は画面をタップすると操作ボタンを隠せます。「操作を固定」で表示を維持でき、固定は表示を閉じると解除されます。「画面維持」をオフにすると、タブに戻ってもオフのままです。",
 
-      helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
+      helpQrTitle:"QR表示",helpQr:"QRモードではURLや短いテキストを端末内でQRへ変換します。「貼り付け」でクリップボードの文字を入力できます。読み取りやすさを優先するため、QRは黒・白で固定し、点滅は使用しません。",
       helpFlashTitle:"点滅について",helpFlash:"点滅する光に敏感な方の近くでは使用しないでください。prefers-reduced-motion が有効な端末では点滅設定を自動で「なし」に戻します。",
-      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字と設定はこの端末のLocalStorageに保存されます。外部への送信、解析、アカウント登録はありません。",
+      helpPrivacyTitle:"プライバシー",helpPrivacy:"入力した文字やQRの内容、保存した合図、設定は、この端末のブラウザーに自動保存されます。外部への送信、解析、アカウント登録はありません。",
       helpLimitsTitle:"制限事項",helpLimits:"ブラウザーから端末の画面輝度を変更することはできません。Fullscreen / Wake Lockはブラウザーや開き方によって利用できない場合があります。",
       flashDialogTitle:"点滅を使用しますか？",flashDialogBody:"点滅する画面は、人によって不快感や体調への影響を起こすことがあります。周囲に配慮して使用してください。",cancel:"キャンセル",enableFlash:"点滅を使う",
-      resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容と点滅の確認も消去します。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
+      resetTitle:"設定をリセットしますか？",resetBody:"文字を「ここです」、背景色を黒、点滅を「なし」に戻し、文字・矢印モードに切り替えます。QRの内容、保存した合図、点滅の確認も消去します。言語は変更しません。",statusReduced:"端末の「視差効果を減らす」設定に合わせ、点滅を無効にしました。",
       statusWakeOn:"画面維持を有効にしました",statusWakeOff:"画面維持を解除しました",statusWakeUnavailable:"このブラウザーでは画面維持を利用できません",statusFullscreenUnavailable:"このブラウザーでは全画面表示を利用できません",
       emptyFallback:"ここです"
     },
     en:{
-      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrNote:"For reliable scanning, QR codes use fixed black modules, a white background, and a full quiet zone.",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",headline:"Say it across the room",intro:"For meetups, directions, and urgent signals. Show text, arrows, or QR codes as large as possible.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
-      previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",quickHint:"Tap to use",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
-      colorLabel:"Background",contrastAuto:"Text contrast is automatic",flashLabel:"Flash pattern",flashHint:"Use only when needed",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
+      brandMeta:"Turn your phone into a big visual signal",modeMessage:"Text & arrows",modeQr:"QR",qrLabel:"QR content",qrEmpty:"Enter a URL or text to generate a QR code",qrTooLong:"Keep QR content within 300 UTF-8 bytes.",qrGenerateError:"Could not generate the QR code. Try shorter content.",intro:"Display text, arrows, or QR codes.",localOnly:"Fully local processing",footer:"Signal display stays in the browser",
+      savedTitle:"Saved signals",saveSignal:"Save current signal",useSaved:"Use signal",removeSaved:"Remove",removeSavedTitle:"Remove saved signal?",removeSavedBody:"This removes one saved signal. Your current message is not changed.",savedDone:"Signal saved",alreadySaved:"Already saved",saveLimit:"You can save up to 3 signals",paste:"Paste",pasteDone:"QR content pasted",pasteUnavailable:"Cannot read the clipboard. Long-press the field to paste instead.",pasteEmpty:"No text on the clipboard",
+      previewLabel:"Preview",messageLabel:"Message",quickLabel:"Quick signals",presetHere:"HERE",presetHelp:"HELP",presetStop:"STOP",
+      colorLabel:"Background",flashLabel:"Flash pattern",flashOff:"Off",flashSlow:"Slow",flashBeacon:"Beacon",
       flashWarning:"Do not use flashing light near people who are sensitive to it. Flash rates are intentionally kept low.",reset:"Reset",showFullscreen:"Show full screen",
-      savedLocally:"Settings are saved automatically on this device",tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
+      tipsTitle:"Tips for visibility",tipLandscapeTitle:"Try landscape",tipLandscape:"Short messages and arrows can appear even larger in landscape orientation.",
       tipBrightnessTitle:"Adjust brightness on the device",tipBrightness:"A browser cannot change screen brightness. Increase device brightness for outdoor use.",
       tipContrastTitle:"Optimized for readability",tipContrast:"Text uses automatic high contrast; QR codes stay black on white for reliable scanning.",tipWakeTitle:"Keep the screen awake",tipWake:"On supported browsers, Wake Lock helps keep the display on while the signal is shown.",
       stageHint:"Tap the screen to show or hide controls",stagePinnedHint:"Controls are pinned. Unpin to resume auto-hide",pinControls:"Pin controls",stageFlash:"Flash mode",fullscreen:"Full screen",keepAwake:"Keep awake",modeQrStage:"QR display",modeSteady:"Steady",modeSlow:"Slow flash",modeBeacon:"Beacon",modeSos:"SOS pattern",
-      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab. Tab moves between display controls and Escape closes the display. If a confirmation dialog is open, Escape closes only that dialog.",
+      helpTitle:"How to use & notes",helpUseTitle:"Basic use",helpUse:"Enter a message or choose a preset, select a background and flash pattern, then press Show full screen. You can save up to three messages with their background colors. Tap the signal screen to hide or reveal controls. Pin controls keeps them visible until you unpin or close the display. Turning Keep awake off stays off when you return to the tab.",
 
-      helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. For reliable scanning, QR codes stay black on white and never flash.",
+      helpQrTitle:"QR display",helpQr:"QR mode converts a URL or short text into a QR code locally on the device. Paste can read text from the clipboard when the browser permits it. For reliable scanning, QR codes stay black on white and never flash.",
       helpFlashTitle:"Flashing light",helpFlash:"Do not use flashing light near people who are sensitive to it. When prefers-reduced-motion is enabled, flashing is automatically turned off.",
-      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message and settings are stored in this device's LocalStorage. There is no upload, analytics, account, or tracking.",
+      helpPrivacyTitle:"Privacy",helpPrivacy:"Your message, QR content, saved signals, and settings are automatically saved in this browser on your device. There is no upload, analytics, account, or tracking.",
       helpLimitsTitle:"Limitations",helpLimits:"Browsers cannot change device screen brightness. Fullscreen and Wake Lock availability depends on the browser and how the file is opened.",
       flashDialogTitle:"Enable flashing?",flashDialogBody:"Flashing screens can cause discomfort or health effects for some people. Use this feature with consideration for people nearby.",cancel:"Cancel",enableFlash:"Enable flashing",
-      resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content and the flashing acknowledgement. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
+      resetTitle:"Reset settings?",resetBody:"This restores HERE, a black background, and no flashing; switches to Text & arrows; and clears QR content, saved signals, and the flashing acknowledgement. Your language stays the same.",statusReduced:"Flashing was disabled to respect your reduced-motion preference.",
       statusWakeOn:"Keep-awake enabled",statusWakeOff:"Keep-awake released",statusWakeUnavailable:"Keep-awake is not supported in this browser",statusFullscreenUnavailable:"Full screen is not supported in this browser",
       emptyFallback:"HERE"
     }
@@ -335,9 +368,10 @@ __QR_CODE_JS__
     languageButton:$("languageButton"),helpButton:$("helpButton"),helpDialog:$("helpDialog"),messageInput:$("messageInput"),charCount:$("charCount"),
     messageModeButton:$("messageModeButton"),qrModeButton:$("qrModeButton"),messageField:$("messageField"),quickField:$("quickField"),colorField:$("colorField"),flashField:$("flashField"),qrField:$("qrField"),qrInput:$("qrInput"),qrByteCount:$("qrByteCount"),qrNote:$("qrNote"),
     preview:$("preview"),previewMessage:$("previewMessage"),qrPreviewWrap:$("qrPreviewWrap"),qrPreview:$("qrPreview"),qrEmpty:$("qrEmpty"),colorGrid:$("colorGrid"),flashSegments:$("flashSegments"),flashWarning:$("flashWarning"),
-    showButton:$("showButton"),resetButton:$("resetButton"),resetDialog:$("resetDialog"),resetConfirmButton:$("resetConfirmButton"),statusLine:$("statusLine"),
+    showButton:$("showButton"),resetButton:$("resetButton"),mobileResetButton:$("mobileResetButton"),resetDialog:$("resetDialog"),resetConfirmButton:$("resetConfirmButton"),statusLine:$("statusLine"),
+    savedField:$("savedField"),savedList:$("savedList"),saveSignalButton:$("saveSignalButton"),removeSavedDialog:$("removeSavedDialog"),removeSavedConfirmButton:$("removeSavedConfirmButton"),pasteQrButton:$("pasteQrButton"),
     stage:$("stage"),stageSurface:$("stageSurface"),stageText:$("stageText"),stageQr:$("stageQr"),stageUi:$("stageUi"),stageCloseButton:$("stageCloseButton"),stageModeChip:$("stageModeChip"),
-    stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stagePinButton:$("stagePinButton"),stageHint:$("stageHint"),
+    stageFlashButton:$("stageFlashButton"),stageFullscreenButton:$("stageFullscreenButton"),stageWakeButton:$("stageWakeButton"),stagePinButton:$("stagePinButton"),stageHint:$("stageHint"),stageNotice:$("stageNotice"),
     flashConfirmDialog:$("flashConfirmDialog"),flashCancelButton:$("flashCancelButton"),flashAllowButton:$("flashAllowButton")
   };
   const dialogOpeners = new WeakMap();
@@ -346,12 +380,24 @@ __QR_CODE_JS__
   let lang = resolveLanguage(state.language);
   let flashTimer = 0, flashTimeout = 0, wakeLock = null, stageUiTimer = 0, pendingFlash = null;
   let controlsPinned = false, wakeWanted = false, wakeGeneration = 0, wakePending = null;
-  let stageReturnFocus = null, stageBackground = [], stageOverflow = "", stageSession = 0;
+  let stageReturnFocus = null, stageBackground = [], stageOverflow = "", stageSession = 0, pendingSavedRemoval = -1;
 
   function loadState(){
     try{
-      const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
-      return {...DEFAULTS,...saved};
+      const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+      const saved=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{};
+      const colors=new Set(["#101110","#ffffff","#d7261e","#ffd400","#0a7a45","#1769d1"]);
+      const savedSignals=Array.isArray(saved.savedSignals)?saved.savedSignals.filter(item=>item&&typeof item.message==="string"&&item.message.trim()&&item.message.length<=60&&colors.has(item.color)).slice(0,3).map(item=>({message:item.message,color:item.color})):[];
+      return {
+        mode:saved.mode==="qr"?"qr":"message",
+        message:typeof saved.message==="string"?saved.message.slice(0,60):DEFAULTS.message,
+        qrText:typeof saved.qrText==="string"?saved.qrText.slice(0,300):DEFAULTS.qrText,
+        color:colors.has(saved.color)?saved.color:DEFAULTS.color,
+        flash:["steady","slow","beacon","sos"].includes(saved.flash)?saved.flash:DEFAULTS.flash,
+        flashAcknowledged:saved.flashAcknowledged===true,
+        language:["ja","en"].includes(saved.language)?saved.language:DEFAULTS.language,
+        savedSignals
+      };
     }catch{return {...DEFAULTS};}
   }
   function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
@@ -369,6 +415,8 @@ __QR_CODE_JS__
     document.querySelectorAll(".icon-button[data-close-dialog]").forEach(b=>b.setAttribute("aria-label",lang==="ja"?"閉じる":"Close"));
     els.stageCloseButton.setAttribute("aria-label",lang==="ja"?"閉じる":"Close");
     els.stage.setAttribute("aria-label",t("showFullscreen"));
+    els.mobileResetButton.setAttribute("aria-label",t("reset"));els.mobileResetButton.setAttribute("title",t("reset"));
+    els.savedList.setAttribute("aria-label",t("savedTitle"));renderSaved();
     updateModeChip();updateStageControls();
   }
   function luminance(hex){
@@ -390,14 +438,14 @@ __QR_CODE_JS__
   function renderMode(){
     const isQr=state.mode==="qr";
     els.messageModeButton.setAttribute("aria-pressed",String(!isQr));els.qrModeButton.setAttribute("aria-pressed",String(isQr));
-    els.messageField.hidden=isQr;els.quickField.hidden=isQr;els.colorField.hidden=isQr;els.flashField.hidden=isQr;els.qrField.hidden=!isQr;
+    els.messageField.hidden=isQr;els.quickField.hidden=isQr;els.savedField.hidden=isQr;els.colorField.hidden=isQr;els.flashField.hidden=isQr;els.qrField.hidden=!isQr;
     els.previewMessage.hidden=isQr;els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=true;els.stage.classList.toggle("qr-mode",isQr);els.stageFlashButton.hidden=isQr;
-    if(isQr){stopFlash();els.preview.style.background="#171817";els.preview.style.color="#fff";}
+    if(isQr){stopFlash();els.preview.style.background="#171817";els.preview.style.color="#fff";}renderSaved();
     updatePreview();updateModeChip();
   }
   function updateQrPreview(){
     const value=els.qrInput.value.trim(),bytes=qrBytes(),tooLong=bytes>300;
-    els.qrByteCount.textContent=`${bytes} / 300 bytes`;els.qrNote.textContent=tooLong?t("qrTooLong"):t("qrNote");els.qrNote.classList.toggle("error",tooLong);
+    els.qrByteCount.textContent=`${bytes} / 300 bytes`;els.qrNote.textContent=tooLong?t("qrTooLong"):"";els.qrNote.classList.toggle("error",tooLong);
     if(!value||tooLong){els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=tooLong?t("qrTooLong"):t("qrEmpty");els.stageQr.innerHTML="";els.showButton.disabled=true;return;}
     try{const svg=makeQrSvg(value);els.qrPreview.innerHTML=svg;els.stageQr.innerHTML=svg;els.qrPreviewWrap.hidden=false;els.qrEmpty.hidden=true;els.showButton.disabled=false;}catch{els.qrPreviewWrap.hidden=true;els.qrEmpty.hidden=false;els.qrEmpty.textContent=t("qrGenerateError");els.qrNote.textContent=t("qrGenerateError");els.qrNote.classList.add("error");els.stageQr.innerHTML="";els.showButton.disabled=true;}
   }
@@ -419,13 +467,62 @@ __QR_CODE_JS__
     const maxH=Math.floor(Math.min(container.clientHeight*.78,container.clientHeight-vertical));
     if(maxW<=0||maxH<=0)return;
     textEl.style.width=maxW+"px";
-    // Measure wrapped content in one fixed box, never against a narrower box.
-    let low=1,high=Math.max(1,Math.floor(max)),best=1;
-    while(low<=high){
-      const size=Math.floor((low+high)/2);textEl.style.fontSize=size+"px";
-      if(textEl.scrollWidth<=maxW&&textEl.scrollHeight<=maxH){best=size;low=size+1;}else{high=size-1;}
+    // Tiny signs should not depend on scroll measurement when the preview is compact.
+    const chars=[...textEl.textContent],explicitBreak=textEl.textContent.includes("\n");
+    if(!explicitBreak&&chars.length<=6){
+      textEl.style.whiteSpace="nowrap";
+      textEl.style.fontSize=Math.max(1,Math.floor(Math.min(max,maxH/.98,maxW/(chars.length*1.1))))+"px";
+      return;
     }
+    // Keep short signals on one line; explicit line breaks and longer messages retain wrapping.
+    textEl.style.whiteSpace=!textEl.textContent.includes("\n")&&[...textEl.textContent].length<=12?"nowrap":"pre-wrap";
+    // Measure wrapped content in one fixed box, never against a narrower box.
+    const solveFit=(whiteSpace)=>{
+      textEl.style.whiteSpace=whiteSpace;
+      let low=1,high=Math.max(1,Math.floor(max)),best=1;
+      while(low<=high){
+        const size=Math.floor((low+high)/2);textEl.style.fontSize=size+"px";
+        if(textEl.scrollWidth<=maxW&&textEl.scrollHeight<=maxH){best=size;low=size+1;}else{high=size-1;}
+      }
+      return best;
+    };
+    let best=solveFit(textEl.style.whiteSpace);
+    // Do not trade readable type size for a single line on narrow screens.
+    if(textEl.style.whiteSpace==="nowrap"&&[...textEl.textContent].length>6&&best<Math.min(34,max*.4))best=solveFit("pre-wrap");
     textEl.style.fontSize=best+"px";
+  }
+  function renderSaved(){
+    els.savedList.replaceChildren();
+    const entries=state.savedSignals;
+    els.saveSignalButton.disabled=entries.length>=3;
+    for(const [index,item] of entries.entries()){
+      const row=document.createElement("div");row.className="saved-item";
+      const apply=document.createElement("button");apply.className="saved-apply";apply.setAttribute("type","button");apply.setAttribute("aria-label",t("useSaved")+": "+item.message);
+      const swatch=document.createElement("span");swatch.className="saved-swatch";swatch.style.backgroundColor=item.color;
+      const name=document.createElement("span");name.className="saved-text";name.textContent=item.message.replace(/\s+/g," ").trim();
+      apply.append(swatch,name);
+      apply.addEventListener("click",()=>{els.messageInput.value=item.message;state.message=item.message;setColor(item.color);saveState();updatePreview();});
+      const remove=document.createElement("button");remove.className="saved-remove";remove.setAttribute("type","button");remove.setAttribute("aria-label",t("removeSaved")+": "+item.message);
+      remove.innerHTML='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14M9 7V5h6v2M8 7l1 12h6l1-12M11 10v6M13 10v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      remove.addEventListener("click",()=>{pendingSavedRemoval=index;openDialog(els.removeSavedDialog,remove);});
+      row.append(apply,remove);els.savedList.append(row);
+    }
+  }
+  function saveSignal(){
+    const item={message:displayMessage(),color:state.color};
+    if(state.savedSignals.some(saved=>saved.message===item.message&&saved.color===item.color)){showStatus(t("alreadySaved"));return;}
+    if(state.savedSignals.length>=3){showStatus(t("saveLimit"),"warn");return;}
+    state.savedSignals.push(item);saveState();renderSaved();showStatus(t("savedDone"));
+  }
+  async function pasteQr(){
+    if(!navigator.clipboard?.readText){showStatus(t("pasteUnavailable"),"warn");return;}
+    try{
+      const value=await navigator.clipboard.readText();
+      if(state.mode!=="qr")return;
+      if(!value){showStatus(t("pasteEmpty"),"warn");return;}
+      if(new TextEncoder().encode(value.trim()).length>300){showStatus(t("qrTooLong"),"warn");return;}
+      els.qrInput.value=value;state.qrText=value;saveState();updatePreview();showStatus(t("pasteDone"));
+    }catch{showStatus(t("pasteUnavailable"),"warn");}
   }
   function setColor(color){
     state.color=color;saveState();
@@ -485,7 +582,17 @@ __QR_CODE_JS__
     const key={steady:"modeSteady",slow:"modeSlow",beacon:"modeBeacon",sos:"modeSos"}[state.flash];
     els.stageModeChip.textContent=t(key);
   }
-  function showStatus(message,tone=""){els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>{els.statusLine.textContent=t("savedLocally");els.statusLine.dataset.tone=""},2800);}
+  function showStatus(message,tone=""){
+    const inStage=els.stage.classList.contains("active");
+    // A later successful Wake Lock request must not obscure a fullscreen failure.
+    if(inStage&&tone!=="warn"&&!els.stageNotice.hidden&&els.stageNotice.dataset.tone==="warn")return;
+    clearTimeout(showStatus.timer);
+    els.statusLine.textContent="";els.statusLine.dataset.tone="";
+    els.stageNotice.hidden=true;els.stageNotice.textContent="";els.stageNotice.dataset.tone="";
+    if(inStage){els.stageNotice.textContent=message;els.stageNotice.dataset.tone=tone;els.stageNotice.hidden=false;}
+    else{els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;}
+    showStatus.timer=setTimeout(()=>{els.statusLine.textContent="";els.statusLine.dataset.tone="";els.stageNotice.textContent="";els.stageNotice.dataset.tone="";els.stageNotice.hidden=true;},2800);
+  }
   function updateStageControls(){
     els.stagePinButton.setAttribute("aria-pressed",String(controlsPinned));
     els.stageHint.textContent=t(controlsPinned?"stagePinnedHint":"stageHint");
@@ -522,6 +629,8 @@ __QR_CODE_JS__
     updatePreview();if(els.showButton.disabled)return;
     const session=++stageSession;
     controlsPinned=false;wakeWanted=true;wakeGeneration++;updateStageControls();
+    if(typeof document.activeElement?.blur==="function")document.activeElement.blur();
+    updateKeyboardOffset();
     stageReturnFocus=els.showButton;stageOverflow=document.body.style.overflow;
     stageBackground=[...document.querySelectorAll("header,main")].map(el=>({el,inert:el.inert}));
     stageBackground.forEach(({el})=>{el.inert=true;});
@@ -534,7 +643,7 @@ __QR_CODE_JS__
   }
   async function closeStage(){
     if(!els.stage.classList.contains("active"))return;
-    const session=++stageSession;stopFlash();els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
+    const session=++stageSession;stopFlash();els.stageNotice.hidden=true;els.stageNotice.textContent="";els.stageNotice.dataset.tone="";els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
     controlsPinned=false;updateStageControls();
     stageBackground.forEach(({el,inert})=>{el.inert=inert;});stageBackground=[];
     const target=stageReturnFocus?.isConnected&&!stageReturnFocus.disabled?stageReturnFocus:els.showButton;
@@ -548,9 +657,22 @@ __QR_CODE_JS__
   }
   function cycleFlash(){if(state.mode==="qr")return;const modes=["steady","slow","beacon","sos"];setFlash(modes[(modes.indexOf(state.flash)+1)%modes.length],{invoker:els.stageFlashButton});scheduleStageUiHide();}
   function resetAll(){
-    state={...DEFAULTS,message:t("emptyFallback"),language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();els.resetDialog.close();
+    state={...DEFAULTS,message:t("emptyFallback"),savedSignals:[],language:state.language};els.messageInput.value=state.message;els.qrInput.value=state.qrText;setColor(state.color);setFlash("steady",{skipConfirm:true});saveState();renderMode();renderSaved();els.resetDialog.close();
   }
 
+  function updateKeyboardOffset(){
+    const viewport=window.visualViewport;
+    const focused=document.activeElement;
+    const editing=focused&&(focused.tagName==="TEXTAREA"||focused.tagName==="INPUT");
+    const overlap=viewport?Math.max(0,innerHeight-viewport.height-viewport.offsetTop):0;
+    const offset=editing&&innerWidth<=760&&overlap>=120?overlap:0;
+    document.documentElement.style.setProperty("--keyboard-offset",offset+"px");
+    // Set the fixed bar directly as well, so a stale computed custom property cannot hide it under the keyboard.
+    const bar=els.showButton.closest(".action-row");
+    if(bar)bar.style.bottom=innerWidth<=760?offset+"px":"";
+  }
+  if(window.visualViewport){window.visualViewport.addEventListener("resize",updateKeyboardOffset);window.visualViewport.addEventListener("scroll",updateKeyboardOffset);}
+  document.addEventListener("focusin",updateKeyboardOffset);document.addEventListener("focusout",()=>requestAnimationFrame(updateKeyboardOffset));
   if(reduceMotion.matches&&state.flash!=="steady"){state.flash="steady";saveState();}
   els.messageInput.value=state.message;els.qrInput.value=state.qrText||"";
   applyLanguage();setColor(state.color);renderFlashButtons();renderMode();
@@ -558,6 +680,15 @@ __QR_CODE_JS__
 
   els.messageInput.addEventListener("input",()=>{state.message=els.messageInput.value;saveState();updatePreview();});
   els.qrInput.addEventListener("input",()=>{state.qrText=els.qrInput.value;saveState();updatePreview();});
+  els.pasteQrButton.addEventListener("click",pasteQr);
+  els.saveSignalButton.addEventListener("click",saveSignal);
+  els.removeSavedConfirmButton.addEventListener("click",()=>{
+    if(pendingSavedRemoval>=0&&pendingSavedRemoval<state.savedSignals.length){
+      state.savedSignals.splice(pendingSavedRemoval,1);saveState();renderSaved();
+    }
+    pendingSavedRemoval=-1;dialogOpeners.set(els.removeSavedDialog,els.saveSignalButton);els.removeSavedDialog.close();
+  });
+  els.removeSavedDialog.addEventListener("close",()=>{pendingSavedRemoval=-1;});
   els.messageModeButton.addEventListener("click",()=>{state.mode="message";saveState();renderMode();});
   els.qrModeButton.addEventListener("click",()=>{state.mode="qr";saveState();renderMode();});
   document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{const value=lang==="en"&&b.dataset.valueEn?b.dataset.valueEn:b.dataset.value;els.messageInput.value=value;state.message=value;saveState();updatePreview();}));
@@ -566,7 +697,7 @@ __QR_CODE_JS__
   els.flashCancelButton.addEventListener("click",()=>{pendingFlash=null;els.flashConfirmDialog.close();});
   els.flashConfirmDialog.addEventListener("close",()=>{pendingFlash=null;if(els.stage.classList.contains("active"))scheduleStageUiHide();});
   els.flashAllowButton.addEventListener("click",()=>{state.flashAcknowledged=true;saveState();const mode=pendingFlash||"slow";pendingFlash=null;els.flashConfirmDialog.close();setFlash(mode,{skipConfirm:true});});
-  els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>openDialog(els.resetDialog,els.resetButton));els.resetConfirmButton.addEventListener("click",resetAll);
+  els.showButton.addEventListener("click",openStage);els.stageCloseButton.addEventListener("click",closeStage);els.resetButton.addEventListener("click",()=>openDialog(els.resetDialog,els.resetButton));els.mobileResetButton.addEventListener("click",()=>openDialog(els.resetDialog,els.mobileResetButton));els.resetConfirmButton.addEventListener("click",resetAll);
   els.helpButton.addEventListener("click",()=>openDialog(els.helpDialog,els.helpButton));
   els.languageButton.addEventListener("click",()=>{lang=lang==="ja"?"en":"ja";state.language=lang;saveState();applyLanguage();renderMode();});
   document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
@@ -583,7 +714,7 @@ __QR_CODE_JS__
     if(wakeWanted)await releaseWake();else{wakeWanted=true;updateStageControls();await requestWake();}
     scheduleStageUiHide();
   });
-  addEventListener("resize",()=>updatePreview());
+  addEventListener("resize",()=>{updatePreview();updateKeyboardOffset();});
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&wakeWanted&&els.stage.classList.contains("active")&&!wakeLock)requestWake();});
   reduceMotion.addEventListener?.("change",()=>{if(reduceMotion.matches&&state.flash!=="steady")setFlash("steady",{skipConfirm:true});});
   document.addEventListener("keydown",e=>{

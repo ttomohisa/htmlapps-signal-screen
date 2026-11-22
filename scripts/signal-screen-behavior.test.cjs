@@ -346,4 +346,140 @@ test('a child click with out-of-dialog keyboard coordinates is not a backdrop di
   assert.equal(app.el('helpDialog').open, true);
 });
 
+
+for (const language of ['ja', 'en']) {
+  test(`${language}: short message stays on one line, explicit newline wraps`, () => {
+    const app=setup(language,{width:250,height:180});
+    app.input(app.el('messageInput'),'ここです');
+    assert.equal(app.el('previewMessage').style.whiteSpace,'nowrap');
+    app.input(app.el('messageInput'),'受付\nこちら');
+    assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
+    app.input(app.el('messageInput'),'W'.repeat(60));
+    assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
+  });
+  test(`${language}: saved signals persist, apply their colors, and remove only after confirmation`, () => {
+    const app=setup(language);
+    app.input(app.el('messageInput'),'Gate A');app.run("setColor('#ffd400')");
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),1);
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),1,'duplicates are ignored');
+    app.input(app.el('messageInput'),'Gate B');app.run("setColor('#1769d1')");
+    app.el('saveSignalButton').click();
+    assert.equal(app.run('state.savedSignals.length'),2);
+    app.document.querySelector('.saved-apply').click();
+    assert.equal(app.el('messageInput').value,'Gate A');
+    assert.equal(app.run('state.color'),'#ffd400');
+    const reloaded=setup(language,{storage:[...app.storage]});
+    assert.equal(reloaded.run('state.savedSignals.length'),2);
+    reloaded.document.querySelector('.saved-remove').click();
+    assert.equal(reloaded.el('removeSavedDialog').open,true);
+    reloaded.el('removeSavedDialog').querySelector('[data-i18n="cancel"]').click();
+    assert.equal(reloaded.run('state.savedSignals.length'),2);
+    reloaded.document.querySelector('.saved-remove').click();
+    reloaded.el('removeSavedConfirmButton').click();
+    assert.equal(reloaded.run('state.savedSignals.length'),1);
+    const resetReloaded=setup(language,{storage:[...reloaded.storage]});
+    resetReloaded.el('mobileResetButton').click();
+    assert.equal(resetReloaded.el('resetDialog').open,true);
+    resetReloaded.el('resetConfirmButton').click();
+    assert.equal(resetReloaded.run('state.savedSignals.length'),0);
+    assert.equal(resetReloaded.el('qrInput').value,'');
+  });
+  test(`${language}: saved signals cap at three without changing the selected flashing mode`, () => {
+    const app=setup(language);
+    for(let i=0;i<3;i++){app.input(app.el('messageInput'),'Gate '+i);app.el('saveSignalButton').click();}
+    assert.equal(app.run('state.savedSignals.length'),3);
+    assert.equal(app.el('saveSignalButton').disabled,true);
+    assert.equal(app.document.querySelectorAll('.saved-item').length,3);
+  });
+  test(`${language}: QR paste works without uploading and preserves content on denial`, async () => {
+    let permitted=true;
+    const app=setup(language,{navigator:{clipboard:{readText:async()=>{if(!permitted)throw Error('denied');return 'https://example.test/local';}}}});
+    app.el('qrModeButton').click();
+    app.el('pasteQrButton').click();await app.settle();
+    assert.equal(app.el('qrInput').value,'https://example.test/local');
+    assert.equal(app.run('state.qrText'),'https://example.test/local');
+    permitted=false;app.el('pasteQrButton').click();await app.settle();
+    assert.equal(app.el('qrInput').value,'https://example.test/local');
+    assert.match(app.el('statusLine').textContent,/clipboard|クリップボード/);
+  });
+  test(`${language}: stage notifications are shown on the display, then dismissed`, async () => {
+    const app=setup(language);await open(app);
+    app.run('showStatus("example warning","warn")');
+    assert.equal(app.el('stageNotice').hidden,false);
+    assert.equal(app.el('stageNotice').textContent,'example warning');
+    assert.equal(app.el('statusLine').textContent,'');
+    app.flushTimers();
+    assert.equal(app.el('stageNotice').hidden,true);
+  });
+}
+test('important fullscreen warnings are not replaced by later successful wake feedback', async () => {
+  const app=setup('ja');await open(app);
+  app.run('showStatus("fullscreen is unavailable","warn")');
+  app.run('showStatus("wake lock active")');
+  assert.equal(app.el('stageNotice').textContent,'fullscreen is unavailable');
+  assert.equal(app.el('stageNotice').dataset.tone,'warn');
+  app.flushTimers();
+  assert.equal(app.el('stageNotice').hidden,true);
+});
+test('mobile action bar uses visual viewport occlusion only while editing', () => {
+  const app=setup('ja',{viewportWidth:393,viewportHeight:800});
+  app.window.visualViewport={height:460,offsetTop:0};
+  app.el('messageInput').focus();
+  app.run('updateKeyboardOffset()');
+  assert.equal(app.document.documentElement.style['--keyboard-offset'],'340px');
+  assert.equal(app.el('showButton').closest('.action-row').style.bottom,'340px');
+  app.resize(1184,800);
+  app.run('updateKeyboardOffset()');
+  assert.equal(app.document.documentElement.style['--keyboard-offset'],'0px');
+  assert.equal(app.el('showButton').closest('.action-row').style.bottom,'');
+});
+
+test('invalid stored values are sanitized without crashing or activating flashing', () => {
+  const corrupt = {mode:'unknown',message:999,qrText:{url:'https://example.test'},color:'not-a-color',flash:'invalid',flashAcknowledged:'yes',language:'de',
+    savedSignals:[{message:'valid',color:'#ffd400'},{message:'<img src=x>',color:'red'},{message:'',color:'#101110'}]};
+  const app=setup('ja',{storage:[['signal-screen:v1',JSON.stringify(corrupt)]]});
+  assert.equal(app.run('state.mode'),'message');
+  assert.equal(app.run('state.message'),'ここです');
+  assert.equal(app.run('state.qrText'),'');
+  assert.equal(app.run('state.color'),'#101110');
+  assert.equal(app.run('state.flash'),'steady');
+  assert.equal(app.run('state.flashAcknowledged'),false);
+  assert.equal(app.run('state.savedSignals.length'),1);
+  assert.equal(app.run('state.savedSignals[0].message'),'valid');
+});
+test('saved input is limited to textarea length when the browser restores oversized storage', () => {
+  const saved={message:'X'.repeat(100000),qrText:'z'.repeat(10000),savedSignals:[{message:'safe',color:'#101110'}]};
+  const app=setup('en',{storage:[['signal-screen:v1',JSON.stringify(saved)]]});
+  assert.equal(app.el('messageInput').value.length,60);
+  assert.equal(app.el('qrInput').value.length,300);
+  assert.equal(app.run('state.savedSignals.length'),1);
+});
+test('QR paste refuses oversized UTF-8 data without discarding the current QR', async () => {
+  const app=setup('ja',{navigator:{clipboard:{readText:async()=> 'あ'.repeat(101)}}});
+  app.el('qrModeButton').click();app.input(app.el('qrInput'),'https://example.test/preserved');
+  app.el('pasteQrButton').click();await app.settle();
+  assert.equal(app.el('qrInput').value,'https://example.test/preserved');
+  assert.equal(app.run('state.qrText'),'https://example.test/preserved');
+});
+test('delayed clipboard read cannot overwrite text after leaving QR mode', async () => {
+  let resolve;const app=setup('en',{navigator:{clipboard:{readText:()=>new Promise(done=>{resolve=done;})}}});
+  app.el('qrModeButton').click();app.input(app.el('qrInput'),'original');app.el('pasteQrButton').click();
+  app.el('messageModeButton').click();resolve('should not replace');await app.settle();
+  assert.equal(app.el('qrInput').value,'original');
+  assert.equal(app.run('state.qrText'),'original');
+});
+test('saved signal message is inserted as text, not interpreted as HTML', () => {
+  const app=setup('en',{storage:[['signal-screen:v1',JSON.stringify({savedSignals:[{message:'<img src=x>',color:'#ffd400'}]})]]});
+  assert.equal(app.document.querySelector('.saved-text').textContent,'<img src=x>');
+  assert.equal(app.document.querySelector('.saved-text').querySelector('img'),null);
+});
+
+test('mobile preset-first order matches document and focus order', () => {
+  const app=setup('ja');
+  const field=app.document.querySelector('.panel-body');
+  assert.ok(field.children.indexOf(app.el('quickField'))<field.children.indexOf(app.el('messageField')));
+});
+
 (async () => { let failed = 0; for (const {name,body} of tests) { try { await body(); console.log('ok - '+name); } catch (error) { failed++; console.error('not ok - '+name+'\n'+error.stack); } } console.log(`${tests.length-failed}/${tests.length} passed`); process.exitCode = failed ? 1 : 0; })();

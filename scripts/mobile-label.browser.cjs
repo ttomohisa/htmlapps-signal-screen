@@ -9,7 +9,7 @@ async function main() {
   fs.mkdirSync(evidence, { recursive: true });
   const browser = await chromium.launch();
   try {
-    for (const language of ['ja', 'en']) for (const [width, height] of [[1360,900],[320,568],[393,252]]) {
+    for (const language of ['ja', 'en']) for (const [width, height] of [[1360,900],[768,900],[760,780],[320,568],[393,252]]) {
       const context = await browser.newContext({ viewport: {width,height}, locale: language, reducedMotion:'reduce' });
       const page = await context.newPage();
       const errors=[], requests=[];
@@ -30,6 +30,77 @@ async function main() {
         assert.equal(await page.locator('footer').isVisible(), width > 760, label+': footer hidden on smartphones');
         if(width > 760) assert.equal((await page.locator('footer').innerText()).replace(/\s+/g,' ').trim(),language==='ja'?'Signal Screen · MIT License · 合図の表示はブラウザー内で完結':'Signal Screen · MIT License · Signal display stays in the browser',label+': footer text');
         if(width!==393) await page.screenshot({path:path.join(evidence,label+'.png')});
+        // Check real browser typography and focus/reading order in compact layouts.
+        await page.locator('#messageInput').fill('ここです');
+        const oneLine=await page.locator('#previewMessage').evaluate(el=>({
+          whiteSpace:getComputedStyle(el).whiteSpace,
+          fontSize:parseFloat(getComputedStyle(el).fontSize),
+          width:el.clientWidth,scrollWidth:el.scrollWidth,
+          withinWidth:el.scrollWidth<=el.clientWidth+1
+        }));
+        assert.equal(oneLine.whiteSpace,'nowrap',label+': short signals remain on one line '+JSON.stringify(oneLine));
+        assert.ok(oneLine.fontSize>=34,label+': short signal remains legible '+JSON.stringify(oneLine));
+        assert.equal(oneLine.withinWidth,true,label+': short text stays inside the preview');
+        const presetFirst=await page.evaluate(()=>document.querySelector('#quickField').compareDocumentPosition(document.querySelector('#messageField'))&Node.DOCUMENT_POSITION_FOLLOWING);
+        assert.ok(presetFirst,label+': presets precede freeform entry in DOM');
+        if(width<=760)assert.equal(await page.locator('#mobileResetButton').isVisible(),true,label+': mobile reset is reachable');
+        if(width<=760)assert.ok(await page.locator('#preview').evaluate(el=>el.clientHeight<=234),label+': mobile preview is compact');
+        if(width<=760){
+          const position=await page.locator('.action-row').evaluate(el=>{
+            const initial=getComputedStyle(el).bottom;
+            const original=Object.getOwnPropertyDescriptor(window,'visualViewport');
+            let raised;
+            try {
+              Object.defineProperty(window,'visualViewport',{
+                configurable:true,value:{height:innerHeight-144,offsetTop:0}
+              });
+              document.getElementById('messageInput').focus();
+              window.dispatchEvent(new Event('resize'));
+              raised=getComputedStyle(el).bottom;
+              var during={innerWidth,innerHeight,viewportHeight:window.visualViewport.height,
+                active:document.activeElement?.id,inlineBottom:el.style.bottom,
+                customOffset:document.documentElement.style.getPropertyValue('--keyboard-offset'),
+                media:matchMedia('(max-width:760px)').matches};
+            } finally {
+              if(original)Object.defineProperty(window,'visualViewport',original);
+              else delete window.visualViewport;
+              document.getElementById('messageInput').blur();
+              window.dispatchEvent(new Event('resize'));
+            }
+            return {initial,raised,during,restored:getComputedStyle(el).bottom};
+          });
+          assert.equal(position.during.inlineBottom,'144px',label+': viewport event sets the keyboard-safe toolbar position '+JSON.stringify(position));
+          assert.equal(position.during.customOffset,'144px',label+': keyboard offset is also reflected in the editor bottom padding');
+          if(language==='ja'){
+            const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
+            assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
+          }
+        }
+
+        if(height>520){
+          await page.locator('#messageInput').fill('Gate A');
+          await page.locator('#saveSignalButton').click();
+          assert.equal(await page.locator('.saved-item').count(),1,label+': saved signal shown');
+          await page.locator('.saved-apply').click();
+          assert.equal(await page.locator('#messageInput').inputValue(),'Gate A',label+': saved signal applies');
+          await page.locator('.saved-remove').click();
+          assert.equal(await page.locator('#removeSavedDialog').isVisible(),true,label+': removal asks for confirmation');
+          await page.locator('#removeSavedDialog [data-i18n="cancel"]').click();
+          assert.equal(await page.locator('.saved-item').count(),1,label+': cancel retains saved signal');
+          await page.locator('#qrModeButton').click();
+          await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{readText:async()=> 'https://example.test/local'}}));
+          await page.locator('#pasteQrButton').click();
+          assert.equal(await page.locator('#qrInput').inputValue(),'https://example.test/local',label+': QR paste uses local clipboard text');
+          await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{readText:async()=>{throw Error('denied');}}}));
+          await page.locator('#pasteQrButton').click();
+          assert.equal(await page.locator('#qrInput').inputValue(),'https://example.test/local',label+': rejected clipboard read retains QR');
+          await page.locator(width<=760?'#mobileResetButton':'#resetButton').click();
+          assert.equal(await page.locator('#resetDialog').isVisible(),true,label+': reset works in both layouts');
+          await page.locator('#resetConfirmButton').click();
+          assert.equal(await page.locator('.saved-item').count(),0,label+': reset clears saved signals');
+          assert.equal(await page.locator('#qrInput').inputValue(),'',label+': reset clears QR text');
+          assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': no horizontal overflow after interactions');
+        }
         await page.locator('#helpButton').click();
         const body=page.locator('#helpDialog .dialog-body');
         await body.evaluate(el=>{el.scrollTop=el.scrollHeight;});

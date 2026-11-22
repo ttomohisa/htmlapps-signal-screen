@@ -1,7 +1,5 @@
 # Signal Screen
 
-ヘッダーの言語切替は EN / JA に統一し、切替先とヘルプの読み上げ・ツールチップも表示言語に合わせています。完全ローカル処理です。
-
 [![GitHub Pages](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://ttomohisa.github.io/htmlapps-signal-screen/)
@@ -16,19 +14,19 @@
 
 GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成、設定保存などは端末内だけで処理されます。入力した文字やQRの内容をアプリが外部へ送信することはありません。
 
-[![Signal Screenの画面](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
-
-[スマートフォン表示](assets/screenshot-mobile.png)
+リポジトリ内の[PC画面](assets/screenshot.png)と[スマートフォン画面](assets/screenshot-mobile.png)はv1.0.4時点の画像です。v1.1.0ではレイアウトが変わるため、最新版のスクリーンショットはリリース配布物にも含めます。
 
 ## 主な機能
 
-- 文字を画面いっぱいに自動フィットして表示
+- 文字を画面いっぱいに自動フィットして表示。12文字以内の改行なしの短文は1行を優先
 - 「ここです」「助けて」「SOS」「止まって」のクイックプリセット
+- よく使う文字と背景色を最大3件保存して呼び出し・削除
 - `←` `↑` `↓` `→` の方向矢印を大きく表示
 - 黒・白・赤・黄・緑・青の背景色
 - 背景色に応じて白 / 黒の文字色を自動選択
 - **文字・矢印 / QR** をワンタップで切り替え
 - URLや短い日本語テキストからQRコードを端末内だけで生成
+- QR入力欄から、端末が許可する場合にクリップボードのテキストを貼り付け
 - QRコードは読み取りやすさを優先し、黒いモジュール・白背景・クワイエットゾーンを固定
 - QRモードでは点滅を自動無効化
 - 点滅なし / ゆっくり / ビーコン / SOSパターン
@@ -38,7 +36,8 @@ GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成�
 - Screen Wake Lock対応環境では表示中のスリープを抑制
 - 日本語 / Englishを同じHTML内で切り替え
 - 文字、QR内容、背景色などをLocalStorageへ自動保存
-- PC・スマートフォン向けレスポンシブUI
+- PC・スマートフォン向けレスポンシブUI（プリセット優先、コンパクトなプレビュー、スマホ用リセット、キーボード表示への追従）
+- 全画面表示中も画面維持・全画面APIの利用可否を通知
 - 通常版とgzip自己解凍版の2種類の単一HTMLを生成
 
 ## 表示中の操作とリセット
@@ -48,7 +47,7 @@ GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成�
 
 - Tab / Shift+Tabで表示中の操作ボタンだけを移動します。フォーカス中のボタンは隠れません。表示を閉じると「全画面で表示」へ戻ります。
 - 確認ダイアログが開いているとき、Escはそのダイアログだけを閉じます。もう一度Escを押すと表示を閉じます。
-- リセットは確認後、選択中の言語の初期メッセージ、黒背景、点滅なし、文字・矢印モードへ戻します。QRの内容と点滅の確認も消去しますが、言語は維持します。キャンセルでは変更しません。
+- リセットは確認後、選択中の言語の初期メッセージ、黒背景、点滅なし、文字・矢印モードへ戻します。QRの内容、保存した合図、点滅の確認も消去しますが、言語は維持します。キャンセルでは変更しません。
 
 ## すぐに使う
 
@@ -60,13 +59,15 @@ GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成�
 
 ### ダウンロードして使う
 
-[`dist/index.html`](https://github.com/ttomohisa/htmlapps-signal-screen/blob/main/dist/index.html) をダウンロードして、最新のChromiumベースのブラウザー、Firefox、Safariで開いてください。
+最新版のHTMLは[GitHub Releases](https://github.com/ttomohisa/htmlapps-signal-screen/releases/latest)からダウンロードできます。v1.1.0のファイル名は `htmlapps-signal-screen-v1.1.0.html` です。Chromium系ブラウザー、Firefox、Safariで開いてください。
+
+リポジトリの `dist/` と `signal-screen.html` はビルド時点のファイルです。PR更新直後には最新ソースを反映していない場合があるため、利用時はバージョン付きのリリースファイルを選ぶか、`build-standalone.ps1` で生成してください。
 
 文字・矢印・QR生成などのコア機能は、通常版HTMLを `file://` で直接開いても利用できる設計です。FullscreenやScreen Wake Lockは、ブラウザーや開き方によって利用できない場合があります。
 
 ### 自己解凍版を使う
 
-`dist/index.self-extract.html` は、通常版HTMLをgzip圧縮して内包した1ファイル版です。開くとブラウザー内で展開し、そのままSignal Screenを起動します。
+リリースにある `*.self-extract.html` は、通常版HTMLをgzip圧縮して内包した1ファイル版です。開くとブラウザー内で展開し、そのままSignal Screenを起動します。
 
 自己解凍版には `DecompressionStream` 対応ブラウザーが必要です。通常版と同じfaviconを自動継承し、自己解凍ローダーはWindows PowerShell 5.1で文字化けしにくいASCII-onlyで生成します。
 
@@ -81,14 +82,18 @@ GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成�
 5. **全画面で表示** を押します。
 6. 全画面表示中に画面をタップすると操作ボタンを表示 / 非表示できます。
 
-文字サイズは画面内へ収まるよう自動調整されます。短い文字や矢印は、スマートフォンを横向きにするとさらに大きく見せられます。
+よく使う合図は「今の合図を保存」で最大3件まで保存できます。保存するのは文字と背景色で、点滅設定は保存しません。保存した合図の削除と全体のリセットには確認が必要です。スマホのプレビュー右上にもリセットがあります。
+
+文字サイズは画面内へ収まるよう自動調整されます。12文字以内で改行がない場合は1行を優先し、文字が小さくなりすぎるときは折り返します。短い文字や矢印は、スマートフォンを横向きにするとさらに大きく見せられます。
 
 ### QRコードを表示する
 
 1. **QR** を選びます。
-2. URLまたは短いテキストを入力します。
+2. URLまたは短いテキストを入力します。対応ブラウザーでは「貼り付け」からクリップボードを読み込めます。
 3. 入力と同時にQRコードのプレビューが生成されます。
 4. **全画面で表示** を押すと、読み取りやすいサイズまでQRコードを拡大します。
+
+クリップボードへのアクセスは「貼り付け」を押したときにだけ行います。許可されていない場合は、入力欄を長押しして貼り付けてください。ブラウザーからクリップボードへ自動アクセスすることはありません。
 
 QR生成は端末内だけで行われます。QRモードでは読み取り性能を優先するため、背景色変更と点滅は使用しません。現在の入力上限はUTF-8で300 bytesです。
 
@@ -101,6 +106,10 @@ QR生成は端末内だけで行われます。QRモードでは読み取り性�
 - **SOS**: `... --- ...` を意識した表示パターンです。
 
 高頻度ストロボは実装していません。また、端末で `prefers-reduced-motion` が有効な場合は点滅を強制的に「なし」へ戻します。
+
+## リリースとGitHub Pages
+
+`main` への反映後、リリース用ワークフローが検証を行い、未公開のバージョンについてタグとGitHub Releaseを作成します。PRの時点ではタグもリリースも作成しません。通常版・自己解凍版のHTML、ZIP、チェックサム、更新後のスクリーンショット、ライセンス表示を配布します。
 
 ## GitHub Pagesで公開する
 
@@ -123,6 +132,8 @@ Pagesがまだ有効になっていない場合、ワークフローはHTMLの�
 ├─ build-standalone.bat                # Windows用ビルド入口
 ├─ build-standalone.ps1                # 通常版HTMLの生成
 ├─ scripts/
+│  ├─ release-screenshots.browser.cjs  # リリース用スクリーンショット生成
+│  ├─ package-release.ps1              # ZIP・ライセンス・チェックサム
 │  ├─ build-self-extract.ps1           # 自己解凍版の生成
 │  ├─ verify-standalone.ps1            # 通常版の検証
 │  ├─ verify-self-extract.ps1          # 自己解凍版の検証
@@ -132,7 +143,8 @@ Pagesがまだ有効になっていない場合、ワークフローはHTMLの�
 │  └─ index.self-extract.html          # gzip自己解凍版
 └─ .github/workflows/
    ├─ build-standalone.yml             # Pull Request時のビルド検証
-   └─ deploy-pages.yml                 # mainからPagesへ自動公開
+   ├─ deploy-pages.yml                 # mainからPagesへ自動公開
+   └─ release.yml                      # main反映後のタグ・Release作成
 ```
 
 ### Windowsでビルドする
@@ -161,14 +173,14 @@ powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-
 Signal Screenはローカルファーストで動作します。
 
 - 入力した文字とQR内容はブラウザー内だけで処理
-- 設定保存はLocalStorageのみ
+- 設定と保存した合図の保存先はLocalStorageのみ
 - QR生成も端末内で完結
 - アカウント登録なし
 - Analytics / Telemetryなし
 - サーバーAPIなし
 - CSPに `connect-src 'none'` を指定
 
-GitHub Pages版では最初のHTMLを取得する通信は発生しますが、Signal Screenのランタイム処理から入力内容を外部へ送信することはありません。
+GitHub Pages版では最初のHTMLを取得する通信は発生しますが、Signal Screenのランタイム処理から入力内容を外部へ送信することはありません。クリップボードの読み取りは「貼り付け」を押したときだけ行います。ブラウザーの保存データは、端末側の操作やブラウザーの設定によって消える場合があります。
 
 ## 安全上の注意と制限事項
 
@@ -179,7 +191,7 @@ GitHub Pages版では最初のHTMLを取得する通信は発生しますが、S
 - Fullscreen APIとScreen Wake Lockは、ブラウザーやセキュリティコンテキストによって利用できない場合があります。
 - QR入力はUTF-8で300 bytesまでです。情報量が増えるほどQRコードが細かくなり、離れた場所から読み取りにくくなります。
 - QRコードの色変更や点滅には対応していません。読み取りやすさを優先した仕様です。
-- LocalStorageを削除すると保存していた文字や設定も消えます。
+- LocalStorageを削除すると保存していた文字、QR内容、合図、設定も消えます。
 
 ## 使用ライブラリ
 
@@ -188,6 +200,8 @@ GitHub Pages版では最初のHTMLを取得する通信は発生しますが、S
 | QRCode for JavaScript | Kazuhiko Arase / `qrcode-terminal` 0.12.0由来のソースを改変 | MIT | QRコード生成 |
 
 QR生成コードはUTF-8入力へ対応するため一部変更してHTML内へ直接内包しています。ランタイムに外部ライブラリを読み込むことはありません。詳細は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を確認してください。
+
+リリース前は[確認チェックリスト](RELEASE_CHECKLIST.md)を参照してください。CIではChromiumを確認しますが、Safari・Firefoxや実機の動作は別途確認が必要です。
 
 ## コントリビューション
 

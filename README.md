@@ -1,7 +1,5 @@
 # Signal Screen
 
-Header language controls show EN / JA with localized target-language and Help labels/tooltips. Processing stays on your device.
-
 [![GitHub Pages](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://ttomohisa.github.io/htmlapps-signal-screen/)
@@ -16,19 +14,19 @@ A privacy-focused single-HTML app that turns a phone or computer display into a 
 
 GitHub Pages delivers the initial HTML. After it loads, text display, QR generation, and settings persistence are processed locally on the device. The app does not upload your message or QR content.
 
-[![Signal Screen screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
-
-[Smartphone screenshot](assets/screenshot-mobile.png)
+The checked-in [desktop screenshot](assets/screenshot-en.png) and [mobile screenshot](assets/screenshot-mobile.png) show v1.0.4. The v1.1.0 layout differs; the release package will include current screenshots.
 
 ## Features
 
-- Auto-fit a message to fill the available screen
+- Auto-fit a message to fill the available screen; short messages of up to 12 characters without line breaks are kept on one line
 - Quick presets for HERE, HELP, SOS, and STOP
+- Save, reuse, and remove up to three custom text/background signals
 - Large `←` `↑` `↓` `→` direction arrows
 - Black, white, red, yellow, green, and blue backgrounds
 - Automatic black/white text contrast based on the background
 - One-tap **Text & arrows / QR** mode switching
 - Generate QR codes locally from URLs or short UTF-8 text
+- User-initiated QR paste from the clipboard on supported browsers
 - Fixed black modules, white background, and quiet zone for reliable QR scanning
 - Flashing is automatically disabled in QR mode
 - Steady, Slow, Beacon, and SOS display patterns
@@ -37,8 +35,9 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 - Fullscreen API support
 - Screen Wake Lock on supported browsers
 - Japanese and English in the same HTML
-- LocalStorage persistence for messages, QR content, colors, and settings
-- Responsive desktop and smartphone layouts
+- LocalStorage persistence for messages, QR content, colors, saved signals, and settings
+- Responsive desktop and smartphone layouts with a compact mobile preview, preset-first entry, mobile Reset, and on-screen keyboard positioning
+- Full-stage feedback for unsupported Fullscreen or Wake Lock operations
 - Readable and gzip self-extracting single-HTML release variants
 
 ## Display controls and reset
@@ -48,7 +47,7 @@ GitHub Pages delivers the initial HTML. After it loads, text display, QR generat
 
 - Tab and Shift+Tab stay within display controls; focused controls remain visible. Closing the display returns focus to Show full screen.
 - Escape dismisses an open confirmation first; a subsequent Escape closes the display.
-- Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
+- Reset asks before restoring the localized HERE message, black background, steady display, and Text & arrows mode. It clears QR content, saved signals, and the flashing acknowledgement but keeps the selected language. Cancel changes nothing.
 
 ## Quick start
 
@@ -60,13 +59,15 @@ Just [open the demo](https://ttomohisa.github.io/htmlapps-signal-screen/). No in
 
 ### Use the downloaded HTML
 
-Download [`dist/index.html`](https://github.com/ttomohisa/htmlapps-signal-screen/blob/main/dist/index.html) and open it in a current Chromium-based browser, Firefox, or Safari.
+Download the versioned HTML file from [GitHub Releases](https://github.com/ttomohisa/htmlapps-signal-screen/releases/latest) and open it in a current Chromium-based browser, Firefox, or Safari. For v1.1.0 the release file is named `htmlapps-signal-screen-v1.1.0.html`.
+
+The checked-in `dist/` and root `signal-screen.html` are build snapshots and may lag behind the source on a new PR. For the current release, use the versioned Release download or run `build-standalone.ps1` yourself.
 
 Core text, arrow, and QR features are designed to work when the normal HTML is opened directly with `file://`. Fullscreen and Screen Wake Lock can depend on the browser and security context.
 
 ### Use the self-extracting variant
 
-`dist/index.self-extract.html` contains a gzip-compressed copy of the readable HTML. The browser expands it locally and starts Signal Screen without a network request.
+The corresponding `*.self-extract.html` release asset contains a gzip-compressed copy of the readable HTML. The browser expands it locally and starts Signal Screen without a network request.
 
 The self-extracting variant requires `DecompressionStream`. Its loader is intentionally ASCII-only for Windows PowerShell 5.1 compatibility and automatically inherits the favicon embedded in the normal HTML.
 
@@ -81,14 +82,18 @@ The self-extracting variant requires `DecompressionStream`. Its loader is intent
 5. Press **Show full screen**.
 6. Tap the stage to hide or reveal the controls.
 
-Text is automatically resized to fit the stage. Short messages and arrows can become even larger when a phone is rotated to landscape.
+Tap Save current signal to save up to three favorite messages and their background colors. Restoring one does not change the flash mode. Removal and full Reset require confirmation. A mobile Reset button is also available at the top-right of the preview.
+
+Text is automatically resized to fit the stage. Messages of up to 12 characters without explicit line breaks prefer a single line, but wrap if one-line text would become too small. Short messages and arrows can become even larger when a phone is rotated to landscape.
 
 ### Show a QR code
 
 1. Select **QR**.
-2. Enter a URL or short text.
+2. Enter a URL or short text. On supported browsers you can press Paste to insert clipboard text.
 3. The QR preview updates immediately.
 4. Press **Show full screen** to maximize the QR code for scanning.
+
+Clipboard text is read only when Paste is pressed. If access is denied or unavailable, long-press the input field to paste manually.
 
 QR generation happens entirely on the device. QR mode keeps a fixed black-on-white design and disables flashing to prioritize scanning reliability. The current input limit is 300 UTF-8 bytes.
 
@@ -101,6 +106,10 @@ Use flashing only when necessary. Signal Screen shows an in-app safety confirmat
 - **SOS:** a visual pattern inspired by `... --- ...`.
 
 Signal Screen does not provide a high-frequency strobe. If `prefers-reduced-motion` is enabled, flashing is forced back to Steady.
+
+## Release and GitHub Pages
+
+On a push to `main`, the release workflow validates the code and creates a versioned GitHub Release when that version is not already published. The tag and release are never created while this PR is open. Release assets include normal/self-extract HTML, a ZIP, checksums, current screenshots, and the applicable license notices.
 
 ## Publish with GitHub Pages
 
@@ -123,6 +132,8 @@ If GitHub Pages has not been enabled yet, the workflow still builds the HTML but
 ├─ build-standalone.bat                # Windows build entry point
 ├─ build-standalone.ps1                # Readable standalone builder
 ├─ scripts/
+│  ├─ release-screenshots.browser.cjs  # Capture release screenshots
+│  ├─ package-release.ps1              # Versioned ZIP, license, and checksums
 │  ├─ build-self-extract.ps1           # Self-extracting variant builder
 │  ├─ verify-standalone.ps1            # Readable HTML verification
 │  ├─ verify-self-extract.ps1          # Self-extract verification
@@ -132,7 +143,8 @@ If GitHub Pages has not been enabled yet, the workflow still builds the HTML but
 │  └─ index.self-extract.html          # Gzip self-extracting release
 └─ .github/workflows/
    ├─ build-standalone.yml             # Pull request validation
-   └─ deploy-pages.yml                 # Automatic Pages deployment
+   ├─ deploy-pages.yml                 # Automatic Pages deployment
+   └─ release.yml                      # Tag and GitHub Release on main
 ```
 
 ### Build on Windows
@@ -168,7 +180,7 @@ Signal Screen is local-first.
 - No server API
 - Runtime CSP includes `connect-src 'none'`
 
-The GitHub Pages version needs an initial request to download the HTML, but Signal Screen does not transmit user-entered content during runtime.
+The GitHub Pages version needs an initial request to download the HTML, but Signal Screen does not transmit user-entered content during runtime. Clipboard access is requested only after pressing Paste. Browser storage may be deleted by the user or by browser storage-clearing policies.
 
 ## Safety and limitations
 
@@ -188,6 +200,8 @@ The GitHub Pages version needs an initial request to download the HTML, but Sign
 | QRCode for JavaScript | Kazuhiko Arase source, adapted from the copy vendored by `qrcode-terminal` 0.12.0 | MIT | QR generation |
 
 The embedded QR implementation is modified to support UTF-8 input and is included directly in the single HTML. No third-party runtime library is downloaded from the network. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+Before merging a version bump, work through [the release checklist](RELEASE_CHECKLIST.md). CI covers Chromium, while Safari/Firefox and real-device behavior still require manual confirmation.
 
 ## Contributing
 

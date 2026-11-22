@@ -1,0 +1,98 @@
+name: Publish versioned Signal Screen release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signal-screen-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the merged source
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Check version and existing release
+        id: version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $config = Get-Content -Raw -Encoding UTF8 app.config.json | ConvertFrom-Json
+          $version = [string]$config.version
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Expected a SemVer release version." }
+          $tag = "v$version"
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          gh release view $tag --repo $env:GITHUB_REPOSITORY --json id *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $tag already exists. No tag or release will be changed."
+            "publish=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          } else {
+            "publish=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          }
+
+      - name: Build and check both standalone formats
+        if: steps.version.outputs.publish == 'true'
+        shell: pwsh
+        run: ./scripts/check-repository.ps1
+
+      - name: Install Chromium screenshot test runner
+        if: steps.version.outputs.publish == 'true'
+        shell: pwsh
+        run: |
+          $testTools = Join-Path $env:RUNNER_TEMP "signal-screen-release-tests"
+          npm install --prefix $testTools --ignore-scripts --no-audit --no-fund --package-lock=false playwright@1.58.2
+          if ($LASTEXITCODE -ne 0) { throw "Playwright install failed" }
+          $env:NODE_PATH = Join-Path $testTools "node_modules"
+          & (Join-Path $testTools "node_modules/.bin/playwright.cmd") install chromium
+          if ($LASTEXITCODE -ne 0) { throw "Chromium install failed" }
+          node scripts/mobile-label.browser.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Browser regression failed" }
+          node scripts/release-screenshots.browser.cjs
+          if ($LASTEXITCODE -ne 0) { throw "Screenshot generation failed" }
+
+      - name: Package the release and calculate checksums
+        if: steps.version.outputs.publish == 'true'
+        id: package
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "signal-screen-release"
+          ./scripts/package-release.ps1 -OutputDir $root
+          "package_path=$root" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Publish GitHub Release and tag only after validation
+        if: steps.version.outputs.publish == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+          $version = $tag.Substring(1)
+          $changelog = Get-Content -Raw -Encoding UTF8 "CHANGELOG.md"
+          $header = [regex]::Match($changelog, "(?m)^## " + [regex]::Escape($version) + "[^\r\n]*\r?\n")
+          if (-not $header.Success) { throw "Missing changelog section for $tag" }
+          $remainder = $changelog.Substring($header.Index + $header.Length)
+          $next = [regex]::Match($remainder,"(?m)^## ")
+          $notes = if ($next.Success) { $remainder.Substring(0,$next.Index).Trim() } else { $remainder.Trim() }
+          if (-not $notes) { throw "Empty release notes" }
+          $root = "${{ steps.package.outputs.package_path }}"
+          $notesPath = Join-Path $root "RELEASE_NOTES.md"
+          [System.IO.File]::WriteAllText($notesPath,$notes,[System.Text.UTF8Encoding]::new($false))
+          $files = @(Get-ChildItem -LiteralPath $root -File | Where-Object { $_.Name -ne "RELEASE_NOTES.md" } | ForEach-Object { $_.FullName })
+          gh release create $tag $files --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "Signal Screen $tag" --notes-file $notesPath
+          if ($LASTEXITCODE -ne 0) { throw "GitHub Release failed" }
