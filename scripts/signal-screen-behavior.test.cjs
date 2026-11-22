@@ -352,7 +352,7 @@ for (const language of ['ja', 'en']) {
     const app=setup(language,{width:250,height:180});
     app.input(app.el('messageInput'),'ここです');
     assert.equal(app.el('previewMessage').style.whiteSpace,'nowrap');
-    app.input(app.el('messageInput'),'受付\\nこちら');
+    app.input(app.el('messageInput'),'受付\nこちら');
     assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
     app.input(app.el('messageInput'),'W'.repeat(60));
     assert.equal(app.el('previewMessage').style.whiteSpace,'pre-wrap');
