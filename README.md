@@ -1,7 +1,5 @@
 # Signal Screen
 
-Header language controls show EN / JA with localized target-language and Help labels/tooltips. Processing stays on your device.
-
 [![GitHub Pages](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://ttomohisa.github.io/htmlapps-signal-screen/)
@@ -16,9 +14,7 @@ A privacy-focused single-HTML app that turns a phone or computer display into a 
 
 GitHub Pages delivers the initial HTML. After it loads, text display, QR generation, and settings persistence are processed locally on the device. The app does not upload your message or QR content.
 
-[![Signal Screen screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
-
-[Smartphone screenshot](assets/screenshot-mobile.png)
+The checked-in [desktop screenshot](assets/screenshot-en.png) and [mobile screenshot](assets/screenshot-mobile.png) show v1.0.4. The v1.1.0 layout differs; the release package will include current screenshots.
 
 ## Features
 
@@ -63,13 +59,15 @@ Just [open the demo](https://ttomohisa.github.io/htmlapps-signal-screen/). No in
 
 ### Use the downloaded HTML
 
-Download [`dist/index.html`](https://github.com/ttomohisa/htmlapps-signal-screen/blob/main/dist/index.html) and open it in a current Chromium-based browser, Firefox, or Safari.
+Download the versioned HTML file from [GitHub Releases](https://github.com/ttomohisa/htmlapps-signal-screen/releases/latest) and open it in a current Chromium-based browser, Firefox, or Safari. For v1.1.0 the release file is named `htmlapps-signal-screen-v1.1.0.html`.
+
+The checked-in `dist/` and root `signal-screen.html` are build snapshots and may lag behind the source on a new PR. For the current release, use the versioned Release download or run `build-standalone.ps1` yourself.
 
 Core text, arrow, and QR features are designed to work when the normal HTML is opened directly with `file://`. Fullscreen and Screen Wake Lock can depend on the browser and security context.
 
 ### Use the self-extracting variant
 
-`dist/index.self-extract.html` contains a gzip-compressed copy of the readable HTML. The browser expands it locally and starts Signal Screen without a network request.
+The corresponding `*.self-extract.html` release asset contains a gzip-compressed copy of the readable HTML. The browser expands it locally and starts Signal Screen without a network request.
 
 The self-extracting variant requires `DecompressionStream`. Its loader is intentionally ASCII-only for Windows PowerShell 5.1 compatibility and automatically inherits the favicon embedded in the normal HTML.
 
@@ -109,6 +107,10 @@ Use flashing only when necessary. Signal Screen shows an in-app safety confirmat
 
 Signal Screen does not provide a high-frequency strobe. If `prefers-reduced-motion` is enabled, flashing is forced back to Steady.
 
+## Release and GitHub Pages
+
+On a push to `main`, the release workflow validates the code and creates a versioned GitHub Release when that version is not already published. The tag and release are never created while this PR is open. Release assets include normal/self-extract HTML, a ZIP, checksums, and current screenshots.
+
 ## Publish with GitHub Pages
 
 This repository includes a workflow that builds, verifies, and deploys the standalone HTML to GitHub Pages.
@@ -130,6 +132,7 @@ If GitHub Pages has not been enabled yet, the workflow still builds the HTML but
 ├─ build-standalone.bat                # Windows build entry point
 ├─ build-standalone.ps1                # Readable standalone builder
 ├─ scripts/
+│  ├─ release-screenshots.browser.cjs  # Capture release screenshots
 │  ├─ build-self-extract.ps1           # Self-extracting variant builder
 │  ├─ verify-standalone.ps1            # Readable HTML verification
 │  ├─ verify-self-extract.ps1          # Self-extract verification
@@ -139,7 +142,8 @@ If GitHub Pages has not been enabled yet, the workflow still builds the HTML but
 │  └─ index.self-extract.html          # Gzip self-extracting release
 └─ .github/workflows/
    ├─ build-standalone.yml             # Pull request validation
-   └─ deploy-pages.yml                 # Automatic Pages deployment
+   ├─ deploy-pages.yml                 # Automatic Pages deployment
+   └─ release.yml                      # Tag and GitHub Release on main
 ```
 
 ### Build on Windows
@@ -175,7 +179,7 @@ Signal Screen is local-first.
 - No server API
 - Runtime CSP includes `connect-src 'none'`
 
-The GitHub Pages version needs an initial request to download the HTML, but Signal Screen does not transmit user-entered content during runtime.
+The GitHub Pages version needs an initial request to download the HTML, but Signal Screen does not transmit user-entered content during runtime. Clipboard access is requested only after pressing Paste. Browser storage may be deleted by the user or by browser storage-clearing policies.
 
 ## Safety and limitations
 
