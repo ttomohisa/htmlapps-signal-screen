@@ -197,10 +197,6 @@
           <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
           <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
         </div>
-        <div class="field" id="savedField">
-          <div class="label-row"><label data-i18n="savedTitle">保存した合図</label><button class="subtle-button" id="saveSignalButton" type="button" data-i18n="saveSignal">今の合図を保存</button></div>
-          <div class="saved-list" id="savedList" aria-label="保存した合図"></div>
-        </div>
         <div class="field" id="colorField">
           <div class="label-row"><label data-i18n="colorLabel">背景色</label></div>
           <div class="color-grid" id="colorGrid">
@@ -211,6 +207,10 @@
             <button class="color-button" type="button" style="--swatch:#0a7a45" data-color="#0a7a45" aria-label="Green" aria-pressed="false"></button>
             <button class="color-button" type="button" style="--swatch:#1769d1" data-color="#1769d1" aria-label="Blue" aria-pressed="false"></button>
           </div>
+        </div>
+        <div class="field" id="savedField">
+          <div class="label-row"><label data-i18n="savedTitle">保存した合図</label><button class="subtle-button" id="saveSignalButton" type="button" data-i18n="saveSignal">今の合図を保存</button></div>
+          <div class="saved-list" id="savedList" aria-label="保存した合図"></div>
         </div>
         <div class="field" id="flashField">
           <div class="label-row"><label data-i18n="flashLabel">点滅</label></div>
@@ -460,11 +460,18 @@ __QR_CODE_JS__
     // Keep short signals on one line; explicit line breaks and longer messages retain wrapping.
     textEl.style.whiteSpace=!textEl.textContent.includes("\n")&&[...textEl.textContent].length<=12?"nowrap":"pre-wrap";
     // Measure wrapped content in one fixed box, never against a narrower box.
-    let low=1,high=Math.max(1,Math.floor(max)),best=1;
-    while(low<=high){
-      const size=Math.floor((low+high)/2);textEl.style.fontSize=size+"px";
-      if(textEl.scrollWidth<=maxW&&textEl.scrollHeight<=maxH){best=size;low=size+1;}else{high=size-1;}
-    }
+    const solveFit=(whiteSpace)=>{
+      textEl.style.whiteSpace=whiteSpace;
+      let low=1,high=Math.max(1,Math.floor(max)),best=1;
+      while(low<=high){
+        const size=Math.floor((low+high)/2);textEl.style.fontSize=size+"px";
+        if(textEl.scrollWidth<=maxW&&textEl.scrollHeight<=maxH){best=size;low=size+1;}else{high=size-1;}
+      }
+      return best;
+    };
+    let best=solveFit(textEl.style.whiteSpace);
+    // Do not trade readable type size for a single line on narrow screens.
+    if(textEl.style.whiteSpace==="nowrap"&&best<Math.min(34,max*.4))best=solveFit("pre-wrap");
     textEl.style.fontSize=best+"px";
   }
   function renderSaved(){
