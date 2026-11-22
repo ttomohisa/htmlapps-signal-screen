@@ -116,9 +116,7 @@
       .header-inner{min-height:58px;padding-top:7px;padding-bottom:7px}.brand-mark{width:35px;height:35px}.brand-meta{display:none}.header-actions{gap:9px}
       main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}.intro{margin-bottom:12px}.local-badge{display:none}
       .preview-reset{display:flex}.preview{min-height:clamp(180px,32dvh,232px)}
-      .panel-body{display:flex;flex-direction:column}
-      #quickField{order:0;margin-top:0}#messageField,#qrField{order:1;margin-top:14px}#savedField{order:2}#colorField{order:3}#flashField{order:4}
-      .panel-body>.action-row{order:5}.panel-body>.status-line{order:6}
+      .panel-body>.field:first-child{margin-top:0}
       .action-row{bottom:var(--keyboard-offset,0px)}
       .qr-tools{gap:5px}
       .layout{grid-template-columns:1fr;gap:12px}.preview{min-height:250px}.panel-body{padding:15px}.mode-switch{margin:10px 10px 10px}.preview-shell{margin:0 10px;padding:10px;border-radius:13px}.quick-grid{grid-template-columns:repeat(4,1fr)}
@@ -177,15 +175,6 @@
         </div>
       </div>
       <div class="panel-body">
-        <div class="field" id="messageField">
-          <div class="label-row"><label for="messageInput" data-i18n="messageLabel">表示する文字</label><span class="hint" id="charCount">4 / 60</span></div>
-          <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
-        </div>
-        <div class="field" id="qrField" hidden>
-          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><div class="qr-tools"><span class="hint" id="qrByteCount">0 / 300 bytes</span><button class="subtle-button" id="pasteQrButton" type="button" data-i18n="paste">貼り付け</button></div></div>
-          <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
-          <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
-        </div>
         <div class="field" id="quickField">
           <div class="label-row"><label data-i18n="quickLabel">すぐ使う</label></div>
           <div class="quick-grid" id="presetGrid">
@@ -198,6 +187,15 @@
             <button class="preset arrow" type="button" data-value="↓">↓</button>
             <button class="preset arrow" type="button" data-value="→">→</button>
           </div>
+        </div>
+        <div class="field" id="messageField">
+          <div class="label-row"><label for="messageInput" data-i18n="messageLabel">表示する文字</label><span class="hint" id="charCount">4 / 60</span></div>
+          <textarea id="messageInput" maxlength="60" spellcheck="false">ここです</textarea>
+        </div>
+        <div class="field" id="qrField" hidden>
+          <div class="label-row"><label for="qrInput" data-i18n="qrLabel">QRに入れる内容</label><div class="qr-tools"><span class="hint" id="qrByteCount">0 / 300 bytes</span><button class="subtle-button" id="pasteQrButton" type="button" data-i18n="paste">貼り付け</button></div></div>
+          <textarea id="qrInput" maxlength="300" spellcheck="false" inputmode="url" placeholder="https://browser-kitty.com/"></textarea>
+          <div class="qr-note" id="qrNote" role="status" aria-live="polite"></div>
         </div>
         <div class="field" id="savedField">
           <div class="label-row"><label data-i18n="savedTitle">保存した合図</label><button class="subtle-button" id="saveSignalButton" type="button" data-i18n="saveSignal">今の合図を保存</button></div>
