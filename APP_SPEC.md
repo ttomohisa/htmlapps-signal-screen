@@ -2,7 +2,7 @@
 
 ## 1. Product identity
 - **Name:** Signal Screen
-- **Version:** 1.0.4
+- **Version:** 1.1.0
 - **Purpose:** Turn a phone or computer screen into a large, high-contrast visual signal.
 - **Primary users:** People who need a temporary sign for meetups, directions, events, travel, or emergencies.
 - **Release artifacts:** `dist/index.html`, `dist/index.self-extract.html`
@@ -23,7 +23,7 @@ A user can enter a short message or choose a preset, choose a signal color and o
 - Live preview.
 - Local QR generation for URLs and short UTF-8 text with a 4-module quiet zone.
 - QR mode uses fixed black modules on white and disables flashing for scan reliability.
-- Auto-fit message size in preview and stage using a stable content box; short (up to 12 characters) single-line messages remain on one line, while longer and explicit multiline input can wrap.
+- Auto-fit message size in preview and stage using a stable content box; short (up to 12 characters) single-line messages are fitted on one line when readable, and otherwise wrap; explicit multiline input is preserved.
 - Presets for short messages and four directions.
 - Save up to three custom text/color signals in LocalStorage; selecting one restores its message and background without modifying the active flash mode. Removal requires confirmation.
 - QR Paste is activated only by the user, reads the Clipboard API when available, and falls back to manual paste guidance when unavailable or denied.
@@ -82,7 +82,7 @@ Current stable Chromium, Firefox, and Safari on desktop/mobile. Core display wor
 - No external runtime asset URL.
 - `connect-src 'none'` exists.
 - 320px layout has no horizontal overflow.
-- Short signals (e.g. ここです / HERE) remain on one line in preview and stage wherever the width allows fitting.
+- Short signals (e.g. ここです / HERE) stay on one line when readable at the available width; long messages and explicit newlines wrap.
 - Mobile Reset is reachable regardless of whether text or QR mode is active.
 - Saved signal create/apply/remove survives reload; storage is local; saved-signal removal and full Reset require confirmation.
 - Paste is a user-initiated clipboard read; denied or unsupported access never clears the existing QR input.
