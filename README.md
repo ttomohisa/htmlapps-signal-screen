@@ -133,6 +133,7 @@ If GitHub Pages has not been enabled yet, the workflow still builds the HTML but
 ├─ build-standalone.ps1                # Readable standalone builder
 ├─ scripts/
 │  ├─ release-screenshots.browser.cjs  # Capture release screenshots
+│  ├─ package-release.ps1              # Versioned ZIP, license, and checksums
 │  ├─ build-self-extract.ps1           # Self-extracting variant builder
 │  ├─ verify-standalone.ps1            # Readable HTML verification
 │  ├─ verify-self-extract.ps1          # Self-extract verification
