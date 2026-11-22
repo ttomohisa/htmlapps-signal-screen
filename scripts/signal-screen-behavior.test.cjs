@@ -414,6 +414,15 @@ for (const language of ['ja', 'en']) {
     assert.equal(app.el('stageNotice').hidden,true);
   });
 }
+test('important fullscreen warnings are not replaced by later successful wake feedback', async () => {
+  const app=setup('ja');await open(app);
+  app.run('showStatus("fullscreen is unavailable","warn")');
+  app.run('showStatus("wake lock active")');
+  assert.equal(app.el('stageNotice').textContent,'fullscreen is unavailable');
+  assert.equal(app.el('stageNotice').dataset.tone,'warn');
+  app.flushTimers();
+  assert.equal(app.el('stageNotice').hidden,true);
+});
 test('mobile action bar uses visual viewport occlusion only while editing', () => {
   const app=setup('ja',{viewportWidth:393,viewportHeight:800});
   app.window.visualViewport={height:460,offsetTop:0};
