@@ -583,12 +583,15 @@ __QR_CODE_JS__
     els.stageModeChip.textContent=t(key);
   }
   function showStatus(message,tone=""){
+    const inStage=els.stage.classList.contains("active");
+    // A later successful Wake Lock request must not obscure a fullscreen failure.
+    if(inStage&&tone!=="warn"&&!els.stageNotice.hidden&&els.stageNotice.dataset.tone==="warn")return;
     clearTimeout(showStatus.timer);
     els.statusLine.textContent="";els.statusLine.dataset.tone="";
-    els.stageNotice.hidden=true;els.stageNotice.textContent="";
-    if(els.stage.classList.contains("active")){els.stageNotice.textContent=message;els.stageNotice.hidden=false;}
+    els.stageNotice.hidden=true;els.stageNotice.textContent="";els.stageNotice.dataset.tone="";
+    if(inStage){els.stageNotice.textContent=message;els.stageNotice.dataset.tone=tone;els.stageNotice.hidden=false;}
     else{els.statusLine.textContent=message;els.statusLine.dataset.tone=tone;}
-    showStatus.timer=setTimeout(()=>{els.statusLine.textContent="";els.statusLine.dataset.tone="";els.stageNotice.textContent="";els.stageNotice.hidden=true;},2800);
+    showStatus.timer=setTimeout(()=>{els.statusLine.textContent="";els.statusLine.dataset.tone="";els.stageNotice.textContent="";els.stageNotice.dataset.tone="";els.stageNotice.hidden=true;},2800);
   }
   function updateStageControls(){
     els.stagePinButton.setAttribute("aria-pressed",String(controlsPinned));
@@ -640,7 +643,7 @@ __QR_CODE_JS__
   }
   async function closeStage(){
     if(!els.stage.classList.contains("active"))return;
-    const session=++stageSession;stopFlash();els.stageNotice.hidden=true;els.stageNotice.textContent="";els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
+    const session=++stageSession;stopFlash();els.stageNotice.hidden=true;els.stageNotice.textContent="";els.stageNotice.dataset.tone="";els.stage.classList.remove("active");els.stage.setAttribute("aria-hidden","true");document.body.style.overflow=stageOverflow;clearTimeout(stageUiTimer);
     controlsPinned=false;updateStageControls();
     stageBackground.forEach(({el,inert})=>{el.inert=inert;});stageBackground=[];
     const target=stageReturnFocus?.isConnected&&!stageReturnFocus.disabled?stageReturnFocus:els.showButton;
