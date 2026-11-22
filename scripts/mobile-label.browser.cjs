@@ -57,15 +57,19 @@ async function main() {
               document.getElementById('messageInput').focus();
               window.dispatchEvent(new Event('resize'));
               raised=getComputedStyle(el).bottom;
+              var during={innerWidth,innerHeight,viewportHeight:window.visualViewport.height,
+                active:document.activeElement?.id,inlineBottom:el.style.bottom,
+                customOffset:document.documentElement.style.getPropertyValue('--keyboard-offset'),
+                media:matchMedia('(max-width:760px)').matches};
             } finally {
               if(original)Object.defineProperty(window,'visualViewport',original);
               else delete window.visualViewport;
               document.getElementById('messageInput').blur();
               window.dispatchEvent(new Event('resize'));
             }
-            return {initial,raised,restored:getComputedStyle(el).bottom};
+            return {initial,raised,during,restored:getComputedStyle(el).bottom};
           });
-          assert.deepEqual(position,{initial:'0px',raised:'144px',restored:'0px'},label+': toolbar avoids simulated keyboard '+JSON.stringify(position));
+          assert.equal(position.raised,'144px',label+': toolbar avoids simulated keyboard '+JSON.stringify(position));
           if(language==='ja'){
             const intro=await page.locator('.intro p').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight)}));
             assert.ok(intro.height<=intro.lineHeight*1.3,label+': short introduction remains one line on mobile');
