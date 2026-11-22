@@ -665,7 +665,11 @@ __QR_CODE_JS__
     const focused=document.activeElement;
     const editing=focused&&(focused.tagName==="TEXTAREA"||focused.tagName==="INPUT");
     const overlap=viewport?Math.max(0,innerHeight-viewport.height-viewport.offsetTop):0;
-    document.documentElement.style.setProperty("--keyboard-offset",editing&&innerWidth<=760&&overlap>=120?overlap+"px":"0px");
+    const offset=editing&&innerWidth<=760&&overlap>=120?overlap:0;
+    document.documentElement.style.setProperty("--keyboard-offset",offset+"px");
+    // Set the fixed bar directly as well, so a stale computed custom property cannot hide it under the keyboard.
+    const bar=els.showButton.closest(".action-row");
+    if(bar)bar.style.bottom=innerWidth<=760?offset+"px":"";
   }
   if(window.visualViewport){window.visualViewport.addEventListener("resize",updateKeyboardOffset);window.visualViewport.addEventListener("scroll",updateKeyboardOffset);}
   document.addEventListener("focusin",updateKeyboardOffset);document.addEventListener("focusout",()=>requestAnimationFrame(updateKeyboardOffset));
