@@ -471,7 +471,7 @@ __QR_CODE_JS__
     };
     let best=solveFit(textEl.style.whiteSpace);
     // Do not trade readable type size for a single line on narrow screens.
-    if(textEl.style.whiteSpace==="nowrap"&&best<Math.min(34,max*.4))best=solveFit("pre-wrap");
+    if(textEl.style.whiteSpace==="nowrap"&&[...textEl.textContent].length>6&&best<Math.min(34,max*.4))best=solveFit("pre-wrap");
     textEl.style.fontSize=best+"px";
   }
   function renderSaved(){
