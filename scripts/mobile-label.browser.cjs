@@ -38,6 +38,20 @@ async function main() {
           width:el.clientWidth,scrollWidth:el.scrollWidth,
           withinWidth:el.scrollWidth<=el.clientWidth+1
         }));
+        if(width===320){
+          const probe=await page.locator('#previewMessage').evaluate(el=>{
+            const preview=document.querySelector('#preview'),record=[];
+            const prevSize=el.style.fontSize,prevWrap=el.style.whiteSpace;
+            el.style.whiteSpace='nowrap';
+            for(const px of [1,12,24,34,44,54,64,74,94]){
+              el.style.fontSize=px+'px';
+              record.push({px,scrollW:el.scrollWidth,clientW:el.clientWidth,scrollH:el.scrollHeight,clientH:el.clientHeight});
+            }
+            el.style.fontSize=prevSize;el.style.whiteSpace=prevWrap;
+            return {previewW:preview.clientWidth,previewH:preview.clientHeight,text:el.textContent,record};
+          });
+          console.log('FIT-PROBE '+label+' '+JSON.stringify(probe));
+        }
         assert.equal(oneLine.whiteSpace,'nowrap',label+': short signals remain on one line '+JSON.stringify(oneLine));
         assert.ok(oneLine.fontSize>=34,label+': short signal remains legible '+JSON.stringify(oneLine));
         assert.equal(oneLine.withinWidth,true,label+': short text stays inside the preview');
