@@ -1,7 +1,5 @@
 # Signal Screen
 
-ヘッダーの言語切替は EN / JA に統一し、切替先とヘルプの読み上げ・ツールチップも表示言語に合わせています。完全ローカル処理です。
-
 [![GitHub Pages](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-signal-screen/actions/workflows/deploy-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://ttomohisa.github.io/htmlapps-signal-screen/)
@@ -16,9 +14,7 @@
 
 GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成、設定保存などは端末内だけで処理されます。入力した文字やQRの内容をアプリが外部へ送信することはありません。
 
-[![Signal Screenの画面](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-signal-screen/)
-
-[スマートフォン表示](assets/screenshot-mobile.png)
+リポジトリ内の[PC画面](assets/screenshot.png)と[スマートフォン画面](assets/screenshot-mobile.png)はv1.0.4時点の画像です。v1.1.0ではレイアウトが変わるため、最新版のスクリーンショットはリリース配布物にも含めます。
 
 ## 主な機能
 
@@ -63,13 +59,15 @@ GitHub Pagesから最初のHTMLを読み込んだ後、文字表示、QR生成�
 
 ### ダウンロードして使う
 
-[`dist/index.html`](https://github.com/ttomohisa/htmlapps-signal-screen/blob/main/dist/index.html) をダウンロードして、最新のChromiumベースのブラウザー、Firefox、Safariで開いてください。
+最新版のHTMLは[GitHub Releases](https://github.com/ttomohisa/htmlapps-signal-screen/releases/latest)からダウンロードできます。v1.1.0のファイル名は `htmlapps-signal-screen-v1.1.0.html` です。Chromium系ブラウザー、Firefox、Safariで開いてください。
+
+リポジトリの `dist/` と `signal-screen.html` はビルド時点のファイルです。PR更新直後には最新ソースを反映していない場合があるため、利用時はバージョン付きのリリースファイルを選ぶか、`build-standalone.ps1` で生成してください。
 
 文字・矢印・QR生成などのコア機能は、通常版HTMLを `file://` で直接開いても利用できる設計です。FullscreenやScreen Wake Lockは、ブラウザーや開き方によって利用できない場合があります。
 
 ### 自己解凍版を使う
 
-`dist/index.self-extract.html` は、通常版HTMLをgzip圧縮して内包した1ファイル版です。開くとブラウザー内で展開し、そのままSignal Screenを起動します。
+リリースにある `*.self-extract.html` は、通常版HTMLをgzip圧縮して内包した1ファイル版です。開くとブラウザー内で展開し、そのままSignal Screenを起動します。
 
 自己解凍版には `DecompressionStream` 対応ブラウザーが必要です。通常版と同じfaviconを自動継承し、自己解凍ローダーはWindows PowerShell 5.1で文字化けしにくいASCII-onlyで生成します。
 
@@ -109,6 +107,10 @@ QR生成は端末内だけで行われます。QRモードでは読み取り性�
 
 高頻度ストロボは実装していません。また、端末で `prefers-reduced-motion` が有効な場合は点滅を強制的に「なし」へ戻します。
 
+## リリースとGitHub Pages
+
+`main` への反映後、リリース用ワークフローが検証を行い、未公開のバージョンについてタグとGitHub Releaseを作成します。PRの時点ではタグもリリースも作成しません。通常版・自己解凍版のHTML、ZIP、チェックサム、更新後のスクリーンショットを配布します。
+
 ## GitHub Pagesで公開する
 
 このリポジトリには、単一HTMLをビルド・検証してGitHub Pagesへ公開するワークフローが含まれています。
@@ -130,6 +132,7 @@ Pagesがまだ有効になっていない場合、ワークフローはHTMLの�
 ├─ build-standalone.bat                # Windows用ビルド入口
 ├─ build-standalone.ps1                # 通常版HTMLの生成
 ├─ scripts/
+│  ├─ release-screenshots.browser.cjs  # リリース用スクリーンショット生成
 │  ├─ build-self-extract.ps1           # 自己解凍版の生成
 │  ├─ verify-standalone.ps1            # 通常版の検証
 │  ├─ verify-self-extract.ps1          # 自己解凍版の検証
@@ -139,7 +142,8 @@ Pagesがまだ有効になっていない場合、ワークフローはHTMLの�
 │  └─ index.self-extract.html          # gzip自己解凍版
 └─ .github/workflows/
    ├─ build-standalone.yml             # Pull Request時のビルド検証
-   └─ deploy-pages.yml                 # mainからPagesへ自動公開
+   ├─ deploy-pages.yml                 # mainからPagesへ自動公開
+   └─ release.yml                      # main反映後のタグ・Release作成
 ```
 
 ### Windowsでビルドする
@@ -175,7 +179,7 @@ Signal Screenはローカルファーストで動作します。
 - サーバーAPIなし
 - CSPに `connect-src 'none'` を指定
 
-GitHub Pages版では最初のHTMLを取得する通信は発生しますが、Signal Screenのランタイム処理から入力内容を外部へ送信することはありません。
+GitHub Pages版では最初のHTMLを取得する通信は発生しますが、Signal Screenのランタイム処理から入力内容を外部へ送信することはありません。クリップボードの読み取りは「貼り付け」を押したときだけ行います。ブラウザーの保存データは、端末側の操作やブラウザーの設定によって消える場合があります。
 
 ## 安全上の注意と制限事項
 
