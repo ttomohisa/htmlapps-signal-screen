@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 1.1.0 - 2026-11-22
+## 1.1.0
 
 - Remove redundant hero title and inline hints; shorten the bilingual introduction.
 - Prioritize one-line short messages while allowing wrapping when a single line becomes too small.
@@ -11,8 +11,9 @@
 - Add user-initiated QR clipboard paste with safe denial/unsupported behavior.
 - Display temporary Fullscreen / Wake Lock warnings on the active signal screen.
 - Update Help, README and regression tests for the new workflows.
-
 - Standardize the English local-processing badge to “Fully local processing” without changing its artwork or behavior.
+- Validate stored settings and saved messages before restoring a session.
+- Correct the fixed mobile action bar positioning when a virtual keyboard is open.
 
 ## 1.0.4 - 2026-10-11
 
