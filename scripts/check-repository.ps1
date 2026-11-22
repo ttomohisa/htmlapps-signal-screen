@@ -8,7 +8,7 @@ $required = @(
   "build-standalone.ps1","src\vendor\qrcode.js","scripts\build-self-extract.ps1","scripts\verify-standalone.ps1",
   "scripts\verify-self-extract.ps1","README.md","README.ja.md","LICENSE","THIRD_PARTY_NOTICES.md",
   "schemas\app-config.schema.json","schemas\dependencies.schema.json",
-  "CHANGELOG.md","RELEASE_CHECKLIST.md",".github\workflows\release.yml","scripts\release-screenshots.browser.cjs"
+  "CHANGELOG.md","RELEASE_CHECKLIST.md",".github\workflows\release.yml","scripts\release-screenshots.browser.cjs","scripts\package-release.ps1"
 )
 foreach ($relative in $required) { if (-not (Test-Path (Join-Path $Root $relative))) { throw "Required repository file is missing: $relative" } }
 
